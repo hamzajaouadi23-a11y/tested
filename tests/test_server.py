@@ -247,6 +247,25 @@ else:
     print("SKIP  37–40 e2e (fixture voix absente : %s)" % FIX_VOICE)
 shutil.rmtree(_e2e_tmp, ignore_errors=True)
 
+# ============ 11. TRAÇABILITÉ CLOUD / FALLBACK (mission cloud) ============
+def _src(rel):
+    return open(os.path.join(ROOT, rel), encoding="utf-8").read()
+
+T("41 script.meta_json : provider_used/fallback tracés (local → fallback True)", lambda: (
+    lambda m: m.get("text_provider") == "local_text" and m.get("text_fallback") is True)(
+    scripts.get_script(_created["script_id"])["meta"]))
+T("42 generate_text sans clé : 'skipped' liste tous les clouds ignorés", lambda: (
+    lambda r: (not r["ok"]) and {"gemini", "groq", "mistral", "openrouter"}.issubset(
+        set(r.get("skipped", []))))(providers.generate_text("test", purpose="script")))
+T("43 chaîne VOICE : ElevenLabs est la tête de chaîne (service)", lambda: (
+    _src("server/services/voice.py").index('providers.get("voice_elevenlabs")')
+    < _src("server/services/voice.py").index('providers.get("voice_azure")')))
+T("44 registre : VOICE affichée ElevenLabs → Azure → import", lambda: [
+    p.id for p in providers.by_kind("VOICE")][:3] == ["voice_elevenlabs", "voice_azure", "voice_import"])
+T("45 routes GET opérateur présentes (test/research/candidate/pipeline)", lambda: all(
+    s in _src("server/app.py") for s in
+    ('"/api/providers/test"', '"/api/run/research"', '"/api/run/candidate"', '"/api/pipeline/run"')))
+
 # ============ nettoyage des artefacts de test ============
 def cleanup():
     if _created.get("research_file") and os.path.exists(_created["research_file"]):

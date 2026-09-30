@@ -23,6 +23,20 @@ class GeminiGroundingResearch(Provider):
     requires = ["GEMINI_API_KEY"]
     costly = False
 
+    def test(self):
+        """Appel RÉEL borné : gemini-2.5-flash avec grounding Google Search activé."""
+        base = super().test()
+        if not base["ok"] or "manquante" in base.get("detail", ""):
+            return base
+        from .text_providers import GeminiProvider
+        r = GeminiProvider().generate(
+            "Quelle est la capitale de la France ? Réponds en un mot.",
+            model=GeminiProvider.MODEL_FLASH, grounding=True, temperature=0)
+        return {"ok": r["ok"] and bool(r.get("text", "").strip()),
+                "detail": "grounding Google Search opérationnel" if r["ok"]
+                          else "échec grounding: " + r.get("detail", "")[:160],
+                "latency_ms": r.get("latency_ms", 0)}
+
 
 class ResearchImport(Provider):
     """Importe des recherches structurées (JSON) déposées dans data/research/inbox/.
@@ -77,7 +91,25 @@ class GeminiImageProvider(Provider):
             return {"ok": False, "detail": str(e)[:200]}
 
     def test(self):
-        return super().test()
+        """Appel RÉEL borné : 1 image minimale générée puis supprimée (coût : 1 appel)."""
+        base = super().test()
+        if not base["ok"] or "manquante" in base.get("detail", ""):
+            return base
+        from .. import config
+        tmp = os.path.join(config.TMP, "probe_image_gemini.png")
+        t0 = time.time()
+        try:
+            r = self.generate("a plain soft teal background, minimal, no text", tmp)
+            if r["ok"] and os.path.exists(tmp) and os.path.getsize(tmp) > 1000:
+                return {"ok": True, "detail": "génération image réelle OK (%d octets)" % os.path.getsize(tmp),
+                        "latency_ms": int((time.time() - t0) * 1000)}
+            return {"ok": False, "detail": r.get("detail", "échec génération")[:200],
+                    "latency_ms": int((time.time() - t0) * 1000)}
+        finally:
+            try:
+                os.path.exists(tmp) and os.remove(tmp)
+            except OSError:
+                pass
 
 
 class ImageImport(Provider):
@@ -149,6 +181,27 @@ class AzureVoice(Provider):
             return {"ok": True, "path": out_path}
         return {"ok": False, "detail": r.get("detail", "synthèse échouée")}
 
+    def test(self):
+        """Appel RÉEL borné : synthèse de 5 caractères, fichier supprimé après mesure."""
+        base = super().test()
+        if not base["ok"]:
+            return base
+        from .. import config
+        tmp = os.path.join(config.TMP, "probe_voice_azure.mp3")
+        t0 = time.time()
+        try:
+            r = self.synthesize("Test.", tmp)
+            if r["ok"] and os.path.exists(tmp) and os.path.getsize(tmp) > 200:
+                return {"ok": True, "detail": "synthèse réelle OK (%d octets)" % os.path.getsize(tmp),
+                        "latency_ms": int((time.time() - t0) * 1000)}
+            return {"ok": False, "detail": r.get("detail", "échec synthèse")[:200],
+                    "latency_ms": int((time.time() - t0) * 1000)}
+        finally:
+            try:
+                os.path.exists(tmp) and os.remove(tmp)
+            except OSError:
+                pass
+
 
 class ElevenLabsVoice(Provider):
     id = "voice_elevenlabs"
@@ -177,6 +230,28 @@ class ElevenLabsVoice(Provider):
                 f.write(r["raw"])
             return {"ok": True, "path": out_path}
         return {"ok": False, "detail": r.get("detail", "synthèse échouée")}
+
+    def test(self):
+        """Appel RÉEL borné : synthèse de 5 caractères, fichier supprimé après mesure.
+        Coût : quelques caractères TTS — jamais de READY sans ce ping réel."""
+        base = super().test()
+        if not base["ok"]:
+            return base
+        from .. import config
+        tmp = os.path.join(config.TMP, "probe_voice_elevenlabs.mp3")
+        t0 = time.time()
+        try:
+            r = self.synthesize("Test.", tmp)
+            if r["ok"] and os.path.exists(tmp) and os.path.getsize(tmp) > 200:
+                return {"ok": True, "detail": "synthèse réelle OK (%d octets, voix env ou défaut)" % os.path.getsize(tmp),
+                        "latency_ms": int((time.time() - t0) * 1000)}
+            return {"ok": False, "detail": r.get("detail", "échec synthèse")[:200],
+                    "latency_ms": int((time.time() - t0) * 1000)}
+        finally:
+            try:
+                os.path.exists(tmp) and os.remove(tmp)
+            except OSError:
+                pass
 
 
 class VoiceImport(Provider):
@@ -235,15 +310,33 @@ class _SocialBase(Provider):
     mock = False
     costly = False
     docs = ""
+    probe_url = ""          # endpoint officiel minimal (lecture seule) pour prouver le token
+    probe_post = False      # TikTok exige POST même pour une lecture
 
     def publish(self, video_path, caption):
         return {"ok": False, "detail": "non connecté — OAuth requis. La publication reste manuelle."}
 
     def test(self):
+        """READY seulement après un VRAI appel API en lecture (token validé par la plateforme).
+        Jamais de prétention « token présent » : 401/403 → ERROR honnête."""
         if not self.configured():
             return {"ok": False, "latency_ms": 0,
                     "detail": "non configuré (OAuth requis) — voir %s" % self.docs}
-        return {"ok": True, "latency_ms": 0, "detail": "token présent — test d'envoi non exécuté (publication humaine uniquement)"}
+        from .. import config
+        token = config.get_secret(self.requires[0])
+        t0 = time.time()
+        r = self.safe_http(self.probe_url, payload=({} if self.probe_post else None),
+                           headers={"Authorization": "Bearer " + token},
+                           timeout=20, retries=0)
+        lat = int((time.time() - t0) * 1000)
+        if r["ok"]:
+            return {"ok": True, "latency_ms": lat,
+                    "detail": "appel API officiel réussi — publication toujours manuelle"}
+        status = r.get("status", 0)
+        if status in (401, 403):
+            return {"ok": False, "latency_ms": lat, "detail": "token rejeté (%d) — à régénérer" % status}
+        return {"ok": False, "latency_ms": lat,
+                "detail": "probe échouée (statut %s): %s" % (status, r.get("detail", "")[:120])}
 
 
 class TikTokSocial(_SocialBase):
@@ -251,6 +344,8 @@ class TikTokSocial(_SocialBase):
     label = "TikTok Content Posting API (officielle)"
     requires = ["TIKTOK_ACCESS_TOKEN"]
     docs = "developers.tiktok.com — Content Posting API"
+    probe_url = "https://open.tiktokapis.com/v2/user/info/?fields=open_id"
+    probe_post = True
 
 
 class YouTubeSocial(_SocialBase):
@@ -258,6 +353,7 @@ class YouTubeSocial(_SocialBase):
     label = "YouTube Data API v3 (officielle)"
     requires = ["YOUTUBE_ACCESS_TOKEN"]
     docs = "console.cloud.google.com — YouTube Data API"
+    probe_url = "https://www.googleapis.com/youtube/v3/channels?part=id&mine=true"
 
 
 class InstagramSocial(_SocialBase):
@@ -265,6 +361,7 @@ class InstagramSocial(_SocialBase):
     label = "Instagram Graph API (Meta, officielle)"
     requires = ["INSTAGRAM_ACCESS_TOKEN", "INSTAGRAM_BUSINESS_ID"]
     docs = "developers.facebook.com — Instagram Content Publishing"
+    probe_url = "https://graph.facebook.com/v21.0/me?fields=id,username"
 
 
 # ---------------- ANALYTICS ----------------

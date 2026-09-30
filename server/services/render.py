@@ -175,8 +175,15 @@ def render(script_id):
                   json.dumps({"ai_assets": has_ai, "disclosure_required": has_ai,
                               "disclosure_shown_on_video": has_ai}, ensure_ascii=False),
                  db.now()))
+    script_meta = script.get("meta") or {}
+    img_counts = {}
+    for a in assets:
+        img_counts[a["provenance"]] = img_counts.get(a["provenance"], 0) + 1
     meta = {"video_id": vid, "overlays": overlays_meta, "segments": len(segs),
-            "voice_provider": voice["provider"], "target_total_s": round(total, 2)}
+            "voice_provider": voice["provider"], "target_total_s": round(total, 2),
+            "text_provider": script_meta.get("text_provider", script.get("provider")),
+            "text_fallback": script_meta.get("text_fallback"),
+            "image_provenances": img_counts}
     with open(os.path.join(tmp, "render_meta.json"), "w") as f:
         json.dump(meta, f, ensure_ascii=False, indent=2)
     db.log_event("video_rendered", {"video_id": vid, "script_id": script_id, "duration": info.get("duration_s")})

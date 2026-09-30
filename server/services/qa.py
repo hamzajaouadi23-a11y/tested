@@ -211,6 +211,27 @@ def finalize_for_post(video_id):
     with open(os.path.join(ready_dir, name + "_caption.txt"), "w", encoding="utf-8") as f:
         f.write(caption + "\n")
     vp = db.q("SELECT provider FROM voices WHERE script_id=? ORDER BY id DESC", (script["id"],), one=True)
+    voice_provider = vp["provider"] if vp else None
+    script_meta = script.get("meta") or {}
+    text_provider = script_meta.get("text_provider") or script.get("provider")
+    text_fallback = script_meta.get("text_fallback", text_provider not in (None, "gemini"))
+    prov_counts = {}
+    for a in db.q("SELECT provenance FROM assets WHERE script_id=?", (script["id"],)):
+        prov_counts[a["provenance"]] = prov_counts.get(a["provenance"], 0) + 1
+    if prov_counts.get("ai"):
+        image_provider = "image_gemini"
+    elif prov_counts.get("user") or prov_counts.get("licensed") or prov_counts.get("original"):
+        image_provider = "image_import"
+    elif prov_counts:
+        image_provider = "composition"
+    else:
+        image_provider = None
+    providers_block = {
+        "text": {"provider_used": text_provider, "fallback": bool(text_fallback)},
+        "voice": {"provider_used": voice_provider, "fallback": voice_provider not in (None, "elevenlabs")},
+        "image": {"provider_used": image_provider, "fallback": image_provider not in (None, "image_gemini"),
+                  "provenances": prov_counts},
+    }
     metadata = {
         "file": name + ".mp4", "title": script["hook"], "style": script["style"],
         "style_label": honesty.STYLES.get(script["style"], ""),
@@ -218,14 +239,21 @@ def finalize_for_post(video_id):
         "cta": script["cta"], "hashtags": script["hashtags"],
         "claims": script.get("claims", []),
         "ai_disclosure": disc,
-        "voice_provider": vp["provider"] if vp else None,
+        "voice_provider": voice_provider,
+        "text_provider": text_provider,
+        "image_provider": image_provider,
+        "providers": providers_block,
+        "fallback_used": any(p["fallback"] for p in providers_block.values()),
         "qa": json.loads(v["qa_json"]),
         "status": "WAITING_APPROVAL — publication manuelle uniquement",
         "created_at": db.now(),
     }
     with open(os.path.join(ready_dir, name + "_metadata.json"), "w", encoding="utf-8") as f:
         json.dump(metadata, f, ensure_ascii=False, indent=2)
-    db.run("UPDATE videos SET path=?, filename=? WHERE id=?", (dest, name + ".mp4", video_id))
+    db.run("UPDATE videos SET path=?, filename=?, meta_json=? WHERE id=?",
+           (dest, name + ".mp4", json.dumps({"providers": providers_block,
+                                             "fallback_used": metadata["fallback_used"]},
+                                            ensure_ascii=False), video_id))
     db.log_event("video_ready_to_post", {"video_id": video_id, "file": name + ".mp4"})
     return {"ok": True, "name": name, "path": dest,
             "caption": name + "_caption.txt", "metadata": name + "_metadata.json"}

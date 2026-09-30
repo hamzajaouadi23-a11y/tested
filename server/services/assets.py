@@ -107,8 +107,26 @@ def acquire_for_script(script_id):
     imported = import_inbox_for_script(script_id)
     made = generate_missing(script, len(imported))
     rows = [dict(r) for r in db.q("SELECT * FROM assets WHERE script_id=? ORDER BY id", (script_id,))]
+    # résumé du provider image employé (traçabilité fallback — visible dans les événements)
+    counts = {"user": 0, "licensed": 0, "original": 0, "ai": 0, "composition": 0}
+    for r in rows:
+        if r["provenance"] in counts:
+            counts[r["provenance"]] += 1
+    if counts["ai"]:
+        image_provider = "image_gemini"
+    elif counts["user"] or counts["licensed"] or counts["original"]:
+        image_provider = "image_import"
+    elif rows:
+        image_provider = "composition"
+    else:
+        image_provider = None
+    fallback = image_provider not in (None, "image_gemini")  # tête de chaîne = cloud
+    summary = {"image_provider_used": image_provider, "image_fallback": fallback,
+               "provenance_counts": {k: v for k, v in counts.items() if v}}
+    db.log_event("assets_ready", {"script_id": script_id, "imported": len(imported),
+                                  "generated": len(made), **summary})
     return {"ok": True, "imported": imported, "generated": made, "total": len(rows),
-            "realness": sorted({r["realness"] for r in rows})}
+            "realness": sorted({r["realness"] for r in rows}), **summary}
 
 
 def list_assets(script_id):

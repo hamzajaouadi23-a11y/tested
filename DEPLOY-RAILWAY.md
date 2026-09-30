@@ -34,9 +34,11 @@ Objectif : **URL publique stable**, indépendante du sandbox Arena/E2B. Architec
    | `GROQ_API_KEY` | *ta clé* | TEXT alternatif (fallback chaîne Gemini→Groq→Mistral) |
    | `MISTRAL_API_KEY` | *ta clé* | TEXT alternatif |
    | `OPENROUTER_API_KEY` | *ta clé* | TEXT alternatif (dernier recours cloud) |
-   | `AZURE_SPEECH_KEY` + `AZURE_SPEECH_REGION` | *clé + francecentral* | VOIX chaîne 1 (option .voix AZURE_SPEECH_VOICE/RATE) |
-   | `ELEVENLABS_API_KEY` | *ta clé* | VOIX chaîne 2 (option ELEVENLABS_VOICE_ID/MODEL_ID) |
-   > Statuts honnêtes garantis : tant qu'une variable manque, Studio → Providers affiche **NOT CONFIGURED** (aucun READY sans appel réel — le bouton *Tester* tire un vrai appel nanocout ~0,0001 €). Aucune variable CI/CD ne recevra JAMAIS de clé ; Railway Variables chiffrées seulement.
+   | `ELEVENLABS_API_KEY` | *ta clé* | VOIX chaîne 1 (options ELEVENLABS_VOICE_ID/MODEL_ID) |
+   | `AZURE_SPEECH_KEY` + `AZURE_SPEECH_REGION` | *clé + francecentral* | VOIX chaîne 2 (options AZURE_SPEECH_VOICE/RATE) |
+   > Chaînes déclarées : TEXT gemini→groq→mistral→openrouter→local · VOICE elevenlabs→azure→import · IMAGE cloud→opérateur→composition. Tout fallback est visible (événements + metadata vidéo).
+   > Statuts honnêtes garantis : tant qu'une variable manque, Studio → Providers affiche **NOT CONFIGURED** (aucun READY sans appel réel — le bouton *TEST CONNECTION* tire un vrai appel minimal : TTS 5 caractères / 1 réponse lite / 1 image jetable). Aucune variable CI/CD ne recevra JAMAIS de clé ; Railway Variables chiffrées seulement.
+   > `/api/status` expose `commit` (RAILWAY_GIT_COMMIT_SHA, injecté par Railway au build) pour vérifier que le déploiement courant = dernier push.
    > **Ne jamais** mettre `PORT` ni `TNP_PORT` — Railway injecte `PORT` automatiquement.
 5. **Deploy** → attendre le build (~3-5 min).
 6. **Settings → Networking → Generate Domain** → URL `https://xxxx.up.railway.app` = production stable.

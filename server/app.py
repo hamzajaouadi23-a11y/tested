@@ -121,6 +121,45 @@ class Handler(BaseHTTPRequestHandler):
             if path == "/api/providers":
                 deep = qs.get("deep", ["0"])[0] == "1"
                 return self._json({"ok": True, "providers": providers.status_report(deep=deep)})
+            if path == "/api/providers/test":
+                # Miroir GET du POST canonique (test RÉEL d'un seul provider, borné) —
+                # permet à l'opérateur/gardien de sonder sans outillage POST.
+                p = providers.get(qs.get("id", [""])[0])
+                if not p:
+                    return self._json({"ok": False, "detail": "provider inconnu"}, 404)
+                return self._json({"ok": True, "id": p.id, "test": p.test(), "health": p.health()})
+            if path == "/api/run/research":
+                # Déclencheur opérateur GET (autant autorisé que le POST) : import inbox
+                # puis recherche Gemini grounding si configurée. Traité en tâche de fond.
+                def jobr():
+                    research_svc.run()
+                threading.Thread(target=jobr, daemon=True).start()
+                db.log_event("run_trigger", {"route": "GET /api/run/research"})
+                return self._json({"ok": True, "started": True, "note": "résultats via /api/research/runs & /api/events"})
+            if path == "/api/run/candidate":
+                c = {"title": qs.get("title", [""])[0], "problem": qs.get("problem", [""])[0],
+                     "solution": qs.get("solution", [""])[0],
+                     "product_name": qs.get("product_name", [""])[0],
+                     "product_url": qs.get("product_url", [""])[0], "price": qs.get("price", [""])[0]}
+                cid = research_svc.add_candidate(c)
+                if not cid:
+                    return self._json({"ok": False, "detail": "title, problem et solution sont requis"}, 400)
+                db.run("UPDATE candidates SET status='selected' WHERE id=?", (cid,))
+                db.log_event("run_trigger", {"route": "GET /api/run/candidate", "candidate_id": cid})
+                return self._json({"ok": True, "candidate_id": cid, "status": "selected"})
+            if path == "/api/pipeline/run":
+                cid = int(qs.get("candidate_id", ["0"])[0] or 0)
+                styles = ([s.strip() for s in qs.get("styles", [""])[0].split(",") if s.strip()] or None)
+                if not cid:
+                    return self._json({"ok": False, "detail": "candidate_id requis"}, 400)
+                def jobg():
+                    pipeline_svc.run_candidate(cid, styles=styles)
+                threading.Thread(target=jobg, daemon=True).start()
+                db.log_event("run_trigger", {"route": "GET /api/pipeline/run", "candidate_id": cid,
+                                             "styles": styles or "A,B,C"})
+                return self._json({"ok": True, "started": True, "candidate_id": cid,
+                                   "styles": styles or ["A", "B", "C"],
+                                   "note": "suivi via /api/pipeline/board, /api/events, /api/videos"})
             if path == "/api/flags":
                 return self._json({"ok": True, "flags": {
                     "AUTO_RESEARCH": config.AUTO_RESEARCH, "AUTO_GENERATION": config.AUTO_GENERATION,
@@ -239,7 +278,10 @@ class Handler(BaseHTTPRequestHandler):
     def get_status(self):
         vids = db.q("SELECT status, COUNT(*) AS n FROM videos GROUP BY status")
         return self._json({
-            "ok": True, "app": "TESTÉ & PROPRE — Content OS", "version": "v5-pipeline",
+            "ok": True, "app": "TESTÉ & PROPRE — Content OS", "version": "v6-cloud",
+            "commit": os.environ.get("RAILWAY_GIT_COMMIT_SHA", "local")[:12],
+            "data_dir": config.DATA,
+            "persistence": "volume persistant" if os.environ.get("TNP_DATA_DIR") else "locale (repo)",
             "uptime_s": int(time.time() - STARTED),
             "flags": {"AUTO_RESEARCH": config.AUTO_RESEARCH, "AUTO_GENERATION": config.AUTO_GENERATION,
                       "AUTO_RENDER": config.AUTO_RENDER, "AUTO_PUBLISH": False, "AUTO_ANALYTICS": config.AUTO_ANALYTICS},

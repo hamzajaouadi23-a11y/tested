@@ -177,9 +177,19 @@ def now():
     return time.strftime("%Y-%m-%d %H:%M:%S", time.gmtime())
 
 
+def _ensure_column(con, table, column, decl):
+    """Migration additive et sûre : ajoute une colonne si absente (aucune donnée touchée)."""
+    cols = [r[1] for r in con.execute("PRAGMA table_info(%s)" % table)]
+    if column not in cols:
+        con.execute("ALTER TABLE %s ADD COLUMN %s %s" % (table, column, decl))
+
+
 def init():
     with _lock, connect() as con:
         con.executescript(SCHEMA)
+        # migrations additives — traçabilité providers/fallback (mission cloud)
+        _ensure_column(con, "scripts", "meta_json", "TEXT DEFAULT '{}'")
+        _ensure_column(con, "videos", "meta_json", "TEXT DEFAULT '{}'")
 
 
 def q(sql, params=(), one=False):

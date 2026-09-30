@@ -1,7 +1,9 @@
-"""Service VOIX — Azure → ElevenLabs → import opérateur (data/voice/inbox/script_<id>.mp3).
+"""Service VOIX — ElevenLabs → Azure → import opérateur (data/voice/inbox/script_<id>.mp3).
 
 JAMAIS de piste silencieuse fake : si aucune vraie voix n'est disponible → BLOCKED honnête.
 La durée réelle est mesurée via ffmpeg et stockée.
+Le provider utilisé et sa position dans la chaîne (fallback ou non) sont TOUJOURS tracés
+(événement voice_ready) : fallback=True dès que la voix ne vient pas de la tête de chaîne.
 """
 import os
 import shutil
@@ -36,28 +38,32 @@ def synthesize_for_script(script_id):
     tmp = os.path.join(config.TMP, "voice_%d.mp3" % script_id)
     tried = []
 
-    # 1) Azure Speech
-    az = providers.get("voice_azure")
-    if az.configured():
-        r = az.synthesize(text, tmp)
-        tried.append({"provider": "azure", "ok": r["ok"], "detail": r.get("detail", "")})
-        if r["ok"]:
-            return _register(script_id, tmp, "azure", text)
-
-    # 2) ElevenLabs
+    # 1) ElevenLabs (tête de chaîne)
     el = providers.get("voice_elevenlabs")
     if el.configured():
         r = el.synthesize(text, tmp)
         tried.append({"provider": "elevenlabs", "ok": r["ok"], "detail": r.get("detail", "")})
         if r["ok"]:
-            return _register(script_id, tmp, "elevenlabs", text)
+            return _register(script_id, tmp, "elevenlabs", text, tried)
+    else:
+        tried.append({"provider": "elevenlabs", "ok": None, "detail": "non configuré — ignoré"})
+
+    # 2) Azure Speech
+    az = providers.get("voice_azure")
+    if az.configured():
+        r = az.synthesize(text, tmp)
+        tried.append({"provider": "azure", "ok": r["ok"], "detail": r.get("detail", "")})
+        if r["ok"]:
+            return _register(script_id, tmp, "azure", text, tried)
+    else:
+        tried.append({"provider": "azure", "ok": None, "detail": "non configuré — ignoré"})
 
     # 3) Import opérateur (voix réelle fournie — data/voice/inbox/script_<id>.mp3)
     vi = providers.get("voice_import")
     found = vi.find_for_script(script_id)
     if found:
         shutil.copy2(found, tmp)
-        return _register(script_id, tmp, "voice_import", text)
+        return _register(script_id, tmp, "voice_import", text, tried)
 
     db.log_event("voice_blocked", {"script_id": script_id, "tried": tried,
                                    "reason": "aucune vraie voix disponible (configurez Azure/ElevenLabs "
@@ -68,7 +74,7 @@ def synthesize_for_script(script_id):
                       "data/voice/inbox/script_%d.mp3" % script_id}
 
 
-def _register(script_id, path, provider, text):
+def _register(script_id, path, provider, text, tried=None):
     ok, info = _validate_audio(path)
     if not ok:
         return {"ok": False, "detail": "voix rejetée par validation: %s" % info, "provider": provider}
@@ -76,8 +82,12 @@ def _register(script_id, path, provider, text):
     shutil.move(path, dest)
     vid = db.run("INSERT INTO voices(script_id,path,provider,lang,duration_s,chars,created_at) VALUES(?,?,?,?,?,?,?)",
                  (script_id, dest, provider, config.LANG, float(info), len(text), db.now()))
-    db.log_event("voice_ready", {"script_id": script_id, "provider": provider, "duration_s": info})
-    return {"ok": True, "voice_id": vid, "provider": provider, "duration_s": info, "path": dest}
+    fallback = provider != "elevenlabs"  # tête de chaîne déclarée
+    db.log_event("voice_ready", {"script_id": script_id, "provider_used": provider,
+                                 "provider_fallback": fallback, "duration_s": info,
+                                 "chain_tried": tried or []})
+    return {"ok": True, "voice_id": vid, "provider": provider, "provider_fallback": fallback,
+            "duration_s": info, "path": dest}
 
 
 def get_voice(script_id):

@@ -38,8 +38,8 @@ _REGISTRY = [
     GeminiGroundingResearch(), ResearchImport(),
     # IMAGE
     ImageImport(), GeminiImageProvider(), CompositionProvider(),
-    # VOICE
-    AzureVoice(), ElevenLabsVoice(), VoiceImport(),
+    # VOICE (chaîne ordonnée : ElevenLabs → Azure → import opérateur)
+    ElevenLabsVoice(), AzureVoice(), VoiceImport(),
     # VIDEO
     VideoFFmpeg(),
     # STORAGE

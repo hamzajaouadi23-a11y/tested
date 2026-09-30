@@ -207,12 +207,21 @@ TEXT_CHAIN = [GeminiProvider, GroqProvider, MistralProvider, OpenRouterProvider,
 
 
 def generate_text(prompt, purpose="script", lite=False):
-    """Essaie la chaîne dans l'ordre. Retourne {ok, text, provider, model} ou {ok:False, tried:[...]}."""
+    """Essaie la chaîne dans l'ordre. Retourne {ok, text, provider, model} ou {ok:False, tried:[...]}.
+
+    Traçabilité fallback (toujours présente) :
+    - configured : ids des providers cloud configurés (clé présente)
+    - tried : appels tentés et échoués (avec raison)
+    - fallback : True si le provider utilisé n'est PAS la tête de chaîne configurée
+    """
     order = [GeminiProvider, GroqProvider, MistralProvider, OpenRouterProvider]
-    tried = []
+    tried, skipped = [], []
+    configured = [c() for c in order if c().configured()]
+    head = configured[0].id if configured else None
     for cls in order:
         p = cls()
         if not p.configured():
+            skipped.append(p.id)
             continue
         kw = {}
         if isinstance(p, GeminiProvider):
@@ -221,6 +230,9 @@ def generate_text(prompt, purpose="script", lite=False):
         r = p.generate(prompt, **kw)
         if r["ok"]:
             return {"ok": True, "text": r["text"], "provider": p.id, "model": r.get("model"),
-                    "citations": r.get("citations", [])}
+                    "citations": r.get("citations", []),
+                    "configured": [x.id for x in configured], "skipped": skipped,
+                    "tried": tried, "fallback": p.id != head}
         tried.append({"provider": p.id, "detail": r.get("detail", "")[:200]})
-    return {"ok": False, "tried": tried, "detail": "aucun provider cloud configuré/disponible"}
+    return {"ok": False, "tried": tried, "skipped": skipped,
+            "detail": "aucun provider cloud configuré/disponible"}

@@ -137,7 +137,10 @@ def _cloud_script(candidate, facts, style):
         txt = r["text"].strip().strip("`").removeprefix("json").strip()
         data = json.loads(txt)
         data["claims"] = [c for c in data.get("claims", []) if c.get("source_url")]
-        return data, r["provider"]
+        chain = {"provider_used": r["provider"], "provider_fallback": bool(r.get("fallback")),
+                 "chain_tried": r.get("tried", []), "chain_skipped": r.get("skipped", []),
+                 "model": r.get("model")}
+        return data, r["provider"], chain
     except Exception:
         return None
 
@@ -153,32 +156,48 @@ def generate_for_candidate(candidate_id, styles=None):
     made = []
     for style in styles:
         data, used_provider = None, "local_text"
+        chain = {"provider_used": "local_text", "provider_fallback": True,
+                 "chain_tried": [], "chain_skipped": [], "model": None}
         cloud = _cloud_script(cand, facts, style)
         if cloud:
-            data, used_provider = cloud
+            data, used_provider, chain = cloud
         if not data:
             data = _local_script(cand, facts, style)
+            chain["note"] = "aucun provider cloud disponible — générateur local (fallback visible)"
         # lint honnêteté systématique, quel que soit le provider
         full = json.dumps({k: data.get(k) for k in ("hook", "vo_text", "caption", "cta", "onscreen")}, ensure_ascii=False)
         violations = honesty.find_violations(full)
         if violations:
             db.log_event("script_lint_block", {"candidate_id": candidate_id, "style": style, "violations": violations[:5]})
             if used_provider != "local_text":   # replie sur le générateur local sûr
+                chain["lint_replaced"] = used_provider
                 data, used_provider = _local_script(cand, facts, style), "local_text"
-        has_ai = 1 if (data.get("claims") and used_provider != "local_text") or used_provider != "local_text" else 0
+                chain["provider_used"] = "local_text"
+                chain["provider_fallback"] = True
+        meta = {"text_provider": used_provider, "text_fallback": chain["provider_fallback"],
+                "chain_tried": chain.get("chain_tried", []), "chain_skipped": chain.get("chain_skipped", []),
+                "model": chain.get("model"), "style": style}
+        if chain.get("note"):
+            meta["note"] = chain["note"]
+        if chain.get("lint_replaced"):
+            meta["lint_replaced"] = chain["lint_replaced"]
         sid = db.run(
-            "INSERT INTO scripts(candidate_id,style,hook,script_text,vo_text,onscreen_json,shotlist_json,caption,cta,hashtags,claims_json,ai_disclosure,provider,created_at)"
-            " VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+            "INSERT INTO scripts(candidate_id,style,hook,script_text,vo_text,onscreen_json,shotlist_json,caption,cta,hashtags,claims_json,ai_disclosure,provider,meta_json,created_at)"
+            " VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
             (candidate_id, style, data["hook"], data.get("script_text", ""), data["vo_text"],
              json.dumps(data.get("onscreen", []), ensure_ascii=False),
              json.dumps(data.get("shotlist", []), ensure_ascii=False),
              data["caption"], data["cta"], data.get("hashtags", ""),
              json.dumps(data.get("claims", []), ensure_ascii=False),
              1 if used_provider != "local_text" else 0,
-             used_provider, db.now()))
+             used_provider, json.dumps(meta, ensure_ascii=False), db.now()))
         db.run("UPDATE candidates SET status='used' WHERE id=? AND status='selected'", (candidate_id,))
-        db.log_event("script_generated", {"script_id": sid, "candidate_id": candidate_id, "style": style, "provider": used_provider})
-        made.append({"script_id": sid, "style": style, "provider": used_provider})
+        db.log_event("script_generated", {"script_id": sid, "candidate_id": candidate_id, "style": style,
+                                          "provider_used": used_provider,
+                                          "provider_fallback": chain["provider_fallback"],
+                                          "chain_tried": [t["provider"] for t in chain.get("chain_tried", [])]})
+        made.append({"script_id": sid, "style": style, "provider": used_provider,
+                     "fallback": chain["provider_fallback"]})
     return {"ok": True, "scripts": made}
 
 
@@ -190,6 +209,7 @@ def get_script(sid):
     d["onscreen"] = db.getjson(r, "onscreen_json", [])
     d["shotlist"] = db.getjson(r, "shotlist_json", [])
     d["claims"] = db.getjson(r, "claims_json", [])
+    d["meta"] = db.getjson(r, "meta_json", {}) if "meta_json" in d.keys() else {}
     return d
 
 

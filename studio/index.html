@@ -160,7 +160,8 @@ hr{border:0;border-top:1px solid var(--line);margin:14px 0}
 <!-- ============ PROVIDERS & REGLAGES ============ -->
 <section id="sec-prov">
   <h2>🔌 Providers <button class="btn small" id="btn-deep">▶ Tout tester (appels réels)</button></h2>
-  <div class="mut" style="margin-bottom:10px">Chaque provider : id · implémenté ? · mock ? · requis · coûteux ? · test(). Sans clé, le studio le dit honnêtement au lieu de simuler.</div>
+  <div class="mut" style="margin-bottom:6px">Chaque provider : id · implémenté ? · mock ? · requis · coûteux ? · test(). Sans clé, le studio le dit honnêtement au lieu de simuler. Aucun READY sans appel API réel.</div>
+  <div class="card" style="margin-bottom:14px"><b>Chaînes & fallbacks (toujours visibles)</b><br><span class="mut mono">TEXT&nbsp;: gemini → groq → mistral → openrouter → local_text &nbsp;·&nbsp; VOICE&nbsp;: elevenlabs → azure → import opérateur &nbsp;·&nbsp; IMAGE&nbsp;: cloud (gemini) → opérateur → composition &nbsp;·&nbsp; RESEARCH&nbsp;: inbox opérateur / gemini grounding</span><br><span class="mut">Tout fallback est journalisé (événements <span class="mono">script_generated</span>/<span class="mono">voice_ready</span>/<span class="mono">assets_ready</span>) et stocké dans les métadonnées de chaque vidéo : <span class="mono">provider_used</span> / <span class="mono">fallback</span>.</span></div>
   <div class="grid c2" id="providers"></div>
   <h2>🔐 Secrets (jamais affichés, jamais commités)</h2>
   <div class="card">
@@ -271,19 +272,20 @@ async function refreshHome(){
 /* ---------- providers ---------- */
 function provCard(p){
   const st={ok:"ok",ready:"ok",error:"bad",mock:"warn",not_configured:"warn",not_implemented:"bad"}[p.status]||"warn";
-  const stLabel={ok:"✅ opérationnel",ready:"✅ prêt (local)",error:"⛔ erreur",mock:"🟡 mock",not_configured:"🔑 clé requise",not_implemented:"⛔ non implémenté"}[p.status]||p.status;
+  const stLabel={ok:"● READY",ready:"● READY (local)",error:"● ERROR",mock:"● MOCK",not_configured:"● NOT CONFIGURED",not_implemented:"● NON IMPLÉMENTÉ"}[p.status]||p.status;
+  const to=/timed out|timeout/i.test((p.test&&p.test.detail)||"");
   return `<div class="card">
-    <div class="row" style="justify-content:space-between"><b>${esc(p.label)}</b><span class="tag ${st}">${stLabel}</span></div>
+    <div class="row" style="justify-content:space-between"><b>${esc(p.label)}</b><span class="tag ${to?"warn":st}">${to?"● TIMEOUT":stLabel}</span></div>
     <div class="mut" style="margin:6px 0">
       <span class="tag">${esc(p.kind)}</span>
       <span class="tag ${p.implemented?"ok":"bad"}">${p.implemented?"implémenté":"non implémenté"}</span>
       <span class="tag ${p.mock?"bad":"ok"}">${p.mock?"mock":"réel"}</span>
       <span class="tag">${p.costly?"💰 coûteux":"gratuit"}</span>
-      ${p.quality==="fallback"?'<span class="tag warn">secours</span>':""}
+      ${p.quality==="fallback"?'<span class="tag warn">● FALLBACK (secours local)</span>':""}
     </div>
     ${p.requires.length?`<div class="mut">requis : <span class="mono">${p.requires.map(esc).join(", ")}</span> — ${p.configured?"✅ configuré":"❌ manquant"}</div>`:""}
     ${p.test?`<div class="mut mono" style="margin-top:4px">${esc(p.test.detail||"")}</div>`:""}
-    <div class="row" style="margin-top:8px"><button class="btn small" data-test="${p.id}">▶ Tester</button><span id="t-${p.id}" class="mut"></span></div>
+    <div class="row" style="margin-top:8px"><button class="btn small" data-test="${p.id}">▶ TEST CONNECTION</button><span id="t-${p.id}" class="mut"></span></div>
   </div>`;
 }
 async function refreshProviders(deep){
@@ -291,10 +293,13 @@ async function refreshProviders(deep){
   if(!r.ok)return;
   $("#providers").innerHTML=r.providers.map(provCard).join("");
   $$("[data-test]").forEach(b=>b.addEventListener("click",async()=>{
-    const el=$("#t-"+b.dataset.test);el.innerHTML='<span class="spinner"></span> test…';
+    const el=$("#t-"+b.dataset.test);el.innerHTML='<span class="spinner"></span> appel réel…';
     const rr=await post("/api/providers/test",{id:b.dataset.test});
     const t=rr.test||{};
-    el.innerHTML=(t.ok?"✅ ":"❌ ")+esc(t.detail||"")+(t.latency_ms?" · "+t.latency_ms+" ms":"");
+    const to=/timed out|timeout/i.test(t.detail||"");
+    const lab=t.ok?"● READY":(to?"● TIMEOUT":(/non configuré/.test(t.detail||"")?"● NOT CONFIGURED":"● ERROR"));
+    el.innerHTML=(t.ok?"✅ ":"❌ ")+lab+" — "+esc(t.detail||"")+(t.latency_ms?" · "+t.latency_ms+" ms":"");
+    toast((t.ok?"✅ ":"⚠️ ")+(rr.id||b.dataset.test)+" : "+lab);
   }));
   const sc=await api("/api/secrets");
   $("#sec-key").innerHTML=sc.secrets.map(s=>`<option value="${s.key}">${s.key} ${s.configured?"✅":"—"}</option>`).join("");
