@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 # Pré-vérification obligatoire avant commit/prod : secrets, tests V2, tests backend.
-set -e
+set -eo pipefail
+# pipefail : un FAIL dans une suite pipée à tail fait ÉCHOUER le precheck (régression prod corrigée).
 cd "$(dirname "$0")/.."
 PY="${VENV:-/home/user/venv-tnp}/bin/python"
 [ -x "$PY" ] || { echo "venv manquant → bash tools/setup_env.sh"; bash tools/setup_env.sh; }
