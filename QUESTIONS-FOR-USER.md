@@ -1,5 +1,9 @@
 # ❓ QUESTIONS-FOR-USER — à ta convenance (aucune n'est bloquante pour l'instant)
 
+0. **🔑 ACTION UNIQUE requise pour l'URL publique permanente (10 min, zéro code, zéro secret dans Git)** —
+   j'ai tout préparé côté repo (Dockerfile, railway.toml, /health, volume persistant, auto-deploy).
+   Il ne reste QUE ce clic manuel, impossible à faire pour moi sans ton login Railway :
+   **→ Suivre `DEPLOY-RAILWAY.md`, section « LA SEULE ACTION MANUELLE RESTANTE »** (6 étapes numérotées : login GitHub → New Project → repo `tested` → branche `arena/01a0efa9-tested` → Volume `/data` → Generate Domain). Dès le 1er deploy réussi, envoie-moi l'URL `*.up.railway.app` — je vérifie le HTTP public et je fige le tag `stable-railway`.
 1. **Clés providers** — Gemini / Groq / Mistral (texte), Azure / ElevenLabs (voix) : veux-tu les connecter ? Coût éventuel = ta décision. L'app est 100 % utilisable en offline en attendant ; place les clés dans `.env` (jamais commité), pas besoin d'autre chose.
 2. **Publication des 3 vidéos en attente** (`ready_to_post/video_01/02/03`) : publication = action **humaine uniquement** (règle AUTO_PUBLISH=OFF). OK pour poster toi-même avec `POSTING_GUIDE.md`, ou me dire de préparer les fichiers autrement ?
 3. **Branche** — tu avais demandé `nightshift-v5` puis `recovery/current-work` : la session est verrouillée sur `arena/01a0efa9-tested`. Souhaites-tu, hors session, renommer/forker cette branche sur GitHub (1 clic) ? Les tags `stable-live-2026-09-30` / `recovery-current-work` peuvent servir de points de départ.

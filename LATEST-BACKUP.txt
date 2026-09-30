@@ -9,3 +9,4 @@ ZIPS (dans backups/, hors git) — jamais écraser un ancien zip :
 
 RESTAURATION EXPRESS : git clone + checkout tag stable-live-2026-09-30 → bash tools/setup_env.sh → bash tools/precheck.sh → bash tools/run_server.sh.
 CONTENU DU ZIP : repo complet hors .git/node_modules/*/tmp-drafts-assets regénérables/db runtime (inclut vidéos finales, voix off, recherche, tools, docs, app).
+- TNP-BACKUP-V6-railway-ready-2026-09-30.zip (47 Mo, checkpoint-railway-ready @ 1e15e1f — extraction testée OK, inclut Dockerfile+railway.toml+requirements)
