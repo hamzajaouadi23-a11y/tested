@@ -1,19 +1,21 @@
-REPRISE RAPIDE (2026-09-30, fin de session production)
+REPRISE RAPIDE — à copier en début de nouvelle session Arena.
 
-ÉTAT : 3 vidéos finales dans data/media/ready_to_post/ (video_01/02/03.mp4 + caption + metadata), QA PASS, état pipeline WAITING_APPROVAL . Rien n'a été publié (AUTO_PUBLISH=OFF).
+RITUEL OBLIGATOIRE (chaque nouveau sandbox : .git local et venv sont frais, GitHub = vérité) :
+1. cd repo && git fetch origin arena/01a0efa9-tested --tags
+2. git reset --soft origin/arena/01a0efa9-tested && git reset     # pointeur+index sans toucher aux fichiers (jamais --hard)
+3. bash tools/setup_env.sh
+4. bash tools/precheck.sh    # attendu : secrets ✓ · 42/42 app · 40/40 backend
+5. bash tools/run_server.sh  (servir en 0.0.0.0:8090 via la preview Arena)
+6. Vérifier : / 200 · /app 200 · /api/pipeline/board 200 · /media/ready_to_post/video_01.mp4 200
+7. Règle d'or : travail → tests → scan secrets → commit → push → VÉRIF ls-remote SHA → prochaine étape. Tags de checkpoint au besoin. Jamais d'écrasement de tag/branche existant(e).
 
-POUR UNE NOUVELLE SESSION :
-1. `git checkout arena/01a0efa9-tested && git pull` — vérité = GitHub , tags : v5.2-real-media, v5.3-production-pipeline
-2. `./tools/setup_env.sh` puis `bash tools/precheck.sh` (doit sortir ✓ 4/4 : 42 app + 40 backend)
-3. Serveurs : `./tools/run_server.sh` (app 8080 + studio 8090)
-4. Poster manuellement via POSTING_GUIDE.md ; jamais d'auto-publication ; aucun secret n'apparaît dans le repo.
-5. Nouvelle prod : `./.venv-tnp/bin/python tools/nightshift_rebuild.py` (recherche→scripts→assets→voix) puis `tools/nightshift_produce.py <ids>`.
+ÉTAT ACTUEL : stable-live-2026-09-30 @ 516816be. 3 vidéos réelles QA-pass dans data/media/ready_to_post/ (PRÉSERVER, ne jamais regénérer sauf demande explicite). Voix off data/voice/inbox/script_1..3.mp3 idem.
 
-PIÈGES CONNUS (déjà corrigés, ne pas réintroduire) :
-- .gitignore : ne JAMAIS ignorer tools/, data/research/processed/, data/voice/inbox/ ; backups/ et *.zip ignorés.
-- zoompan : d=1 + -framerate 30 (sinon explosion de frames / durée fausse)
-- texte brûlé : passe par composition.sanitize_text (emoji SMP interdits → ✓/✗)
-- captions : pas de note chiffrée «4,6/5» (QA NO_FAKE_CLAIMS) — les claims chiffrés vivent dans claims_json avec source_url.
-- produce idempotent : assets/voix réutilisés si déjà présents ; tester avec tests/test_server.py.
+PIÈGES (tous corrigés — ne pas réintroduire) :
+- .gitignore : JAMAIS ignorer tools/, data/research/processed/, data/voice/inbox/ (sinon pertes silencieuses).
+- zoompan d=1 + -framerate 30 (sinon timeout / durée fausse). Texte brûlé : sanitize_text (emoji SMP→ASCII).
+- Captions sans note chiffrée «x/5» (NO_FAKE_CLAIMS) ; claims chiffrés → claims_json + source_url.
+- tests/test_server.py est HERMÉTIQUE (chemins prod non touchés) : ne pas retirer ce bloc.
+- git add -A : vérifier git status avant commit (les runs de tests peuvent créer des fichiers).
 
-VOIX : voice-00 (vote utilisateur, FR narration). Fallback hors-ligne : piper si jamais indisponible.
+DISCOURS : préférer la qualité, jamais publier automatiquement, jamais inventer de preuves. Questions ouvertes : QUESTIONS-FOR-USER.md.

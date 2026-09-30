@@ -1,8 +1,11 @@
 LATEST-BACKUP — 2026-09-30
 
-ZIP : backups/TNP-BACKUP-V5-production-2026-09-30.zip  (nouveau numero, JAMAIS ecraser un ancien zip)
-Contenu : repo complet hors .git/node_modules/logs/dbs/tmp-drafts-assets regenerables.
-Inclut : videos finales ready_to_post/, 12 images AI inbox, 3 voix MP3, research JSON, tools/, docs, app index.html.
+PRIMARY : GitHub hamzajaouadi23-a11y/tested @ arena/01a0efa9-tested (SHA 516816be06d8fe6da89ea174a06393c61e6e757a vérifié par ls-remote)
+TAGS ACTIFS : stable-live-2026-09-30 · checkpoint-session-start · recovery-current-work · RECOVERED-LIVE-V1 · stable-2026-09-30 · v5.2-real-media · v5.3-production-pipeline (jamais écrasés)
 
-PRIMARY BACKUP = GitHub branche arena/01a0efa9-tested (tags v5.2-real-media, v5.3-production-pipeline).
-Restauration : git clone + tag v5.3-production-pipeline, ou unzip ; puis ./tools/setup_env.sh && bash tools/precheck.sh.
+ZIPS (dans backups/, hors git) — jamais écraser un ancien zip :
+- TNP-BACKUP-V5-production-2026-09-30.zip (47 Mo, créé avec la production)
+- TNP-FINAL-BACKUP-2026-09-30-1212.zip (47 Mo, DERNIÈRE ÉTAT VÉRIFIÉ — extraction testée OK : 13 entrées racine, 3 vidéos + 3 voix + metadata JSON valide)
+
+RESTAURATION EXPRESS : git clone + checkout tag stable-live-2026-09-30 → bash tools/setup_env.sh → bash tools/precheck.sh → bash tools/run_server.sh.
+CONTENU DU ZIP : repo complet hors .git/node_modules/*/tmp-drafts-assets regénérables/db runtime (inclut vidéos finales, voix off, recherche, tools, docs, app).
