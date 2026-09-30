@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>TESTÉ &amp; PROPRE — Studio Production</title>
+<style>
+:root{
+  --bg:#0b1120; --card:#111a2e; --card2:#0f1930; --line:#1f2b47; --txt:#e2e8f0; --mut:#94a3b8;
+  --acc:#38bdf8; --ok:#34d399; --warn:#fbbf24; --bad:#f87171; --vio:#a78bfa;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--txt);font:15px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif;padding-bottom:90px}
+header{padding:18px 16px 10px;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+h1{font-size:19px;font-weight:800}
+h1 .em{color:var(--acc)}
+.pill{font-size:11.5px;padding:3px 10px;border-radius:99px;background:var(--card);border:1px solid var(--line);color:var(--mut)}
+.pill.ok{color:var(--ok);border-color:#134e4a}
+.pill.warn{color:var(--warn);border-color:#5b4a12}
+nav{position:fixed;bottom:0;left:0;right:0;display:flex;background:#0a0f1e;border-top:1px solid var(--line);z-index:50}
+nav button{flex:1;background:none;border:0;color:var(--mut);font-size:11px;padding:10px 2px 12px;cursor:pointer}
+nav button.on{color:var(--acc)}
+nav .ic{display:block;font-size:19px;margin-bottom:2px}
+main{max-width:1100px;margin:0 auto;padding:0 14px}
+section{display:none;animation:fade .2s}
+section.on{display:block}
+@keyframes fade{from{opacity:0}to{opacity:1}}
+h2{font-size:16px;margin:22px 0 10px;display:flex;align-items:center;gap:8px}
+h2:first-child{margin-top:6px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px;margin-bottom:12px}
+.grid{display:grid;gap:10px}
+@media(min-width:720px){.grid.c2{grid-template-columns:1fr 1fr}.grid.c3{grid-template-columns:1fr 1fr 1fr}.grid.c4{grid-template-columns:repeat(4,1fr)}}
+.btn{display:inline-block;background:var(--card);border:1px solid var(--line);color:var(--txt);border-radius:12px;padding:9px 14px;font-size:13.5px;font-weight:600;cursor:pointer;text-decoration:none}
+.btn.primary{background:var(--acc);border-color:var(--acc);color:#04202f}
+.btn.ok{background:var(--ok);border-color:var(--ok);color:#052e1d}
+.btn.danger{color:var(--bad)}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.btn.small{padding:5px 10px;font-size:12px;border-radius:9px}
+.mut{color:var(--mut);font-size:12.5px}
+.big{font-size:26px;font-weight:800}
+.kpi{background:var(--card2);border:1px solid var(--line);border-radius:14px;padding:12px;text-align:center}
+.kpi .big{display:block}
+.row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.tag{display:inline-block;font-size:11px;font-weight:700;padding:2px 9px;border-radius:99px;border:1px solid var(--line);color:var(--mut)}
+.tag.ok{color:var(--ok)}.tag.bad{color:var(--bad)}.tag.warn{color:var(--warn)}.tag.acc{color:var(--acc)}.tag.vio{color:var(--vio)}
+table{width:100%;border-collapse:collapse;font-size:12.5px}
+th,td{padding:7px 8px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
+th{color:var(--mut);font-size:11px;text-transform:uppercase;letter-spacing:.04em}
+td a{color:var(--acc);word-break:break-all}
+input,select,textarea{width:100%;background:var(--card2);border:1px solid var(--line);border-radius:10px;color:var(--txt);padding:9px 11px;font-size:13.5px;font-family:inherit}
+input:focus,select:focus,textarea:focus{outline:1px solid var(--acc)}
+label{display:block;font-size:11.5px;color:var(--mut);margin:8px 0 3px;text-transform:uppercase;letter-spacing:.04em}
+video{width:100%;max-width:280px;border-radius:14px;border:1px solid var(--line);background:#000}
+.check{display:flex;gap:8px;align-items:flex-start;font-size:12.5px;padding:4px 0;border-bottom:1px dashed #1a2440}
+.check:last-child{border:0}
+.check .b{flex-shrink:0;font-weight:800}
+.check .ok{color:var(--ok)}.check .bad{color:var(--bad)}
+details summary{cursor:pointer;font-size:13px;font-weight:700;color:var(--mut)}
+.switch{position:relative;width:44px;height:24px;flex-shrink:0}
+.switch input{display:none}
+.slider{position:absolute;inset:0;background:#1e293b;border-radius:99px;transition:.2s;cursor:pointer}
+.slider:before{content:"";position:absolute;width:18px;height:18px;left:3px;top:3px;background:#64748b;border-radius:50%;transition:.2s}
+.switch input:checked + .slider{background:#0c4a6e}
+.switch input:checked + .slider:before{transform:translateX(20px);background:var(--acc)}
+.toast{position:fixed;left:50%;bottom:78px;transform:translateX(-50%);background:#0c1a2e;border:1px solid var(--acc);color:var(--txt);padding:10px 18px;border-radius:99px;font-size:13px;opacity:0;pointer-events:none;transition:.25s;z-index:99;max-width:88vw;text-align:center}
+.toast.show{opacity:1}
+.spinner{display:inline-block;width:14px;height:14px;border:2px solid var(--acc);border-top-color:transparent;border-radius:50%;animation:spin .8s linear infinite;vertical-align:-2px}
+@keyframes spin{to{transform:rotate(1turn)}}
+.mono{font-family:ui-monospace,Menlo,monospace;font-size:12px}
+pre{background:#0a0f1e;border:1px solid var(--line);border-radius:10px;padding:10px;overflow:auto;font-size:11.5px;max-height:320px}
+.src{font-size:11.5px;color:var(--mut)}
+hr{border:0;border-top:1px solid var(--line);margin:14px 0}
+.warnbox{background:#2a2108;border:1px solid #5b4a12;color:#fde68a;border-radius:12px;padding:10px 12px;font-size:12.5px;margin-bottom:10px}
+.okbox{background:#052e1d;border:1px solid #134e4a;color:#a7f3d0;border-radius:12px;padding:10px 12px;font-size:12.5px;margin-bottom:10px}
+</style>
+</head>
+<body>
+<header>
+  <h1>TESTÉ <span class="em">&amp;</span> PROPRE <span class="mut" style="font-weight:400">· Studio Production</span></h1>
+  <span class="pill" id="pill-status">…</span>
+  <span class="pill ok">Publication : humaine uniquement</span>
+  <a class="btn small" href="/app" target="_blank" style="margin-left:auto">🛒 Ouvrir l'app de vente ↗</a>
+</header>
+
+<main>
+<!-- ============ VUE D'ENSEMBLE ============ -->
+<section id="sec-home" class="on">
+  <h2>⚡ État du système</h2>
+  <div class="grid c4" id="kpis"></div>
+  <div class="card">
+    <div class="row" style="justify-content:space-between">
+      <b>🚦 Automatisation</b><span class="mut">les secrets restent côté serveur</span>
+    </div>
+    <div id="flags"></div>
+    <div class="warnbox">🔒 <b>AUTO_PUBLISH = OFF, verrouillé.</b> Rien n'est jamais publié automatiquement :
+    toi (et toi seul) approuves chaque vidéo, puis tu la postes à la main ou via une connexion officielle.</div>
+  </div>
+  <h2>🧭 Pipeline</h2>
+  <div class="mut" style="margin-bottom:8px">RESEARCH → SELECT → SCRIPT → ASSETS → VOICE → RENDER → QA → <b>WAITING_APPROVAL</b> → APPROVED → SCHEDULED → PUBLISHED</div>
+  <div class="grid c3">
+    <div class="card"><b>Nouveautés recherche</b><div class="big" id="b-facts">0</div><span class="mut">faits sourcés</span></div>
+    <div class="card"><b>Candidats sélectionnés</b><div class="big" id="b-sel">0</div><span class="mut">top topics</span></div>
+    <div class="card"><b>Vidéos prêtes</b><div class="big" id="b-ready">0</div><span class="mut">QA passée · à valider</span></div>
+  </div>
+  <h2>📜 Journal</h2>
+  <div class="card" id="events" style="max-height:280px;overflow:auto"></div>
+</section>
+
+<!-- ============ PROVIDERS & REGLAGES ============ -->
+<section id="sec-prov">
+  <h2>🔌 Providers <button class="btn small" id="btn-deep">▶ Tout tester (appels réels)</button></h2>
+  <div class="mut" style="margin-bottom:10px">Chaque provider : id · implémenté ? · mock ? · requis · coûteux ? · test(). Sans clé, le studio le dit honnêtement au lieu de simuler.</div>
+  <div class="grid c2" id="providers"></div>
+  <h2>🔐 Secrets (jamais affichés, jamais commités)</h2>
+  <div class="card">
+    <div class="mut" style="margin-bottom:8px">Stockés dans <span class="mono">.env</span> côté serveur (chmod 600, exclu de git). Tu colles une clé → Sauvegarder → elle n'est plus jamais ré-affichée.</div>
+    <label>Service</label>
+    <select id="sec-key"></select>
+    <label>Nouvelle valeur (laisser vide pour supprimer)</label>
+    <input id="sec-val" type="password" placeholder="collez la clé ici" autocomplete="off">
+    <div class="row" style="margin-top:10px"><button class="btn primary" id="sec-save">Sauvegarder</button>
+    <span class="mut" id="sec-state"></span></div>
+  </div>
+  <h2>🌐 Connexions sociales (officielles uniquement)</h2>
+  <div id="social" class="grid c3"></div>
+</section>
+
+<!-- ============ RECHERCHE ============ -->
+<section id="sec-research">
+  <h2>🔎 Recherche — niche maison</h2>
+  <div class="card row">
+    <button class="btn primary" id="btn-research">▶ Lancer la recherche</button>
+    <span class="mut">Importe data/research/inbox/*.json + Gemini grounding si clé. Chaque fait exige une source.</span>
+  </div>
+  <div id="research-runs"></div>
+  <h2>📚 Faits sourcés</h2>
+  <div class="card" style="overflow:auto"><table id="findings"><thead>
+    <tr><th>Topic</th><th>Fait (FACT)</th><th>Analyse</th><th>Angle contenu</th><th>Source</th></tr>
+  </thead><tbody></tbody></table></div>
+</section>
+
+<!-- ============ CANDIDATS ============ -->
+<section id="sec-cand">
+  <h2>🎯 Candidats <button class="btn small" id="btn-select">▶ Sélectionner le top 3</button></h2>
+  <div class="mut" style="margin-bottom:8px">Score interne de priorité (démonstrabilité visuelle, clarté problème/solution, prix, commission, profondeur, angles, concurrence, géo, preuves, risque).
+  <b>Aide au choix éditorial — ne prédit PAS les ventes.</b></div>
+  <div class="card" style="overflow:auto"><table id="candidates"><thead>
+    <tr><th>Topic</th><th>Problème</th><th>Solution</th><th>Score</th><th>Statut</th><th></th></tr>
+  </thead><tbody></tbody></table></div>
+</section>
+
+<!-- ============ PRODUCTION ============ -->
+<section id="sec-prod">
+  <h2>🎬 Production &amp; validation</h2>
+  <div id="videos"></div>
+  <h2>🗓 Planning (rappels — publication manuelle)</h2>
+  <div class="card" style="overflow:auto"><table id="schedule"><thead><tr><th>Vidéo</th><th>Plateforme</th><th>Quand</th><th>État</th></tr></thead><tbody></tbody></table></div>
+</section>
+</main>
+
+<nav>
+  <button data-tab="home" class="on"><span class="ic">⚡</span>Accueil</button>
+  <button data-tab="prov"><span class="ic">🔌</span>Providers</button>
+  <button data-tab="research"><span class="ic">🔎</span>Recherche</button>
+  <button data-tab="cand"><span class="ic">🎯</span>Candidats</button>
+  <button data-tab="prod"><span class="ic">🎬</span>Production</button>
+</nav>
+<div class="toast" id="toast"></div>
+
+<script>
+"use strict";
+const $=s=>document.querySelector(s), $$=s=>Array.from(document.querySelectorAll(s));
+const esc=s=>String(s==null?"":s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+function toast(m){const t=$("#toast");t.textContent=m;t.classList.add("show");clearTimeout(t._h);t._h=setTimeout(()=>t.classList.remove("show"),3200);}
+async function api(path,opts){try{const r=await fetch(path,opts?{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(opts)}:undefined);return await r.json();}catch(e){return {ok:false,detail:String(e)};}}
+async function post(path,body){const r=await api(path,body||{});if(r.detail&&!r.ok)toast("⚠️ "+r.detail);return r;}
+function ago(s){return s||"";}
+const FLAG_LABEL={AUTO_RESEARCH:"Recherche auto",AUTO_GENERATION:"Génération auto",AUTO_RENDER:"Rendu auto",AUTO_ANALYTICS:"Analytics auto",AUTO_PUBLISH:"Publication auto (verrouillé OFF)"};
+
+/* ---------- nav ---------- */
+document.addEventListener("click",e=>{
+  const b=e.target.closest("[data-tab]");
+  if(b){$$("nav button").forEach(x=>x.classList.toggle("on",x===b));
+    $$("section").forEach(s=>s.classList.toggle("on",s.id==="sec-"+b.dataset.tab));
+    refresh(b.dataset.tab);}
+});
+
+/* ---------- home ---------- */
+function renderFlags(flags){
+  $("#flags").innerHTML=Object.keys(flags).map(k=>`
+    <div class="row" style="justify-content:space-between;padding:7px 0;border-bottom:1px dashed #1a2440">
+      <span>${esc(FLAG_LABEL[k]||k)} ${k==="AUTO_PUBLISH"?"🔒":""}</span>
+      <label class="switch"><input type="checkbox" data-flag="${k}" ${flags[k]?"checked":""} ${k==="AUTO_PUBLISH"?"disabled":""}>
+      <span class="slider"></span></label>
+    </div>`).join("");
+  $$("[data-flag]").forEach(sw=>sw.addEventListener("change",async()=>{
+    const r=await post("/api/flags",{name:sw.dataset.flag,value:sw.checked});
+    if(!r.ok){sw.checked=false;}
+    toast(r.ok?"✅ "+sw.dataset.flag+(sw.checked?" activé":" désactivé"):"🔒 "+(r.detail||"refusé"));
+  }));
+}
+async function refreshHome(){
+  const s=await api("/api/status");if(!s.ok)return;
+  $("#pill-status").textContent="v5-pipeline · "+s.uptime_s+"s";
+  $("#pill-status").className="pill ok";
+  $("#kpis").innerHTML=`
+    <div class="kpi"><span class="big">${s.counts.facts}</span><span class="mut">faits</span></div>
+    <div class="kpi"><span class="big">${s.counts.candidates}</span><span class="mut">candidats</span></div>
+    <div class="kpi"><span class="big">${s.counts.scripts}</span><span class="mut">scripts</span></div>
+    <div class="kpi"><span class="big">${(s.counts.videos_by_status.qa_passed||0)+(s.counts.videos_by_status.approved||0)}</span><span class="mut">vidéos QA✓</span></div>`;
+  $("#b-facts").textContent=s.counts.facts;
+  $("#b-sel").textContent=s.counts.selected;
+  $("#b-ready").textContent=s.counts.videos_by_status.qa_passed||0;
+  renderFlags(s.flags);
+  const ev=await api("/api/events");
+  $("#events").innerHTML=(ev.events||[]).map(e=>`<div class="check"><span class="b ${e.kind.includes("error")||e.kind.includes("block")?"bad":"ok"}">●</span>
+    <div><span class="mut mono">${esc(e.at)}</span> · <b>${esc(e.kind)}</b><br><span class="mut">${esc(JSON.stringify(e.payload)).slice(0,220)}</span></div></div>`).join("")||'<span class="mut">aucun événement</span>';
+}
+
+/* ---------- providers ---------- */
+function provCard(p){
+  const st={ok:"ok",ready:"ok",error:"bad",mock:"warn",not_configured:"warn",not_implemented:"bad"}[p.status]||"warn";
+  const stLabel={ok:"✅ opérationnel",ready:"✅ prêt (local)",error:"⛔ erreur",mock:"🟡 mock",not_configured:"🔑 clé requise",not_implemented:"⛔ non implémenté"}[p.status]||p.status;
+  return `<div class="card">
+    <div class="row" style="justify-content:space-between"><b>${esc(p.label)}</b><span class="tag ${st}">${stLabel}</span></div>
+    <div class="mut" style="margin:6px 0">
+      <span class="tag">${esc(p.kind)}</span>
+      <span class="tag ${p.implemented?"ok":"bad"}">${p.implemented?"implémenté":"non implémenté"}</span>
+      <span class="tag ${p.mock?"bad":"ok"}">${p.mock?"mock":"réel"}</span>
+      <span class="tag">${p.costly?"💰 coûteux":"gratuit"}</span>
+      ${p.quality==="fallback"?'<span class="tag warn">secours</span>':""}
+    </div>
+    ${p.requires.length?`<div class="mut">requis : <span class="mono">${p.requires.map(esc).join(", ")}</span> — ${p.configured?"✅ configuré":"❌ manquant"}</div>`:""}
+    ${p.test?`<div class="mut mono" style="margin-top:4px">${esc(p.test.detail||"")}</div>`:""}
+    <div class="row" style="margin-top:8px"><button class="btn small" data-test="${p.id}">▶ Tester</button><span id="t-${p.id}" class="mut"></span></div>
+  </div>`;
+}
+async function refreshProviders(deep){
+  const r=await api("/api/providers"+(deep?"?deep=1":""));
+  if(!r.ok)return;
+  $("#providers").innerHTML=r.providers.map(provCard).join("");
+  $$("[data-test]").forEach(b=>b.addEventListener("click",async()=>{
+    const el=$("#t-"+b.dataset.test);el.innerHTML='<span class="spinner"></span> test…';
+    const rr=await post("/api/providers/test",{id:b.dataset.test});
+    const t=rr.test||{};
+    el.innerHTML=(t.ok?"✅ ":"❌ ")+esc(t.detail||"")+(t.latency_ms?" · "+t.latency_ms+" ms":"");
+  }));
+  const sc=await api("/api/secrets");
+  $("#sec-key").innerHTML=sc.secrets.map(s=>`<option value="${s.key}">${s.key} ${s.configured?"✅":"—"}</option>`).join("");
+  $("#sec-state").textContent="configurées : "+sc.secrets.filter(x=>x.configured).length+"/"+sc.secrets.length;
+  const social=r.providers.filter(p=>p.kind==="SOCIAL");
+  $("#social").innerHTML=social.map(p=>`<div class="card"><b>${esc(p.label)}</b>
+    <div class="mut" style="margin-top:6px">${p.configured?"✅ Token présent":"🔑 Non connecté — OAuth officiel requis."}</div>
+    <div class="mut">Publication : approuver la vidéo ici, puis upload officiel. Aucun bypass, aucune simulation.</div></div>`).join("");
+}
+$("#sec-save").addEventListener("click",async()=>{
+  const key=$("#sec-key").value,val=$("#sec-val").value;
+  const r=await post("/api/secrets",{key,value:val});
+  $("#sec-val").value="";
+  toast(r.ok?"✅ "+key+(val?" enregistrée":" supprimée")+" (invisible désormais)":"⚠️ "+(r.detail||"échec"));
+  refreshProviders();
+});
+$("#btn-deep").addEventListener("click",()=>{toast("Tests réels en cours…");refreshProviders(true);});
+
+/* ---------- recherche ---------- */
+$("#btn-research").addEventListener("click",async()=>{
+  toast("🔎 Recherche en cours…");
+  const r=await post("/api/research/import");
+  if(!r.imported_files){const g=await post("/api/research/run");}
+  toast("✅ Recherche terminée");
+  refreshResearch();refreshHome();
+});
+async function refreshResearch(){
+  const f=await api("/api/research/findings");
+  $("#findings tbody").innerHTML=(f.findings||[]).map(x=>`<tr>
+    <td><b>${esc(x.topic||"")}</b></td><td>${esc(x.fact)}</td><td class="mut">${esc(x.analysis||"")}</td>
+    <td>${esc(x.angle||"")}</td>
+    <td class="src">${x.source_url?`<a href="${esc(x.source_url)}" target="_blank" rel="noopener">${esc(x.source_title||x.source_url)}</a><br>${esc(x.retrieved_at||"")}`:"—"}</td>
+  </tr>`).join("")||'<tr><td colspan="5" class="mut">aucun fait — lancer la recherche</td></tr>';
+  const r=await api("/api/research/runs");
+  $("#research-runs").innerHTML=(r.runs||[]).slice(0,5).map(x=>`<div class="card mut">#${x.id} · ${esc(x.provider)} · ${esc(x.status)} · ${esc(x.created_at)} · ${esc(x.notes||"")}</div>`).join("");
+}
+
+/* ---------- candidats ---------- */
+$("#btn-select").addEventListener("click",async()=>{
+  const r=await post("/api/select/run",{n:3});
+  toast("✅ "+(r.selected||[]).length+" candidat(s) sélectionné(s)");
+  refreshCand();
+});
+async function refreshCand(){
+  const r=await api("/api/candidates");
+  $("#candidates tbody").innerHTML=(r.candidates||[]).map(c=>`<tr>
+    <td><b>${esc(c.title)}</b><br><span class="mut">${esc(c.product_name||"")}</span></td>
+    <td>${esc(c.problem||"")}</td><td>${esc(c.solution||"")}</td>
+    <td><b>${c.priority_score??"—"}</b><span class="mut">/100*</span></td>
+    <td><span class="tag ${{selected:"acc",used:"vio",proposed:"",rejected:"bad"}[c.status]||""}">${esc(c.status)}</span></td>
+    <td><button class="btn small primary" data-run="${c.id}">⚙ Produire</button></td>
+  </tr>`).join("")||'<tr><td colspan="6" class="mut">aucun candidat — la recherche en propose</td></tr>';
+  $$("[data-run]").forEach(b=>b.addEventListener("click",async()=>{
+    toast("⚙ Production lancée (script→assets→voix→rendu→QA) — suivre l'onglet Production");
+    await post("/api/pipeline/run",{candidate_id:parseInt(b.dataset.run)});
+  }));
+}
+
+/* ---------- production ---------- */
+const ST={rendered:"rendue",qa_passed:"QA ✅ à valider",qa_failed:"QA ❌",approved:"APPROUVÉE",scheduled:"planifiée",published:"publiée",rejected:"rejetée"};
+async function refreshProd(){
+  const r=await api("/api/videos");
+  const vids=r.videos||[];
+  $("#videos").innerHTML=vids.map(v=>{
+    const qa=v.qa||{};const checks=(qa.checks||[]);
+    const disc=v.disclosure||{};
+    return `<div class="card">
+    <div class="row" style="justify-content:space-between">
+      <b>${esc(v.hook||v.filename||("vidéo #"+v.id))}</b>
+      <span class="tag ${{qa_passed:"ok",approved:"ok",qa_failed:"bad",rejected:"bad",scheduled:"acc",published:"acc"}[v.status]||"warn"}">${ST[v.status]||v.status}</span>
+    </div>
+    <div class="grid c2" style="margin-top:10px;align-items:start">
+      <div>${v.url?`<video controls playsinline preload="metadata" src="${v.url}"></video>`:'<span class="mut">(pas de fichier)</span>'}
+        <div class="mut" style="margin-top:6px">${v.width||"?"}×${v.height||"?"} · ${(v.duration_s||0).toFixed(1)}s · ${((v.size_bytes||0)/1048576).toFixed(1)} Mo
+        ${disc.disclosure_required?' · <span class="tag warn">IA déclarée</span>':""}</div>
+        ${v.filename?`<div class="row" style="margin-top:8px">
+          <a class="btn small" href="${v.url}" download="${v.filename}">⬇ MP4</a>
+          <a class="btn small" href="/media/ready_to_post/${v.filename.replace(".mp4","_caption.txt")}" target="_blank">📝 caption</a>
+          <a class="btn small" href="/media/ready_to_post/${v.filename.replace(".mp4","_metadata.json")}" target="_blank">🧾 metadata</a>
+        </div>`:""}
+      </div>
+      <div>
+        <b class="mut">QA — ${(checks.filter(c=>c.ok).length)}/${checks.length} checks</b>
+        <div style="max-height:230px;overflow:auto;margin-top:6px">
+        ${checks.map(c=>`<div class="check"><span class="b ${c.ok?"ok":"bad"}">${c.ok?"✔":"✘"}</span>
+          <div>${esc(c.label)}<br><span class="mut">${esc(c.detail||"")}</span></div></div>`).join("")||'<span class="mut">QA non lancée</span>'}
+        </div>
+        <div class="row" style="margin-top:8px">
+          ${v.status==="qa_passed"?`<button class="btn ok" data-approve="${v.id}">👍 Approuver</button>
+            <button class="btn danger" data-reject="${v.id}">✖ Rejeter</button>`:""}
+          ${v.status==="approved"?`<button class="btn primary" data-plan="${v.id}">🗓 Planifier un rappel</button>`:""}
+          ${v.status==="scheduled"?`<button class="btn ok" data-pub="${v.id}">✅ J'ai publié à la main</button>`:""}
+          ${v.status==="published"?`<button class="btn" data-metrics="${v.id}">📊 Saisir les stats</button>`:""}
+        </div>
+      </div>
+    </div></div>`;
+  }).join("")||'<div class="card mut">aucune vidéo — produire depuis l\'onglet Candidats</div>';
+  $$("[data-approve]").forEach(b=>b.addEventListener("click",async()=>{
+    const note=prompt("Note d'approbation (optionnel) :")||"";
+    const r=await post("/api/videos/approve",{video_id:parseInt(b.dataset.approve),note});
+    toast(r.ok?"🎉 Vidéo APPROUVÉE — à publier manuellement":"⚠️ "+(r.detail||""));refreshProd();refreshHome();
+  }));
+  $$("[data-reject]").forEach(b=>b.addEventListener("click",async()=>{
+    const note=prompt("Raison du rejet :")||"";
+    await post("/api/videos/reject",{video_id:parseInt(b.dataset.reject),note});toast("Vidéo rejetée");refreshProd();refreshHome();
+  }));
+  $$("[data-plan]").forEach(b=>b.addEventListener("click",async()=>{
+    const when=prompt("Date/heure (YYYY-MM-DD HH:MM) :","2026-10-01 18:30");if(!when)return;
+    const pf=prompt("Plateforme (TikTok / Reels / Shorts) :","TikTok")||"TikTok";
+    const r=await post("/api/schedule",{video_id:parseInt(b.dataset.plan),platform:pf,planned_at:when});
+    toast(r.ok?"🗓 Rappel planifié (publication manuelle à l'heure dite)":"⚠️ "+(r.detail||""));refreshProd();
+  }));
+  $$("[data-pub]").forEach(b=>b.addEventListener("click",async()=>{
+    const pf=prompt("Publiée sur quelle plateforme ?","TikTok")||"TikTok";
+    await post("/api/published",{video_id:parseInt(b.dataset.pub),platform:pf});
+    toast("✅ Publication enregistrée");refreshProd();refreshHome();
+  }));
+  $$("[data-metrics]").forEach(b=>b.addEventListener("click",async()=>{
+    const views=parseInt(prompt("Vues ?","0")||"0"),likes=parseInt(prompt("J'aime ?","0")||"0");
+    await post("/api/analytics",{video_id:parseInt(b.dataset.metrics),platform:"TikTok",views,likes});
+    toast("📊 Statistiques enregistrées — l'apprentissage reste silencieux sous 5 vidéos mesurées");
+  }));
+  const s=await api("/api/schedule");
+  $("#schedule tbody").innerHTML=(s.schedule||[]).map(x=>`<tr><td>${esc(x.filename||"#"+x.video_id)}</td>
+    <td>${esc(x.platform)}</td><td>${esc(x.planned_at)}</td>
+    <td><span class="tag ${x.state==="due_reminder"?"warn":x.state==="done"?"ok":""}">${esc(x.state)}</span></td></tr>`).join("")
+    ||'<tr><td colspan="4" class="mut">rien de planifié</td></tr>';
+}
+
+function refresh(tab){
+  if(tab==="home")refreshHome();
+  if(tab==="prov")refreshProviders();
+  if(tab==="research")refreshResearch();
+  if(tab==="cand")refreshCand();
+  if(tab==="prod")refreshProd();
+}
+refreshHome();
+setInterval(()=>{const on=$$("nav button").find(b=>b.classList.contains("on"));if(on&&(on.dataset.tab==="prod"||on.dataset.tab==="home"))refresh(on.dataset.tab);},12000);
+</script>
+</body>
+</html>
