@@ -1,19 +1,19 @@
-# Ne JAMAIS embarquer de secrets / runtime dans l'image
+# Ne JAMAIS embarquer de secrets / runtime dans l'image (forme récursive explicite, sans slash final ambigu)
 .env
 .env.*
 !.env.example
 .git
 .github
-backups/
+backups
 *.zip
 *.log
-__pycache__/
+__pycache__
 *.pyc
-node_modules/
-_recovery/
+node_modules
+_recovery
 # runtime regénérable uniquement (les SEEDS restent dans l'image)
-data/db/
-data/media/tmp/
-data/media/drafts/
-data/media/assets/
+data/db
+data/media/tmp
+data/media/drafts
+data/media/assets
 .sandbox-id

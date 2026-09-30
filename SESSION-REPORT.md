@@ -36,3 +36,10 @@ gemini/groq/mistral/azure/elevenlabs : `implemented`, **not_configured** (aucune
 
 ## Note sandbox (importante, honnête)
 Chaque nouvelle session Arena = un **nouveau sandbox** (nouvel ID → nouvelle URL e2b.app, `.git` et venv locaux régénérés). Les fichiers du repo persistent via GitHub (source de vérité, SHA vérifié à chaque étape). Le serveur doit être relancé à chaque session via `bash tools/run_server.sh` — il s'auto-répare (venv auto-recréé). Prévu dans `CONTINUE-PROMPT.txt`.
+
+## ++ ADDENDUM MISSION PRODUCTION (fin de journée 2026-09-30)
+- Commit cible final : voir tag `stable-production-2026-09-30`.
+- Runtime « équivalent conteneur » VALIDÉ : venv nu + requirements.txt épinglé, sans clés providers → /health·/·/app·API×3·média = 200 ×9 ; SIGTERM exit 0 (0,6 s) ; seed volume OK ; **restart volume : fichiers byte-identiques, marqueur DB conservé**.
+- Audit sécu : secrets clean · `.env` ignoré · aucun CORS wildcard · aucune clé hardcodée · aucune fuite d'env dans logs · `/api/secrets` = booléens.
+- .dockerignore durci (formes récursives explicites) — secrets+runtime exclus, seeds inclus (12 chemins testés).
+- Docker daemon + Railway CLI/creds : absents du sandbox → déploiement = **1 action manuelle** (Railway → branch → `arena/01a0efa9-tested` → Deploy ; jamais `main`).
