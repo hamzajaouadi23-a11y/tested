@@ -183,7 +183,10 @@ class AzureVoice(Provider):
             with open(out_path, "wb") as f:
                 f.write(r["raw"])
             return {"ok": True, "path": out_path}
-        return {"ok": False, "detail": r.get("detail", "synthèse échouée")}
+        detail = (r.get("detail") or "").strip() or "HTTP %s (corps vide)" % r.get("status", "?")
+        if r.get("status") == 401:
+            detail = "401 clé/région refusée — vérifiez AZURE_SPEECH_KEY et que AZURE_SPEECH_REGION correspond à la ressource"
+        return {"ok": False, "detail": detail[:300]}
 
     def test(self):
         """Appel RÉEL borné : synthèse de 5 caractères, fichier supprimé après mesure."""

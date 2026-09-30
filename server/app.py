@@ -35,6 +35,17 @@ MIME = {".html": "text/html; charset=utf-8", ".css": "text/css", ".js": "applica
         ".md": "text/markdown; charset=utf-8", ".svg": "image/svg+xml"}
 
 
+def _cooldown(route, seconds):
+    """Anti-double-génération : vrai si cette route opérateur a déjà été déclenchée il y a
+    moins de `seconds` secondes (protège duaginst les re-essais HTTP / double-clics : un
+    pipeline lancé deux fois coûterait des appels cloud inutiles)."""
+    import time as _t
+    cutoff = _t.strftime("%Y-%m-%d %H:%M:%S", _t.gmtime(_t.time() - seconds))
+    rows = db.q("SELECT id FROM events WHERE kind='run_trigger' AND payload_json LIKE ? AND created_at >= ?",
+                ('%"route": "%s"' % route, cutoff))
+    return bool(rows)
+
+
 def _safe_path(base, rel):
     rel = urllib.parse.unquote(rel).lstrip("/")
     full = os.path.normpath(os.path.join(base, rel))
@@ -131,6 +142,10 @@ class Handler(BaseHTTPRequestHandler):
             if path == "/api/run/research":
                 # Déclencheur opérateur GET (autant autorisé que le POST) : import inbox
                 # puis recherche Gemini grounding si configurée. Traité en tâche de fond.
+                # Cooldown 120 s : aucune répétition accidentelle d'appel cloud.
+                if _cooldown("GET /api/run/research", 120):
+                    return self._json({"ok": False, "started": False,
+                                       "detail": "recherche déjà déclenchée il y a < 120 s — cooldown anti-double-appel"}, 429)
                 def jobr():
                     try:
                         research_svc.run()
@@ -144,6 +159,8 @@ class Handler(BaseHTTPRequestHandler):
                      "solution": qs.get("solution", [""])[0],
                      "product_name": qs.get("product_name", [""])[0],
                      "product_url": qs.get("product_url", [""])[0], "price": qs.get("price", [""])[0]}
+                if _cooldown("GET /api/run/candidate", 45):
+                    return self._json({"ok": False, "detail": "création déjà déclenchée il y a < 45 s — anti-doublon"}, 429)
                 cid = research_svc.add_candidate(c)
                 if not cid:
                     return self._json({"ok": False, "detail": "title, problem et solution sont requis"}, 400)
@@ -155,6 +172,9 @@ class Handler(BaseHTTPRequestHandler):
                 styles = ([s.strip() for s in qs.get("styles", [""])[0].split(",") if s.strip()] or None)
                 if not cid:
                     return self._json({"ok": False, "detail": "candidate_id requis"}, 400)
+                if _cooldown("GET /api/pipeline/run", 240):
+                    return self._json({"ok": False, "started": False,
+                                       "detail": "pipeline déjà déclenché il y a < 240 s — cooldown anti-double-appel"}, 429)
                 def jobg():
                     try:
                         pipeline_svc.run_candidate(cid, styles=styles)
@@ -174,6 +194,9 @@ class Handler(BaseHTTPRequestHandler):
                          or ["A"])[:2]  # max 2 styles par déclenchement (coût borné)
                 if not cid:
                     return self._json({"ok": False, "detail": "candidate_id requis"}, 400)
+                if _cooldown("GET /api/run/script", 180):
+                    return self._json({"ok": False, "started": False,
+                                       "detail": "génération déjà déclenchée il y a < 180 s — cooldown anti-double-appel"}, 429)
                 def jobs():
                     try:
                         scripts_svc.generate_for_candidate(cid, styles=styles)
@@ -189,6 +212,9 @@ class Handler(BaseHTTPRequestHandler):
                 sid = int(qs.get("script_id", ["0"])[0] or 0)
                 if not sid:
                     return self._json({"ok": False, "detail": "script_id requis"}, 400)
+                if _cooldown("GET /api/run/assets", 300):
+                    return self._json({"ok": False, "started": False,
+                                       "detail": "assets déjà déclenchés il y a < 300 s — cooldown anti-double-appel"}, 429)
                 def joba():
                     try:
                         assets_svc.acquire_for_script(sid)
