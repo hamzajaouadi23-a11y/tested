@@ -34,3 +34,8 @@ Thumbs.db
 # Scratch de récupération
 _recovery/
 /tools/
+data/db/*.sqlite-shm
+data/db/*.sqlite-wal
+data/research/processed/
+data/media/assets/
+data/voice/inbox/
