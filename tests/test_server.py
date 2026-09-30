@@ -265,6 +265,12 @@ T("44 registre : VOICE affichée ElevenLabs → Azure → import", lambda: [
 T("45 routes GET opérateur présentes (test/research/candidate/pipeline)", lambda: all(
     s in _src("server/app.py") for s in
     ('"/api/providers/test"', '"/api/run/research"', '"/api/run/candidate"', '"/api/pipeline/run"')))
+T("46 cooldown anti-double-appel : False puis True après déclenchement", lambda: (
+    __import__("server.app", fromlist=["_cooldown"])._cooldown("GET /api/test/cooldown", 60) is False,
+    __import__("server.app", fromlist=["db"]).log_event("run_trigger", {"route": "GET /api/test/cooldown"}),
+    __import__("server.app", fromlist=["_cooldown"])._cooldown("GET /api/test/cooldown", 60) is True)[2])
+T("47 aucun format % dans le motif LIKE du cooldown (régression prod)", lambda: (
+    '%"route": "%s"' not in _src("server/app.py")))
 
 # ============ nettoyage des artefacts de test ============
 def cleanup():

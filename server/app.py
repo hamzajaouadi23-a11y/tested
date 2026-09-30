@@ -41,8 +41,9 @@ def _cooldown(route, seconds):
     pipeline lancé deux fois coûterait des appels cloud inutiles)."""
     import time as _t
     cutoff = _t.strftime("%Y-%m-%d %H:%M:%S", _t.gmtime(_t.time() - seconds))
+    pattern = '%"route": "' + route + '"%'   # LIKE avec '%' => concaténation, jamais de format %
     rows = db.q("SELECT id FROM events WHERE kind='run_trigger' AND payload_json LIKE ? AND created_at >= ?",
-                ('%"route": "%s"' % route, cutoff))
+                (pattern, cutoff))
     return bool(rows)
 
 
