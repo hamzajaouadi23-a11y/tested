@@ -2,6 +2,16 @@
 
 Objectif : **URL publique stable**, indépendante du sandbox Arena/E2B. Architecture inchangée, 3 vidéos + 3 voix de production préservées.
 
+> ## 🚨 ERREUR « Railpack failed to prepare the build » avec `./ └── workspace-XXXX.zip` — CAUSE ET CORRECTIF
+> **Diagnostic prouvé (30/09/2026)** : le service Railway construit la branche **`main`**, qui ne contient
+> historiquement qu'**un seul fichier** (l'upload `workspace-*.zip`). Railpack ne voit donc **ni Dockerfile,
+> ni requirements.txt, ni railway.toml** → échec immédiat à l'étape *prepare*, avant tout build.
+> Le projet complet, lui, est sur **`arena/01a0efa9-tested`** (racine : `Dockerfile`, `railway.toml`,
+> `requirements.txt`, `server/`, `teste-et-propre/index.html`…).
+> **CORRECTIF — UN SEUL CLIC** dans Railway : **Service → Settings → Source → Branch → `arena/01a0efa9-tested`** → **Deploy**.
+> Dès ce moment, Railpack lit `Dockerfile` à la racine et build sans erreur *prepare*.
+> (Preuve locale : `git ls-tree origin/main --name-only` → 1 zip seul ; `git ls-tree origin/arena/01a0efa9-tested` → projet complet.)
+
 ## Ce qui est déjà prêt dans le repo (rien à coder)
 - `Dockerfile` (python:3.11-slim, ffmpeg via imageio-ffmpeg, healthcheck intégré, start unique `python -m server.app`)
 - `requirements.txt` (versions épinglées = celles validées en prod)
@@ -13,7 +23,9 @@ Objectif : **URL publique stable**, indépendante du sandbox Arena/E2B. Architec
 ## ⏱️ LA SEULE ACTION MANUELLE RESTANTE (10 minutes, zéro code)
 1. https://railway.app → **Login with GitHub** (compte `hamzajaouadi23-a11y`).
 2. **New Project → Deploy from GitHub repo** → sélectionner `hamzajaouadi23-a11y/tested`.
-3. Dans le service : **Settings → Source → Branch = `arena/01a0efa9-tested`** (Railway détecte Dockerfile + railway.toml tout seul).
+3. Dans le service : **Settings → Source → Branch = `arena/01a0efa9-tested`** — **ÉTAPE CRITIQUE** :
+   la branche par défaut `main` ne contient qu'un zip (cause exacte de l'erreur
+   « Railpack failed to prepare the build »). Railway détecte ensuite Dockerfile + railway.toml tout seul.
 4. **Volumes → New Volume** : Mount Path = **`/data`**, puis **Variables** :
    | Variable | Valeur | Pourquoi |
    |---|---|---|
