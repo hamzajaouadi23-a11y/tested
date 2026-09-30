@@ -1,0 +1,38 @@
+LATEST BACKUP — TESTÉ & PROPRE CONTENT OS
+==========================================
+Fichier de sauvegarde exact : TESTE-PROPRE-BACKUP-V3.zip
+Créé le                     : 2026-09-29 23:27:21 UTC
+Version actuelle de l'app   : V2 (monétisation) — code INCHANGÉ depuis le backup V2
+Version du backup           : V3 (= V2 + système de déploiement/sauvegarde : DEPLOYMENT-OPTIONS.md, LATEST-BACKUP.txt)
+MD5 index.html              : 55cae67e65771f1aa193a4baa1cecde8  (140164 octets)
+Contient la dernière version : OUI — créé après la dernière modification (aucune modif de l'app entre-temps)
+
+Contenu du zip (projet COMPLET)
+-------------------------------
+- teste-et-propre/index.html            app complète V1+V2
+- teste-et-propre/V1-index-backup.html  copie de sécurité de la V1
+- teste-et-propre/PROJECT_HANDOFF.md    architecture et conventions
+- teste-et-propre/CONTINUE-PROMPT.txt   prompt de reprise pour une prochaine session IA
+- teste-et-propre/DEPLOYMENT-OPTIONS.md options de déploiement permanent
+- teste-et-propre/LATEST-BACKUP.txt     ce fichier
+
+Fonctionnalités actuellement opérationnelles
+--------------------------------------------
+V1 : Product Lab (10 hooks / 5 idées / 3 scripts faceless), Script Builder (Hook/Problème/Démo/Résultat/CTA, VO, texte écran, plans), Content Tracker (CRUD complet + métriques), Winners, localStorage, mobile.
+V2 : Mode Clients (brief -> pack de 3 vidéos), page de vente "3 vidéos — 49 €" + lien de paiement + bouton COMMANDER, suivi Prospects (8 statuts + compteurs), contenu de vente TikTok (10 hooks / 5 concepts / 5 captions / 5 CTA), générateur de DÉMO (5 scènes), pack de livraison (COPIER TOUT + export HTML imprimable), tarifs 49/79/129 €, dashboard en 8 étapes.
+Aucun faux témoignage, aucune promesse de résultat.
+
+Accès
+-----
+- Lien public temporaire : https://litter.catbox.moe/aa1jpc.html (~72 h, expiration vers le 2026-10-02)
+- Aperçu Live Arena : port 8080 (session active uniquement)
+- Lien permanent : NON disponible sans compte hébergeur — voir DEPLOYMENT-OPTIONS.md
+
+Historique des sauvegardes (jamais supprimées ni écrasées)
+----------------------------------------------------------
+- TESTE-PROPRE-BACKUP-V1.zip : V1 seule (reconstruite depuis la copie V1 du projet)
+- TESTE-PROPRE-BACKUP-V2.zip : V2 complète + 2 docs
+- TESTE-PROPRE-CONTENT-OS-V2-BACKUP.zip : ancien nom de V2 (conservé)
+- TESTE-PROPRE-BACKUP-V3.zip : projet complet + système de déploiement  <-- LE PLUS RÉCENT
+
+Règle : modification majeure -> tester -> si OK, NOUVEAU zip (V4, V5…) -> mettre à jour ce fichier. Jamais d'écrasement.

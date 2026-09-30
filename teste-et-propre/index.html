@@ -1,0 +1,2392 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>TESTÉ &amp; PROPRE — Content OS</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%A7%AA%3C/text%3E%3C/svg%3E">
+<style>
+:root{
+  --bg:#0b0b10; --bg2:#12121a; --card:#171722; --card2:#1e1e2c; --line:#2a2a3a;
+  --txt:#f5f5fa; --mut:#9a9ab0; --mut2:#6c6c84;
+  --pink:#fe2c55; --cyan:#25f4ee; --gold:#ffd166; --green:#3ddc97; --orange:#ff9f5a; --red:#ff5a6e;
+  --r:16px; --rs:10px;
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--txt);font:15px/1.55 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;padding-bottom:86px}
+input,select,textarea,button{font:inherit;color:inherit}
+::-webkit-scrollbar{width:8px;height:8px}::-webkit-scrollbar-thumb{background:#2c2c3e;border-radius:4px}
+
+/* ---------- header ---------- */
+header.top{position:sticky;top:0;z-index:50;background:rgba(11,11,16,.9);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+.top-in{max-width:1080px;margin:0 auto;padding:12px 16px;display:flex;align-items:center;gap:12px}
+.brand{display:flex;flex-direction:column;line-height:1.1}
+.brand b{font-size:16px;letter-spacing:.4px}
+.brand b em{font-style:normal;color:var(--pink)}
+.brand span{font-size:10px;letter-spacing:3px;color:var(--mut);text-transform:uppercase}
+.top-right{margin-left:auto;display:flex;gap:8px;align-items:center}
+.langbtn{border:1px solid var(--line);background:var(--card);color:var(--txt);border-radius:999px;padding:6px 12px;font-size:12px;cursor:pointer}
+.langbtn b{color:var(--cyan)}
+
+/* desktop tabs */
+nav.tabs{display:none;max-width:1080px;margin:0 auto;padding:0 16px 12px;gap:8px}
+nav.tabs button{flex:1;border:1px solid var(--line);background:var(--card);color:var(--mut);border-radius:12px;padding:10px;cursor:pointer;font-size:13px;display:flex;align-items:center;justify-content:center;gap:8px}
+nav.tabs button.on{background:linear-gradient(135deg,rgba(254,44,85,.18),rgba(37,244,238,.10));color:var(--txt);border-color:var(--pink)}
+@media(min-width:820px){nav.tabs{display:flex}body{padding-bottom:40px}}
+
+main{max-width:1080px;margin:0 auto;padding:18px 16px}
+section.tab{display:none;animation:fade .25s ease}
+section.tab.on{display:block}
+@keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+
+/* ---------- mobile bottom nav ---------- */
+nav.bottom{position:fixed;left:0;right:0;bottom:0;z-index:60;background:rgba(14,14,20,.95);backdrop-filter:blur(14px);border-top:1px solid var(--line);display:flex;padding:6px 8px calc(8px + env(safe-area-inset-bottom))}
+nav.bottom button{flex:1;background:none;border:none;color:var(--mut);cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 0;border-radius:12px;font-size:10.5px}
+nav.bottom button .ic{font-size:19px}
+nav.bottom button.on{color:var(--txt)}
+nav.bottom button.on .ic{filter:drop-shadow(0 0 8px rgba(254,44,85,.7))}
+@media(min-width:820px){nav.bottom{display:none}}
+
+/* ---------- generic ui ---------- */
+h2.sec-title{font-size:22px;margin-bottom:2px;display:flex;align-items:center;gap:10px}
+p.sec-sub{color:var(--mut);font-size:13px;margin-bottom:18px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:16px;margin-bottom:14px}
+.card.tight{padding:12px 14px}
+.grid2{display:grid;gap:12px}
+@media(min-width:720px){.grid2{grid-template-columns:1fr 1fr}}
+label.fl{display:block;font-size:12px;color:var(--mut);margin:10px 0 5px;text-transform:uppercase;letter-spacing:.6px}
+label.fl:first-child{margin-top:0}
+.in,select.in,textarea.in{width:100%;background:var(--bg2);border:1px solid var(--line);border-radius:var(--rs);padding:11px 12px;color:var(--txt);outline:none}
+.in:focus{border-color:var(--cyan)}
+textarea.in{resize:vertical;min-height:70px}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:none;border-radius:12px;padding:12px 18px;font-weight:600;cursor:pointer;background:var(--card2);color:var(--txt);border:1px solid var(--line)}
+.btn:active{transform:scale(.97)}
+.btn.primary{background:linear-gradient(135deg,var(--pink),#ff5d7e);border:none;color:#fff}
+.btn.cyan{background:linear-gradient(135deg,#0fa8a3,var(--cyan));border:none;color:#04272a}
+.btn.ghost{background:transparent}
+.btn.small{padding:7px 12px;font-size:12.5px;border-radius:9px}
+.btn.danger{color:var(--red);border-color:#4a2530;background:rgba(255,90,110,.08)}
+.btn.block{width:100%}
+.btnrow{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+.pill{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);background:var(--bg2);color:var(--mut);border-radius:999px;padding:6px 14px;font-size:12.5px;cursor:pointer}
+.pill.on{background:rgba(254,44,85,.15);border-color:var(--pink);color:var(--txt)}
+.tag{display:inline-block;font-size:10.5px;letter-spacing:.8px;text-transform:uppercase;color:var(--mut);background:var(--bg2);border:1px solid var(--line);border-radius:6px;padding:2px 8px;margin-bottom:8px}
+.mut{color:var(--mut)} .sm{font-size:12.5px}
+.empty{border:1.5px dashed var(--line);border-radius:var(--r);padding:34px 18px;text-align:center;color:var(--mut)}
+.empty .big{font-size:34px;margin-bottom:8px}
+.copybtn{border:1px solid var(--line);background:var(--bg2);color:var(--mut);border-radius:8px;padding:4px 10px;font-size:11.5px;cursor:pointer;white-space:nowrap}
+.copybtn:hover{color:var(--cyan);border-color:var(--cyan)}
+.hookrow{display:flex;align-items:flex-start;gap:10px;padding:11px 12px;background:var(--bg2);border:1px solid var(--line);border-radius:12px;margin-bottom:8px}
+.hookrow .num{color:var(--pink);font-weight:700;min-width:20px;font-size:13px;padding-top:1px}
+.hookrow .txt{flex:1}
+.hookrow .acts{display:flex;flex-direction:column;gap:6px}
+.idea{background:var(--bg2);border:1px solid var(--line);border-radius:12px;padding:13px;margin-bottom:10px}
+.idea h4{font-size:14.5px;margin-bottom:4px;color:var(--cyan)}
+.idea p{color:var(--mut);font-size:13px}
+.idea .btnrow{margin-top:10px}
+.script-mini{background:var(--bg2);border:1px solid var(--line);border-radius:12px;padding:13px;margin-bottom:10px}
+.script-mini h4{color:var(--gold);font-size:14px;margin-bottom:8px}
+.script-mini .beat{font-size:13px;padding:6px 0;border-top:1px dashed var(--line)}
+.script-mini .beat b{color:var(--mut);font-size:11px;text-transform:uppercase;letter-spacing:.6px;display:block}
+
+/* product cards */
+.prod{display:flex;flex-wrap:wrap;gap:10px;align-items:center;background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:14px 16px;margin-bottom:10px}
+.prod .pi{flex:1;min-width:190px}
+.prod .pi b{font-size:15px}
+.prod .pi .sm{color:var(--mut)}
+.prod .price{color:var(--cyan);font-weight:700}
+.prodstats{display:flex;gap:14px;font-size:12px;color:var(--mut)}
+.prodstats b{color:var(--txt)}
+
+/* ---------- builder ---------- */
+.fmtgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:6px}
+.fmt{cursor:pointer;border:1px solid var(--line);background:var(--bg2);border-radius:12px;padding:11px 8px;text-align:center;font-size:12px;color:var(--mut)}
+.fmt.on{border-color:var(--pink);color:var(--txt);background:rgba(254,44,85,.12)}
+.fmt b{display:block;font-size:12.5px;margin-bottom:2px}
+.block-tl{border-left:3px solid var(--pink);background:var(--card);border-radius:0 var(--r) var(--r) 0;padding:14px 16px;margin-bottom:12px;position:relative}
+.block-tl .tm{position:absolute;top:12px;right:14px;font-size:11.5px;color:var(--pink);font-weight:700;background:rgba(254,44,85,.12);padding:3px 9px;border-radius:999px}
+.block-tl h4{font-size:15px;margin-bottom:10px;text-transform:uppercase;letter-spacing:1px}
+.bl-line{margin-bottom:10px}
+.bl-line .lbl{font-size:10.5px;text-transform:uppercase;letter-spacing:.8px;color:var(--mut);display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:3px}
+.bl-line .val{background:var(--bg2);border:1px solid var(--line);border-radius:9px;padding:9px 11px;font-size:13.5px}
+ul.shots{list-style:none}
+ul.shots li{font-size:13px;color:var(--mut);padding:4px 0 4px 18px;position:relative}
+ul.shots li:before{content:"🎬";position:absolute;left:0;font-size:11px;top:6px}
+.chip{display:inline-flex;align-items:center;gap:8px;background:rgba(37,244,238,.1);border:1px solid var(--cyan);color:var(--cyan);border-radius:999px;padding:6px 14px;font-size:12.5px;margin-bottom:12px}
+.chip button{background:none;border:none;color:var(--mut);cursor:pointer;font-size:14px}
+
+/* ---------- tracker ---------- */
+.kpis{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:14px}
+@media(min-width:720px){.kpis{grid-template-columns:repeat(5,1fr)}}
+.kpi{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:13px 14px}
+.kpi .v{font-size:19px;font-weight:800}
+.kpi .l{font-size:10.5px;color:var(--mut);text-transform:uppercase;letter-spacing:.7px;margin-top:2px}
+.kpi.gold .v{color:var(--gold)} .kpi.cyan .v{color:var(--cyan)} .kpi.pink .v{color:var(--pink)} .kpi.green .v{color:var(--green)}
+table.vt{width:100%;border-collapse:collapse;font-size:13px}
+table.vt th{text-align:left;color:var(--mut);font-size:10.5px;text-transform:uppercase;letter-spacing:.7px;padding:8px 10px;border-bottom:1px solid var(--line)}
+table.vt td{padding:10px;border-bottom:1px solid var(--line);vertical-align:top}
+table.vt tr:hover td{background:rgba(255,255,255,.02)}
+.st{font-size:11px;font-weight:700;padding:3px 10px;border-radius:999px;white-space:nowrap}
+.st-Idee{background:#26263a;color:#a9a9d0}.st-Scripte{background:#233445;color:#7ec8e3}.st-Filme{background:#3a2f14;color:var(--gold)}.st-Poste{background:#14332b;color:var(--green)}
+.selsmall{background:var(--bg2);border:1px solid var(--line);border-radius:8px;padding:4px 8px;font-size:12px;color:var(--txt)}
+.videocard{display:none}
+@media(max-width:819px){
+  .vtablewrap{display:none}
+  .videocard{display:block;background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:14px;margin-bottom:12px}
+  .videocard h4{font-size:14.5px;margin-bottom:2px}
+  .videocard .hk{color:var(--mut);font-size:12.5px;font-style:italic;margin-bottom:8px}
+  .mgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin:10px 0}
+  .mgrid .m{background:var(--bg2);border-radius:8px;padding:6px 4px;text-align:center}
+  .mgrid .m b{display:block;font-size:13px}
+  .mgrid .m span{font-size:9px;color:var(--mut);text-transform:uppercase;letter-spacing:.4px}
+  .vc-foot{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap}
+  .vc-foot .gold{color:var(--gold);font-weight:700}
+}
+.iconbtn{border:1px solid var(--line);background:var(--bg2);color:var(--mut);border-radius:8px;padding:5px 10px;cursor:pointer;font-size:12px}
+.iconbtn:hover{color:var(--txt)}
+
+/* ---------- winners ---------- */
+.metric-tabs{display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap}
+.podium{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;align-items:end;margin-bottom:18px}
+.pod{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:14px 12px;text-align:center;position:relative}
+.pod .medal{font-size:26px}
+.pod .nm{font-weight:700;font-size:13px;margin:6px 0 2px}
+.pod .hk{font-size:11px;color:var(--mut);font-style:italic;min-height:28px}
+.pod .vv{font-size:18px;font-weight:800;color:var(--cyan);margin-top:6px}
+.pod .vl{font-size:10px;color:var(--mut);text-transform:uppercase}
+.pod.p1{border-color:var(--gold);background:linear-gradient(180deg,rgba(255,209,102,.12),rgba(255,209,102,.02));padding-top:22px;padding-bottom:22px;transform:scale(1.04)}
+.pod.p1 .vv{color:var(--gold)}
+.bar-row{margin-bottom:10px}
+.bar-row .bl{display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px}
+.bar-row .bl b{font-weight:600}
+.bar-row .bl .bv{color:var(--cyan);font-weight:700}
+.bar{height:10px;background:var(--bg2);border-radius:99px;overflow:hidden}
+.bar i{display:block;height:100%;border-radius:99px;background:linear-gradient(90deg,var(--pink),var(--cyan))}
+.winprod{display:flex;align-items:center;gap:12px;background:var(--bg2);border:1px solid var(--line);border-radius:12px;padding:12px 14px;margin-bottom:8px}
+.winprod .rk{font-size:18px;font-weight:800;color:var(--gold);min-width:26px}
+.winprod .wp{flex:1}
+.winprod .wp b{font-size:14px}
+.winprod .nums{text-align:right;font-size:11.5px;color:var(--mut)}
+.winprod .nums b{color:var(--gold);font-size:14px}
+
+/* ---------- modal / toast ---------- */
+.modal-back{position:fixed;inset:0;background:rgba(5,5,10,.7);backdrop-filter:blur(4px);z-index:100;display:none;align-items:flex-end;justify-content:center;padding:0}
+.modal-back.open{display:flex}
+.modal{background:var(--card);border:1px solid var(--line);border-radius:20px 20px 0 0;width:100%;max-width:560px;max-height:92vh;overflow-y:auto;padding:20px 18px calc(24px + env(safe-area-inset-bottom));animation:up .25s ease}
+@media(min-width:640px){.modal-back{align-items:center;padding:20px}.modal{border-radius:20px;padding:24px;max-height:88vh}}
+@keyframes up{from{transform:translateY(30px);opacity:0}to{transform:none;opacity:1}}
+.modal h3{margin-bottom:14px;font-size:17px}
+.m-close{float:right;background:var(--bg2);border:1px solid var(--line);color:var(--mut);width:32px;height:32px;border-radius:10px;cursor:pointer;font-size:15px}
+#toast{position:fixed;left:50%;bottom:96px;transform:translateX(-50%) translateY(20px);background:#22222f;border:1px solid var(--cyan);color:var(--txt);padding:11px 20px;border-radius:999px;font-size:13.5px;z-index:200;opacity:0;pointer-events:none;transition:.25s white-space}
+#toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+details.fold{border:1px solid var(--line);border-radius:12px;padding:0;margin-bottom:12px;background:var(--card)}
+details.fold summary{cursor:pointer;padding:13px 16px;font-weight:600;font-size:14px;list-style:none}
+details.fold summary:before{content:"＋ ";color:var(--pink)}
+details.fold[open] summary:before{content:"－ "}
+details.fold .foldin{padding:0 16px 16px}
+.datarow{display:flex;gap:8px;flex-wrap:wrap;margin-top:22px;padding-top:16px;border-top:1px dashed var(--line)}
+
+/* ---------- V2 : pilotage ---------- */
+.steps{display:grid;gap:10px}
+@media(min-width:720px){.steps{grid-template-columns:1fr 1fr}}
+.step{display:flex;gap:12px;align-items:flex-start;background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:13px 14px}
+.step .n{min-width:30px;height:30px;border-radius:10px;background:linear-gradient(135deg,var(--pink),#ff5d7e);color:#fff;font-weight:800;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0}
+.step .si{flex:1}
+.step .si b{font-size:14px}
+.step .si p{color:var(--mut);font-size:12px;margin:2px 0 8px}
+.chk{display:flex;align-items:center;gap:10px;padding:9px 0;border-top:1px dashed var(--line);font-size:14px}
+.chk .ic{font-size:16px;min-width:22px}
+.prog{height:8px;background:var(--bg2);border-radius:99px;overflow:hidden;margin-top:4px}
+.prog i{display:block;height:100%;background:linear-gradient(90deg,var(--pink),var(--cyan))}
+
+/* ---------- V2 : prospects ---------- */
+.counters{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:14px}
+@media(min-width:720px){.counters{grid-template-columns:repeat(8,1fr)}}
+.counter{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px 6px;text-align:center;cursor:pointer}
+.counter .cv{font-size:19px;font-weight:800}
+.counter .cl{font-size:9px;color:var(--mut);text-transform:uppercase;letter-spacing:.4px;margin-top:1px}
+.counter.on{border-color:var(--cyan);background:rgba(37,244,238,.08)}
+.stbadge{font-size:10.5px;font-weight:700;padding:2px 9px;border-radius:999px;white-space:nowrap}
+
+/* ---------- V2 : sales page ---------- */
+.landing{background:#ffffff;color:#111;border-radius:20px;padding:26px 20px;max-width:640px;margin:0 auto;text-align:left}
+.landing .kick{color:#fe2c55;font-weight:800;font-size:12px;letter-spacing:2px;text-transform:uppercase}
+.landing h2{color:#0b0b10;font-size:clamp(22px,4.5vw,30px);line-height:1.15;margin:8px 0 6px}
+.landing .sub{color:#444;font-size:14.5px;margin-bottom:16px}
+.landing ul{list-style:none;margin:0 0 16px}
+.landing ul li{padding:6px 0 6px 28px;position:relative;font-size:14px;color:#222}
+.landing ul li:before{content:"✅";position:absolute;left:0}
+.landing .priceband{display:flex;align-items:center;gap:14px;background:#fff6f8;border:1.5px solid #ffd3de;border-radius:14px;padding:12px 16px;margin-bottom:16px;flex-wrap:wrap}
+.landing .pr{font-size:30px;font-weight:900;color:#fe2c55}
+.landing .pb-l{font-size:12.5px;color:#555}
+.landing .order{display:inline-block;background:linear-gradient(135deg,#fe2c55,#ff5d7e);color:#fff !important;font-weight:800;font-size:16px;padding:14px 30px;border-radius:999px;text-decoration:none;border:none;cursor:pointer;font-family:inherit}
+.landing .fine{font-size:11px;color:#999;margin-top:14px;line-height:1.5}
+
+/* ---------- V2 : concepts & démo ---------- */
+.concept{background:var(--bg2);border:1px solid var(--line);border-radius:14px;padding:14px;margin-bottom:12px}
+.concept h4{color:var(--cyan);font-size:15px;margin-bottom:6px}
+.cpart{padding:8px 0;border-top:1px dashed var(--line);font-size:13.5px}
+.cpart .lbl{font-size:10px;text-transform:uppercase;letter-spacing:.8px;color:var(--mut);display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:3px}
+.demomark{display:inline-block;background:var(--gold);color:#201a05;font-weight:900;font-size:11px;letter-spacing:2px;padding:4px 12px;border-radius:8px;transform:rotate(-2deg);margin-bottom:8px}
+nav.bottom{overflow-x:auto;scrollbar-width:none}
+nav.bottom::-webkit-scrollbar{display:none}
+nav.bottom button{flex:0 0 auto;min-width:62px;padding:6px 8px}
+.dotsep{color:var(--mut2);margin:0 2px}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="top-in">
+    <div class="brand"><b>TESTÉ <em>&amp;</em> PROPRE</b><span>Content OS</span></div>
+    <div class="top-right">
+      <button class="langbtn" data-action="lang">Contenu : <b id="lang-lbl">FR</b></button>
+    </div>
+  </div>
+  <nav class="tabs" id="tabs-desktop" style="flex-wrap:wrap">
+    <button data-action="nav" data-tab="pilotage" class="on">🏠 Accueil</button>
+    <button data-action="nav" data-tab="clients">🤝 Clients</button>
+    <button data-action="nav" data-tab="prospects">📞 Prospects</button>
+    <button data-action="nav" data-tab="demo">🎬 Démo</button>
+    <button data-action="nav" data-tab="vendre">🚀 Vendre</button>
+    <button data-action="nav" data-tab="lab">🧪 Lab</button>
+    <button data-action="nav" data-tab="builder">📝 Scripts</button>
+    <button data-action="nav" data-tab="tracker">📊 Tracker</button>
+    <button data-action="nav" data-tab="winners">🏆 Winners</button>
+  </nav>
+</header>
+
+<main>
+
+<!-- ==================== PRODUCT LAB ==================== -->
+<section class="tab" id="sec-lab">
+  <h2 class="sec-title">🧪 Product Lab</h2>
+  <p class="sec-sub">Entre un produit → génère hooks, idées de vidéos et scripts faceless en 1 clic.</p>
+
+  <div class="card">
+    <form id="product-form">
+      <label class="fl" for="p-name">Nom du produit *</label>
+      <input class="in" id="p-name" placeholder="ex : Brosse nettoyante électrique SpinClean" required>
+
+      <div class="row2">
+        <div>
+          <label class="fl" for="p-price">Prix (€)</label>
+          <input class="in" id="p-price" type="number" min="0" step="0.01" inputmode="decimal" placeholder="19.99">
+        </div>
+        <div>
+          <label class="fl" for="p-cat">Catégorie</label>
+          <select class="in" id="p-cat"></select>
+        </div>
+      </div>
+
+      <label class="fl" for="p-problem">Le problème qu'il résout *</label>
+      <textarea class="in" id="p-problem" placeholder="ex : la poussière qui revient sans cesse sur les meubles" required></textarea>
+
+      <div class="btnrow">
+        <button type="submit" class="btn primary block">⚡ Générer le contenu</button>
+      </div>
+    </form>
+  </div>
+
+  <div id="lab-results"></div>
+
+  <h2 class="sec-title" style="font-size:17px;margin-top:26px">📦 Mes produits</h2>
+  <p class="sec-sub" id="prod-count"></p>
+  <div id="product-list"></div>
+
+  <div class="datarow">
+    <button class="btn small ghost" data-action="export">⬇️ Exporter mes données</button>
+    <button class="btn small ghost" data-action="import-click">⬆️ Importer</button>
+    <button class="btn small ghost danger" data-action="reset">🗑 Tout effacer</button>
+    <input type="file" id="import-file" accept="application/json" style="display:none">
+  </div>
+</section>
+
+<!-- ==================== SCRIPT BUILDER ==================== -->
+<section class="tab" id="sec-builder">
+  <h2 class="sec-title">📝 Script Builder</h2>
+  <p class="sec-sub">Transforme une idée en script complet de 15–30 s : voix-off, texte à l'écran, plans à filmer.</p>
+
+  <div id="builder-noprod"></div>
+
+  <div id="builder-main">
+    <div id="b-idea-chip"></div>
+    <div class="card">
+      <label class="fl" for="b-product">Produit</label>
+      <select class="in" id="b-product"></select>
+
+      <label class="fl" for="b-hook">Hook (depuis le Product Lab)</label>
+      <select class="in" id="b-hook"></select>
+      <label class="fl" for="b-hook-custom">…ou hook personnalisé</label>
+      <input class="in" id="b-hook-custom" placeholder="Écris ton propre hook (optionnel)">
+
+      <label class="fl">Format de vidéo</label>
+      <div class="fmtgrid" id="b-fmts">
+        <div class="fmt on" data-action="fmt" data-fmt="problem"><b>🎯 Problème → Solution</b>le classique qui convertit</div>
+        <div class="fmt" data-action="fmt" data-fmt="test"><b>⭐ Test &amp; verdict</b>notation + preuve</div>
+        <div class="fmt" data-action="fmt" data-fmt="asmr"><b>🎧 Démo ASMR</b>sans voix-off, 100% visuel</div>
+      </div>
+
+      <div class="btnrow">
+        <button class="btn cyan block" data-action="builder-gen">🎬 Générer le script complet</button>
+      </div>
+    </div>
+
+    <div id="script-output"></div>
+
+    <h2 class="sec-title" style="font-size:17px;margin-top:26px">💾 Scripts sauvegardés</h2>
+    <div id="script-saved"></div>
+  </div>
+</section>
+
+<!-- ==================== CONTENT TRACKER ==================== -->
+<section class="tab" id="sec-tracker">
+  <h2 class="sec-title">📊 Content Tracker</h2>
+  <p class="sec-sub">Suis chaque vidéo : statut, vues, engagement, clics, ventes et commissions.</p>
+
+  <div class="btnrow" style="margin:0 0 14px">
+    <button class="btn primary" data-action="video-new">＋ Ajouter une vidéo</button>
+    <button class="btn ghost" data-action="demo-seed" id="btn-demo">✨ Données d'exemple</button>
+  </div>
+
+  <div class="kpis" id="t-kpis"></div>
+
+  <div class="card tight" style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;justify-content:space-between">
+    <div id="status-pills" style="display:flex;gap:6px;flex-wrap:wrap"></div>
+    <select class="selsmall" id="sort-videos" data-change="sort">
+      <option value="date">🕒 Plus récentes</option>
+      <option value="views">👁 Plus vues</option>
+      <option value="commission">💰 Plus rentables</option>
+      <option value="eng">❤️ Meilleur engagement</option>
+    </select>
+  </div>
+
+  <div class="vtablewrap card" style="padding:6px 14px 12px;overflow-x:auto">
+    <table class="vt" id="video-table"></table>
+  </div>
+  <div id="video-cards"></div>
+  <div id="tracker-empty"></div>
+</section>
+
+<!-- ==================== WINNERS ==================== -->
+<section class="tab" id="sec-winners">
+  <h2 class="sec-title">🏆 Winners</h2>
+  <p class="sec-sub">Tes vidéos et produits les plus performants — pour savoir quoi reposter et quoi scaler.</p>
+  <div id="winners-root"></div>
+</section>
+
+<!-- ==================== PILOTAGE (dashboard) ==================== -->
+<section class="tab on" id="sec-pilotage">
+  <h2 class="sec-title">🏠 Pilotage</h2>
+  <p class="sec-sub">Ton plan d'action pour décrocher ton premier client payant — étape par étape.</p>
+
+  <div class="card" style="border-color:var(--gold)">
+    <span class="tag" style="color:var(--gold)">🎯 Objectif du soir : ton 1er client à <span id="dash-price">49</span> €</span>
+    <div id="dash-checklist"></div>
+  </div>
+
+  <div class="kpis" id="dash-kpis" style="grid-template-columns:repeat(2,1fr)"></div>
+
+  <h2 class="sec-title" style="font-size:17px">🗺 Ton workflow de vente</h2>
+  <p class="sec-sub">Suis les étapes dans l'ordre. Chaque carte t'emmène au bon endroit.</p>
+  <div class="steps" id="dash-steps"></div>
+
+  <div class="datarow">
+    <button class="btn small ghost" data-action="export">⬇️ Exporter mes données</button>
+    <button class="btn small ghost" data-action="import-click">⬆️ Importer</button>
+    <button class="btn small ghost danger" data-action="reset">🗑 Tout effacer</button>
+  </div>
+</section>
+
+<!-- ==================== CLIENTS ==================== -->
+<section class="tab" id="sec-clients">
+  <h2 class="sec-title">🤝 Clients</h2>
+  <p class="sec-sub">Crée la fiche client → génère son pack de 3 vidéos → livre un document propre.</p>
+
+  <details class="fold" id="client-fold">
+    <summary>➕ Nouveau client (brief)</summary>
+    <div class="foldin">
+      <form id="client-form">
+        <input type="hidden" id="c-id">
+        <label class="fl" for="c-name">Nom de l'entreprise *</label>
+        <input class="in" id="c-name" placeholder="ex : Pizzeria Da Luigi" required>
+        <div class="row2">
+          <div>
+            <label class="fl" for="c-type">Type d'activité</label>
+            <select class="in" id="c-type"></select>
+          </div>
+          <div>
+            <label class="fl" for="c-location">Ville / quartier</label>
+            <input class="in" id="c-location" placeholder="ex : Marseille, Panier">
+          </div>
+        </div>
+        <label class="fl" for="c-audience">Clientèle cible</label>
+        <input class="in" id="c-audience" placeholder="ex : familles du quartier, étudiants">
+        <label class="fl" for="c-offer">Offre principale *</label>
+        <input class="in" id="c-offer" placeholder="ex : pizza Midi 9,90 € / coupe + barbe 25 €" required>
+        <label class="fl" for="c-promo">Prix / promotion en cours</label>
+        <input class="in" id="c-promo" placeholder="ex : -20% cette semaine">
+        <label class="fl" for="c-problem">Problème que tu résous pour tes clients</label>
+        <input class="in" id="c-problem" placeholder="ex : impossible de trouver une vraie pizza au feu de bois dans le coin">
+        <div class="row2">
+          <div>
+            <label class="fl" for="c-social">Lien Instagram / TikTok</label>
+            <input class="in" id="c-social" placeholder="https://instagram.com/...">
+          </div>
+          <div>
+            <label class="fl" for="c-website">Site web</label>
+            <input class="in" id="c-website" placeholder="https://...">
+          </div>
+        </div>
+        <label class="fl" for="c-tone">Ton de la marque</label>
+        <select class="in" id="c-tone">
+          <option value="direct">Simple &amp; direct</option>
+          <option value="fun">Fun &amp; énergique</option>
+          <option value="premium">Premium &amp; élégant</option>
+          <option value="local">Chaleureux &amp; local</option>
+        </select>
+        <label class="fl">Contenus visuels disponibles</label>
+        <div style="display:flex;gap:14px;flex-wrap:wrap;font-size:13.5px;color:var(--mut)">
+          <label><input type="checkbox" id="c-a-photos" checked> 📷 Photos</label>
+          <label><input type="checkbox" id="c-a-videos"> 🎥 Vidéos</label>
+          <label><input type="checkbox" id="c-a-product"> 📦 Visuels produits</label>
+          <label><input type="checkbox" id="c-a-screen"> 🖥 Captures d'écran</label>
+        </div>
+        <label class="fl" for="c-instr">Instructions spéciales</label>
+        <textarea class="in" id="c-instr" placeholder="ex : ne jamais montrer le personnel, mettre en avant la terrasse"></textarea>
+        <div class="btnrow"><button type="submit" class="btn primary block">💾 Enregistrer le client</button></div>
+      </form>
+    </div>
+  </details>
+
+  <div id="client-list"></div>
+  <div id="pack-view"></div>
+</section>
+
+<!-- ==================== PROSPECTS ==================== -->
+<section class="tab" id="sec-prospects">
+  <h2 class="sec-title">📞 Prospects</h2>
+  <p class="sec-sub">Ta liste de commerces à contacter. Objectif : 10 contactés ce soir.</p>
+  <div class="btnrow" style="margin:0 0 14px">
+    <button class="btn primary" data-action="prospect-new">＋ Ajouter un prospect</button>
+    <button class="btn ghost" data-action="prospect-seed" id="btn-prosdemo">✨ Exemples</button>
+  </div>
+  <div class="counters" id="p-counters"></div>
+  <div id="prospect-list"></div>
+</section>
+
+<!-- ==================== DEMO GENERATOR ==================== -->
+<section class="tab" id="sec-demo">
+  <h2 class="sec-title">🎬 Générateur de démo</h2>
+  <p class="sec-sub">Montre à un prospect à quoi ressemblerait SON Reel de 15–30 s, avant même qu'il paie.</p>
+
+  <div class="card">
+    <form id="demo-form">
+      <label class="fl" for="d-name">Nom de l'entreprise *</label>
+      <input class="in" id="d-name" placeholder="ex : Barber Shop Le Panier" required>
+      <div class="row2">
+        <div>
+          <label class="fl" for="d-type">Type d'activité</label>
+          <select class="in" id="d-type"></select>
+        </div>
+        <div>
+          <label class="fl" for="d-offer">Offre à mettre en avant *</label>
+          <input class="in" id="d-offer" placeholder="ex : coupe + barbe 25 €" required>
+        </div>
+      </div>
+      <div class="btnrow"><button type="submit" class="btn cyan block">⚡ Générer la démo</button></div>
+    </form>
+  </div>
+
+  <div id="demo-output"></div>
+
+  <h2 class="sec-title" style="font-size:17px;margin-top:26px">🗂 Démos créées</h2>
+  <div id="demo-list"></div>
+</section>
+
+<!-- ==================== VENDRE (sales page + social sales content) ==================== -->
+<section class="tab" id="sec-vendre">
+  <h2 class="sec-title">🚀 Vendre</h2>
+  <p class="sec-sub">Ta page d'offre prête à partager + des contenus pour attirer des clients.</p>
+
+  <div class="card">
+    <span class="tag">⚙️ Réglages de l'offre</span>
+    <div class="row2">
+      <div>
+        <label class="fl" for="set-pack">Pack vendu</label>
+        <select class="in" id="set-pack">
+          <option value="49">3 vidéos — 49 €</option>
+          <option value="79">5 vidéos — 79 €</option>
+          <option value="129">10 vidéos — 129 €</option>
+        </select>
+      </div>
+      <div>
+        <label class="fl" for="set-paylink">Lien de paiement (PayPal, Lydia, Stripe…)</label>
+        <input class="in" id="set-paylink" placeholder="https://paypal.me/tonlien">
+      </div>
+    </div>
+    <div class="btnrow">
+      <button class="btn cyan" data-action="settings-save">💾 Enregistrer</button>
+      <button class="btn ghost" data-action="pay-copy">📋 Copier mon lien de paiement</button>
+    </div>
+  </div>
+
+  <span class="tag">🛒 Ta page de vente (aperçu)</span>
+  <div id="sales-page"></div>
+  <div class="btnrow" style="margin:12px 0 26px">
+    <button class="btn primary" data-action="offer-copy">📋 Copier le texte de l'offre (WhatsApp / DM)</button>
+  </div>
+
+  <div class="card">
+    <span class="tag">📣 Contenus pour attirer des clients</span>
+    <p class="sm mut" style="margin-bottom:10px">Génère des posts de prospection à publier sur TES réseaux. Messages honnêtes, zéro fausse promesse.</p>
+    <button class="btn cyan" data-action="sales-gen">⚡ Générer mes contenus de prospection</button>
+    <div id="sales-content"></div>
+  </div>
+</section>
+
+</main>
+
+<nav class="bottom">
+  <button data-action="nav" data-tab="pilotage" class="on"><span class="ic">🏠</span>Accueil</button>
+  <button data-action="nav" data-tab="clients"><span class="ic">🤝</span>Clients</button>
+  <button data-action="nav" data-tab="prospects"><span class="ic">📞</span>Prospects</button>
+  <button data-action="nav" data-tab="demo"><span class="ic">🎬</span>Démo</button>
+  <button data-action="nav" data-tab="vendre"><span class="ic">🚀</span>Vendre</button>
+  <button data-action="nav" data-tab="lab"><span class="ic">🧪</span>Lab</button>
+  <button data-action="nav" data-tab="builder"><span class="ic">📝</span>Scripts</button>
+  <button data-action="nav" data-tab="tracker"><span class="ic">📊</span>Tracker</button>
+  <button data-action="nav" data-tab="winners"><span class="ic">🏆</span>Winners</button>
+</nav>
+
+<div class="modal-back" id="modal-back">
+  <div class="modal">
+    <button class="m-close" data-action="modal-close">✕</button>
+    <h3 id="modal-title">Ajouter une vidéo</h3>
+    <form id="video-form">
+      <input type="hidden" id="v-id">
+      <label class="fl" for="v-product">Produit *</label>
+      <input class="in" id="v-product" list="dl-products" required placeholder="Nom du produit">
+      <datalist id="dl-products"></datalist>
+
+      <label class="fl" for="v-hook">Hook utilisé</label>
+      <input class="in" id="v-hook" placeholder="La 1re phrase de la vidéo">
+
+      <div class="row2">
+        <div>
+          <label class="fl" for="v-platform">Plateforme</label>
+          <select class="in" id="v-platform">
+            <option>TikTok</option><option>Reels</option><option>Shorts</option><option>Autre</option>
+          </select>
+        </div>
+        <div>
+          <label class="fl" for="v-date">Date</label>
+          <input class="in" id="v-date" type="date">
+        </div>
+      </div>
+
+      <label class="fl" for="v-status">Statut</label>
+      <select class="in" id="v-status">
+        <option value="Idee">💡 Idée</option>
+        <option value="Scripte">📝 Scripté</option>
+        <option value="Filme">🎬 Filmé</option>
+        <option value="Poste">🚀 Posté</option>
+      </select>
+
+      <div class="row2">
+        <div><label class="fl">👁 Vues</label><input class="in" id="v-views" type="number" min="0" inputmode="numeric" placeholder="0"></div>
+        <div><label class="fl">❤️ Likes</label><input class="in" id="v-likes" type="number" min="0" inputmode="numeric" placeholder="0"></div>
+      </div>
+      <div class="row2">
+        <div><label class="fl">💬 Commentaires</label><input class="in" id="v-comments" type="number" min="0" inputmode="numeric" placeholder="0"></div>
+        <div><label class="fl">↗️ Partages</label><input class="in" id="v-shares" type="number" min="0" inputmode="numeric" placeholder="0"></div>
+      </div>
+      <div class="row2">
+        <div><label class="fl">🔗 Clics lien</label><input class="in" id="v-clicks" type="number" min="0" inputmode="numeric" placeholder="0"></div>
+        <div><label class="fl">🛒 Ventes</label><input class="in" id="v-sales" type="number" min="0" inputmode="numeric" placeholder="0"></div>
+      </div>
+      <label class="fl">💰 Commission totale (€)</label>
+      <input class="in" id="v-commission" type="number" min="0" step="0.01" inputmode="decimal" placeholder="0.00">
+
+      <div class="btnrow">
+        <button type="submit" class="btn primary block">💾 Enregistrer</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="modal-back" id="modal2-back">
+  <div class="modal">
+    <button class="m-close" data-action="modal2-close">✕</button>
+    <h3 id="modal2-title">Ajouter un prospect</h3>
+    <form id="prospect-form">
+      <input type="hidden" id="pr-id">
+      <label class="fl" for="pr-business">Entreprise *</label>
+      <input class="in" id="pr-business" placeholder="ex : Salon Élégance Coiffure" required>
+      <div class="row2">
+        <div>
+          <label class="fl" for="pr-contact">Contact (nom / tel / @)</label>
+          <input class="in" id="pr-contact" placeholder="ex : Sarah, 06…, @elegance">
+        </div>
+        <div>
+          <label class="fl" for="pr-platform">Canal</label>
+          <select class="in" id="pr-platform">
+            <option>Instagram</option><option>TikTok</option><option>Téléphone</option><option>Email</option><option>En personne</option><option>Autre</option>
+          </select>
+        </div>
+      </div>
+      <label class="fl" for="pr-url">URL (profil / site)</label>
+      <input class="in" id="pr-url" placeholder="https://instagram.com/...">
+      <div class="row2">
+        <div>
+          <label class="fl" for="pr-niche">Niche</label>
+          <select class="in" id="pr-niche"></select>
+        </div>
+        <div>
+          <label class="fl" for="pr-date">Date de contact</label>
+          <input class="in" id="pr-date" type="date">
+        </div>
+      </div>
+      <label class="fl" for="pr-status">Statut</label>
+      <select class="in" id="pr-status"></select>
+      <label class="fl" for="pr-notes">Notes</label>
+      <textarea class="in" id="pr-notes" placeholder="ex : a répondu positivement, relancer mardi"></textarea>
+      <div class="btnrow"><button type="submit" class="btn primary block">💾 Enregistrer</button></div>
+    </form>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script>
+"use strict";
+/* ============================================================
+   TESTÉ & PROPRE — CONTENT OS  (single-file app, localStorage)
+============================================================ */
+
+/* ---------------- storage ---------------- */
+const store = {
+  get(k, d){ try{ const v = localStorage.getItem("tnp_"+k); return v ? JSON.parse(v) : d; }catch(e){ return d; } },
+  set(k, v){ try{ localStorage.setItem("tnp_"+k, JSON.stringify(v)); }catch(e){} },
+  del(k){ try{ localStorage.removeItem("tnp_"+k); }catch(e){} }
+};
+let products = store.get("products", []);
+let videos   = store.get("videos",   []);
+let scripts  = store.get("scripts",  []);
+let gens     = store.get("gens",     {});   // productId -> {hooks, ideas, minis}
+let settings = Object.assign({lang:"fr", paymentLink:"", pack:"49"}, store.get("settings", {}));
+/* V2 */
+let clients   = store.get("clients",   []);
+let packs     = store.get("packs",     {});   // clientId -> {concepts:[3], generatedAt}
+let prospects = store.get("prospects", []);
+let demos     = store.get("demos",     []);
+let salesGen  = store.get("sales",     null); // dernier contenu de prospection généré
+
+/* UI state (not persisted) */
+let ui = { tab:"pilotage", statusFilter:"all", sort:"date", metric:"commission",
+           fmt:"problem", lastScript:null, pendHook:null, pendIdea:null,
+           pFilter:"all", packClientId:null };
+
+/* ---------------- helpers ---------------- */
+const $  = s => document.querySelector(s);
+const $$ = s => Array.from(document.querySelectorAll(s));
+const uid = () => Date.now().toString(36) + Math.random().toString(36).slice(2,7);
+const esc = s => String(s == null ? "" : s).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const num = v => { const n = parseFloat(String(v).replace(",",".")); return isFinite(n) && n > 0 ? n : 0; };
+const int = v => Math.round(num(v));
+const fmtN = n => (int(n)).toLocaleString("fr-FR");
+const fmtE = n => num(n).toLocaleString("fr-FR",{maximumFractionDigits:2}) + " €";
+const todayISO = () => new Date().toISOString().slice(0,10);
+const pct = (a,b) => b > 0 ? (a/b*100) : 0;
+function toast(msg){ const t = $("#toast"); t.textContent = msg; t.classList.add("show"); clearTimeout(t._h); t._h = setTimeout(()=>t.classList.remove("show"), 2200); }
+function shuffle(a){ a = a.slice(); for(let i=a.length-1;i>0;i--){ const j = Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; }
+function sample(a, n){ return shuffle(a).slice(0, n); }
+function fill(tpl, ctx){ return tpl.replace(/\{(\w+)\}/g, (m,k) => ctx[k] != null && ctx[k] !== "" ? ctx[k] : m); }
+function copyText(txt){
+  const done = () => toast("✅ Copié !");
+  if(navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(txt).then(done).catch(()=>fallbackCopy(txt, done));
+  } else fallbackCopy(txt, done);
+}
+function fallbackCopy(txt, done){
+  const ta = document.createElement("textarea");
+  ta.value = txt; ta.style.position="fixed"; ta.style.opacity="0";
+  document.body.appendChild(ta); ta.select();
+  try{ document.execCommand("copy"); done(); }catch(e){}
+  document.body.removeChild(ta);
+}
+
+/* ============================================================
+   CONTENT BANKS  (FR + EN)
+============================================================ */
+const CATS = [
+  {k:"beaute",       fr:"Beauté & soins",        en:"Beauty & care",        catFr:"produit beauté",  catEn:"beauty find"},
+  {k:"cuisine",      fr:"Cuisine",               en:"Kitchen",              catFr:"ustensile",       catEn:"kitchen gadget"},
+  {k:"maison",       fr:"Maison & déco",         en:"Home & decor",         catFr:"produit maison",  catEn:"home find"},
+  {k:"tech",         fr:"Gadgets & tech",        en:"Gadgets & tech",       catFr:"gadget",          catEn:"gadget"},
+  {k:"fitness",      fr:"Sport & fitness",       en:"Fitness",              catFr:"accessoire sport",catEn:"fitness gear"},
+  {k:"animaux",      fr:"Animaux",               en:"Pets",                 catFr:"accessoire animal",catEn:"pet find"},
+  {k:"enfant",       fr:"Bébé & enfants",        en:"Baby & kids",          catFr:"produit enfant",  catEn:"kids find"},
+  {k:"voiture",      fr:"Voiture",               en:"Car",                  catFr:"accessoire auto", catEn:"car accessory"},
+  {k:"organisation", fr:"Rangement & organisation",en:"Organization",       catFr:"accessoire rangement",catEn:"organizer"},
+  {k:"autre",        fr:"Autre",                 en:"Other",                catFr:"produit",         catEn:"product"}
+];
+const catByKey = k => CATS.find(c => c.k === k) || CATS[CATS.length-1];
+
+const CAT_SHOTS = {
+  beaute:  ["Plan macro de la texture sur le dos de la main","Application au ralenti en plan serré","Split-screen avant/après, lumière naturelle"],
+  cuisine: ["Plan plongé (top-down) au-dessus du plan de travail","Gros plan sur le produit en action dans l'assiette ou la poêle","Mains uniquement, gestes nets et rapides"],
+  maison:  ["Plan fixe du produit dans la pièce, cadrage propre","Plan large de la démo puis zoom sur le détail","Avant/après côte à côte"],
+  tech:    ["Plan macro sur les boutons / ports / écran","Le gadget et le téléphone dans le même plan","Test en conditions réelles, filmé au smartphone"],
+  fitness: ["Plan des mains + produit pendant l'effort","Comparatif du mouvement avec / sans le produit","Angle bas, plan au sol, rendu dynamique"],
+  animaux: ["Filme l'animal en train d'utiliser le produit","Plan à hauteur d'animal","Réaction en direct, sans visage humain"],
+  enfant:  ["Mains d'enfant en plan serré (jamais le visage)","Plan plongé sur la table d'activité","Avant/après : le résultat ou le rangement"],
+  voiture: ["Plan dans l'habitacle, lumière naturelle","Gros plan sur la zone traitée","Split-screen avant/après"],
+  organisation:["Plan plongé du tiroir / de l'étagère AVANT","Accéléré (x2) du rangement avec le produit","Plan fixe final : lignes nettes, tout aligné"],
+  autre:   ["Plan macro du produit en main","Démonstration simple en plan serré","Split-screen avant/après"]
+};
+
+const HOOKS = {
+fr: [
+ {t:"Si {problem} te pourrit la vie, cette vidéo est pour toi."},
+ {t:"Stop. Si tu en as marre de {problem}, regarde 10 secondes.", a:"stop"},
+ {t:"POV : {problem}, c'est officiellement terminé."},
+ {t:"Personne ne t'a dit ça sur {problem}…"},
+ {t:"La solution à {problem} existe, et elle coûte {price} €.", price:1},
+ {t:"J'ai testé {product} pendant 7 jours. Voici le résultat."},
+ {t:"Je note {product} sur 10 pour régler {problem}."},
+ {t:"Ce {cat} fait juste… exactement ce qu'il promet."},
+ {t:"TikTok m'a fait acheter {product} — je te dis tout."},
+ {t:"Tu fais encore cette erreur avec {problem} ?"},
+ {t:"Avant / après : 7 jours avec {product}."},
+ {t:"3 raisons pour lesquelles {product} cartonne en ce moment."},
+ {t:"Je ne vends rien, je montre juste comment j'ai réglé {problem}."},
+ {t:"Regarde bien ce qui se passe à la 5ᵉ seconde."},
+ {t:"Ce produit a des milliers d'avis 5 étoiles — je vérifie pour toi."},
+ {t:"Fini {problem} en moins d'une minute ? On teste."},
+ {t:"Le truc le plus sous-coté contre {problem}."},
+ {t:"J'aurais aimé connaître {product} avant de dépenser des centaines d'euros pour rien."},
+ {t:"Voilà pourquoi tout le monde commande {product} en ce moment."},
+ {t:"Si tu hésites encore, regarde ça une seule fois."},
+ {t:"Un {cat} à {price} € qui surpasse des trucs à 100 € ?", price:1},
+ {t:"Ce que les pubs ne te montrent pas : {product} en vrai."},
+ {t:"J'étais sceptique… jusqu'à la première utilisation."},
+ {t:"Le test le plus honnête de {product} que tu verras aujourd'hui."},
+ {t:"Arrête de scroller si {problem} te concerne."},
+ {t:"{problem} : la méthode que personne ne partage gratuitement."},
+ {t:"Tu veux la solution simple, ou continuer à galérer ?"},
+ {t:"Je donne une note à {product} — reste jusqu'au bout."},
+ {t:"Unboxing + test de {product}, sans filtre."},
+ {t:"La question classique : est-ce que ça marche VRAIMENT ?"},
+ {t:"0 montage, 0 filtre : {product} en action."},
+ {t:"Le geste qui a fait disparaître {problem} de ma routine."},
+ {t:"Petit budget ? Ce {cat} à {price} € est fait pour toi.", price:1},
+ {t:"J'ai comparé {product} à la version chère. Résultat surprenant."},
+ {t:"Ce détail sur {product} change tout."},
+ {t:"On en parle peu, mais {product} règle {problem} en un seul geste."},
+ {t:"Ton quotidien avant vs après {product}."},
+ {t:"Le produit que je recommande à tous ceux qui ont {problem}."},
+ {t:"Test express : {product} tient-il ses promesses ?"},
+ {t:"Pourquoi je ne reviendrai plus jamais en arrière après {product}."},
+ {t:"Si tu cherches un cadeau vraiment utile, c'est celui-là."},
+ {t:"La preuve en 15 secondes que {product} vaut ses {price} €.", price:1},
+ {t:"{problem} ? Il y a un truc tout bête que tu n'as pas essayé."},
+ {t:"J'ai craqué pour {product} : regret ou pépite ?"},
+ {t:"Le hack {cat} dont tout le monde va bientôt parler."},
+ {t:"Ce moment précis où tu réalises que {problem} n'est plus un problème."},
+ {t:"Premier test de {product} — mieux ou pire que prévu ?"},
+ {t:"Économise du temps : LE réflexe anti-{problem}."}
+],
+en: [
+ {t:"If {problem} is ruining your day, this video is for you."},
+ {t:"Stop scrolling if you're done with {problem} — 10 seconds.", a:"stop"},
+ {t:"POV: {problem} is officially over."},
+ {t:"Nobody told you this about {problem}…"},
+ {t:"The fix for {problem} exists, and it costs €{price}.", price:1},
+ {t:"I tested {product} for 7 days — here's what happened."},
+ {t:"Rating {product} out of 10 for {problem}."},
+ {t:"This {cat} does exactly what it promises."},
+ {t:"TikTok made me buy {product} — honest review."},
+ {t:"Are you still making this mistake with {problem}?"},
+ {t:"Before / after: 7 days with {product}."},
+ {t:"3 reasons {product} is blowing up right now."},
+ {t:"I'm not selling anything — just showing how I fixed {problem}."},
+ {t:"Watch closely what happens at second 5."},
+ {t:"This product has thousands of 5-star reviews — let me verify."},
+ {t:"Goodbye {problem} in under a minute? Let's test."},
+ {t:"The most underrated fix for {problem}."},
+ {t:"I wish I knew about {product} before wasting hundreds."},
+ {t:"Here's why everyone is ordering {product} right now."},
+ {t:"If you're still hesitating, watch this just once."},
+ {t:"A €{price} {cat} that beats the expensive ones?", price:1},
+ {t:"What ads don't show you: {product} in real life."},
+ {t:"I was skeptical… until the very first use."},
+ {t:"The most honest {product} test you'll see today."},
+ {t:"Stop scrolling if {problem} sounds familiar."},
+ {t:"{problem}: the method nobody shares for free."},
+ {t:"Simple fix or keep struggling — your call."},
+ {t:"I'm rating {product} — stay until the end."},
+ {t:"Unboxing + testing {product}, no filter."},
+ {t:"The classic question: does it ACTUALLY work?"},
+ {t:"No cuts, no filter: {product} in action."},
+ {t:"The one move that removed {problem} from my routine."},
+ {t:"On a budget? This €{price} {cat} is made for you.", price:1},
+ {t:"I compared {product} to the pricey version. Surprising result."},
+ {t:"This tiny detail on {product} changes everything."},
+ {t:"Low-key, {product} solves {problem} in one move."},
+ {t:"Your daily life before vs after {product}."},
+ {t:"The product I recommend to anyone dealing with {problem}."},
+ {t:"Quick test: does {product} keep its promises?"},
+ {t:"Why I'm never going back after {product}."},
+ {t:"Looking for a genuinely useful gift? This is it."},
+ {t:"15-second proof that {product} is worth the €{price}.", price:1},
+ {t:"{problem}? There's a stupidly simple thing you haven't tried."},
+ {t:"I caved and bought {product}: regret or gem?"},
+ {t:"The {cat} hack everyone will talk about."},
+ {t:"That exact moment when {problem} stops being a problem."},
+ {t:"First test of {product} — better or worse than expected?"},
+ {t:"Save time: the anti-{problem} reflex you need."}
+]};
+
+const IDEAS = {
+fr: [
+ {t:"Test 7 jours", b:"Filme {product} chaque jour pendant une semaine. Montre l'évolution, résultat final en dernière image. Suspense jusqu'au bout."},
+ {t:"Avant / Après", b:"Montre d'abord la situation avec {problem}, puis après utilisation de {product}. Coupure nette, contraste maximal."},
+ {t:"POV découverte", b:"Mets en scène la découverte de {product} (mains uniquement, pas de visage). Réaction en texte à l'écran."},
+ {t:"3 raisons", b:"Liste 3 bénéfices concrets de {product} avec un plan de démo pour chacun. Rythme très rapide, coupe toutes les 2 secondes."},
+ {t:"Comparatif honnête", b:"Oppose {product} à la solution classique contre {problem}. Teste les deux en direct, verdict sans langue de bois."},
+ {t:"Unboxing + premier test", b:"Déballage satisfaisant (sons ASMR), puis première utilisation immédiate et verdict à chaud."},
+ {t:"Erreurs à éviter", b:"Les 3 erreurs que tout le monde fait face à {problem} — et comment {product} les évite une par une."},
+ {t:"Note sur 10", b:"Teste {product} sur 3 critères (efficacité, simplicité, prix) avec une note à chaque fois, puis le verdict final."},
+ {t:"Une journée avec", b:"Intègre {product} dans ta routine et filme 3 moments clés de la journée : matin, midi, soir."},
+ {t:"Premier essai en direct", b:"Filme ta toute première utilisation, sans répétition. L'authenticité maximise la confiance et les commentaires."}
+],
+en: [
+ {t:"7-day test", b:"Film {product} every day for a week. Show the progress, save the final result for the last frame. Keep the suspense."},
+ {t:"Before / After", b:"Show the situation with {problem} first, then after using {product}. Hard cut, maximum contrast."},
+ {t:"POV discovery", b:"Stage the discovery of {product} (hands only, no face). React with on-screen text."},
+ {t:"3 reasons", b:"List 3 concrete benefits of {product} with a demo shot for each. Very fast pace, cut every 2 seconds."},
+ {t:"Honest comparison", b:"Pit {product} against the classic fix for {problem}. Test both live, no-sugar-coating verdict."},
+ {t:"Unboxing + first test", b:"Satisfying unboxing (ASMR sounds), then immediate first use and hot take."},
+ {t:"Mistakes to avoid", b:"3 mistakes everyone makes with {problem} — and how {product} avoids each one."},
+ {t:"Rated out of 10", b:"Score {product} on 3 criteria (effectiveness, ease, price), then deliver the final verdict."},
+ {t:"A day with it", b:"Fit {product} into your routine and film 3 key moments: morning, noon, evening."},
+ {t:"Live first try", b:"Film your genuine first use, no rehearsal. Raw authenticity drives trust and comments."}
+]};
+
+/* mini scripts shown in the Lab (per language, 3 fixed angles) */
+const MINIS = {
+fr: [
+ {k:"problem", t:"Script A — Problème → Solution", beats:[
+   ["Hook","Si {problem} te pourrit la vie, regarde ça."],
+   ["Problème","Tu connais ce moment où {problem} ? On l'a tous vécu."],
+   ["Démo","Regarde : j'utilise {product} et en quelques secondes…"],
+   ["Résultat","…le résultat est là. Avant / après, sans filtre."],
+   ["CTA","Le lien est en bio si tu veux le même."]]},
+ {k:"test", t:"Script B — Test & verdict", beats:[
+   ["Hook","Je teste {product} pendant 7 jours pour régler {problem}."],
+   ["Problème","Mon problème au départ : {problem}."],
+   ["Démo","Utilisation quotidienne, 10 secondes chrono."],
+   ["Résultat","Verdict après 7 jours : je lui mets 8,5/10."],
+   ["CTA","Commente « LIEN » et je te l'envoie."]]},
+ {k:"asmr", t:"Script C — Démo ASMR (sans voix-off)", beats:[
+   ["Hook","Texte plein écran : « Assez de {problem} »."],
+   ["Problème","Plan rapide de la situation problème, son tendance en fond."],
+   ["Démo","Démonstration muette, sons naturels du produit (ASMR)."],
+   ["Résultat","Texte à l'écran : « Résultat ✅ » sur plan avant/après."],
+   ["CTA","Texte final : « {price} € — lien en bio 🔗 ».", 1]]}
+],
+en: [
+ {k:"problem", t:"Script A — Problem → Solution", beats:[
+   ["Hook","If {problem} is ruining your day, watch this."],
+   ["Problem","You know that moment with {problem}? We've all been there."],
+   ["Demo","Watch: I use {product} and in a few seconds…"],
+   ["Result","…there's the result. Before / after, no filter."],
+   ["CTA","Link in bio if you want the same one."]]},
+ {k:"test", t:"Script B — Test & verdict", beats:[
+   ["Hook","I'm testing {product} for 7 days to fix {problem}."],
+   ["Problem","My starting point: {problem}."],
+   ["Demo","Daily use, 10 seconds flat."],
+   ["Result","Verdict after 7 days: 8.5/10 from me."],
+   ["CTA","Comment “LINK” and I'll send it to you."]]},
+ {k:"asmr", t:"Script C — ASMR demo (no voice-over)", beats:[
+   ["Hook","Full-screen text: “Enough of {problem}”."],
+   ["Problem","Quick shot of the problem situation, trending sound behind."],
+   ["Demo","Silent demo, natural product sounds only (ASMR)."],
+   ["Result","On-screen text: “Result ✅” over a before/after shot."],
+   ["CTA","Final text: “€{price} — link in bio 🔗”.", 1]]}
+]};
+
+/* full script builder banks */
+const BUILD = {
+fr: {
+  hookShots:["Plan macro : le produit tenu en main, fond neutre","Zoom rapide sur le produit dès la 1ʳᵉ seconde","Texte du hook en plein écran, très gros caractères"],
+  problemVO:["Tu connais ce moment où {problem} ? C'est exactement pour ça que j'ai cherché une solution.","Avant, {problem} me faisait perdre du temps tous les jours.","Le vrai souci avec {problem}, c'est que ça revient sans cesse."],
+  problemScreen:["{problem}…","Fini les galères","On connaît tous ça 😅"],
+  problemShots:["Montre la situation problème SANS le produit (mise en scène simple)","Plan serré sur l'objet ou la zone concernée","Ajoute ta réaction en texte à l'écran — pas besoin de visage"],
+  demoVO:["Regarde comme c'est simple : 1… 2… 3. C'est tout.","Tu installes, tu actives, et {product} fait le travail.","Zéro technique, zéro notice de 40 pages. Je te montre."],
+  demoScreen:["Mode d'emploi : 1-2-3","Regarde bien","Si simple que ça ? Oui."],
+  demoShotsBase:["Plan des mains uniquement, produit en action","Cadre stable, lumière naturelle près d'une fenêtre"],
+  resultVO:["Et voilà le résultat. Honnêtement, {priceStr}, je valide.","La différence est nette : regarde l'avant / après.","Une semaine plus tard : toujours aussi efficace."],
+  resultScreen:["Résultat ✅","Avant → Après","Validé ✔"],
+  resultShots:["Split-screen avant / après","Plan final très net du résultat, garde-le 2 secondes minimum","Léger ralenti sur le détail qui change tout"],
+  resultVO_test:["Ma note finale : 8,5 sur 10. Et vu le prix, c'est mérité.","Verdict après test complet : 9/10, je recommande.","Note honnête : 8/10. Petit détail en moins, gros résultat en plus."],
+  resultScreen_test:["⭐ 8,5/10","Verdict : validé","Effet / simplicité / prix : 9/10"],
+  ctaVO:["Tu veux le même ? Le lien est en bio.","Commente « LIEN » et je t'envoie ça en message.","Dispo en bio — et il part vite en ce moment."],
+  ctaScreen:["🔗 Lien en bio","Commente « LIEN »","{priceStrCap} — lien en bio 🔗"],
+  ctaShots:["Packshot propre du produit sur fond uni","Texte prix + flèche qui pointe vers la bio","Plan macro final avec léger zoom arrière"],
+  asmrVO:"Pas de voix-off : laisse le son naturel du produit + un son tendance à faible volume (ASMR).",
+  asmrNote:"Version ASMR : les textes à l'écran portent toute l'histoire. Coupe toutes les 1,5–2 secondes.",
+  fmtNames:{problem:"🎯 Problème → Solution", test:"⭐ Test & verdict", asmr:"🎧 Démo ASMR"}
+},
+en: {
+  hookShots:["Macro shot: product in hand, neutral background","Quick zoom onto the product in the first second","Hook text full-screen, very large type"],
+  problemVO:["You know that moment with {problem}? That's exactly why I went looking for a fix.","{problem} used to waste my time every single day.","The real issue with {problem} is that it keeps coming back."],
+  problemScreen:["{problem}…","No more hassle","We've all been there 😅"],
+  problemShots:["Show the problem situation WITHOUT the product (simple staging)","Tight shot on the object or area concerned","Add your reaction as on-screen text — no face needed"],
+  demoVO:["Look how simple this is: 1… 2… 3. That's it.","You set it up, switch it on, and {product} does the work.","Zero technique, zero 40-page manual. Let me show you."],
+  demoScreen:["How-to: 1-2-3","Watch closely","That simple? Yes."],
+  demoShotsBase:["Hands-only shot, product in action","Stable frame, natural light near a window"],
+  resultVO:["And there's the result. Honestly, {priceStr}, I approve.","The difference is clear: look at the before / after.","One week later: still just as effective."],
+  resultScreen:["Result ✅","Before → After","Approved ✔"],
+  resultShots:["Split-screen before / after","Very clean final shot of the result, hold it at least 2 seconds","Slight slow-motion on the detail that changes everything"],
+  resultVO_test:["Final score: 8.5 out of 10. At this price, it's earned.","Verdict after full testing: 9/10, recommended.","Honest score: 8/10. Small minus, big result."],
+  resultScreen_test:["⭐ 8.5/10","Verdict: approved","Effect / ease / price: 9/10"],
+  ctaVO:["Want the same one? Link's in bio.","Comment “LINK” and I'll DM it to you.","Available in bio — and it sells out fast lately."],
+  ctaScreen:["🔗 Link in bio","Comment “LINK”","{priceStrCap} — link in bio 🔗"],
+  ctaShots:["Clean product packshot on a plain background","Price text + arrow pointing to the bio","Final macro shot with a slow zoom out"],
+  asmrVO:"No voice-over: let the natural product sounds play + a trending sound at low volume (ASMR).",
+  asmrNote:"ASMR version: on-screen text carries the whole story. Cut every 1.5–2 seconds.",
+  fmtNames:{problem:"🎯 Problem → Solution", test:"⭐ Test & verdict", asmr:"🎧 ASMR demo"}
+}};
+
+const STATUS = [
+  {k:"Idee",   fr:"💡 Idée",   cls:"st-Idee"},
+  {k:"Scripte",fr:"📝 Scripté",cls:"st-Scripte"},
+  {k:"Filme",  fr:"🎬 Filmé",  cls:"st-Filme"},
+  {k:"Poste",  fr:"🚀 Posté",  cls:"st-Poste"}
+];
+const stByKey = k => STATUS.find(s => s.k === k) || STATUS[0];
+
+/* ============================================================
+   GENERATION ENGINE
+============================================================ */
+function ctxOf(p, lang){
+  const c = catByKey(p.category);
+  const price = (p.price !== "" && p.price != null && num(p.price) > 0) ? num(p.price).toLocaleString("fr-FR",{maximumFractionDigits:2}) : "";
+  return {
+    product: p.name,
+    price: price,
+    problem: p.problem,
+    cat: lang === "fr" ? c.catFr : c.catEn,
+    priceStr: price ? (lang === "fr" ? "pour " + price + " €" : "for €" + price) : (lang === "fr" ? "à ce prix" : "at this price"),
+    priceStrCap: price ? (lang === "fr" ? price + " €" : "€" + price) : (lang === "fr" ? "Lien en bio" : "Link in bio")
+  };
+}
+function genHooks(p){
+  const lang = settings.lang, ctx = ctxOf(p, lang);
+  const bank = HOOKS[lang].filter(h => !h.price || ctx.price !== "");
+  return sample(bank, 10).map(h => fill(h.t, ctx));
+}
+function genIdeas(p){
+  const ctx = ctxOf(p, settings.lang);
+  return sample(IDEAS[settings.lang], 5).map(i => ({t: fill(i.t, ctx), b: fill(i.b, ctx)}));
+}
+function genMinis(p){
+  const ctx = ctxOf(p, settings.lang);
+  return MINIS[settings.lang].map(m => ({
+    k: m.k, t: m.t,
+    beats: m.beats
+      .filter(bt => !(bt[2] && !ctx.price))
+      .map(bt => [bt[0], fill(bt[1], ctx)])
+  }));
+}
+function generateAll(p){
+  gens[p.id] = { hooks: genHooks(p), ideas: genIdeas(p), minis: genMinis(p) };
+  store.set("gens", gens);
+}
+
+function genFullScript(p, hook, fmtKey){
+  const lang = settings.lang, B = BUILD[lang], ctx = ctxOf(p, lang);
+  const catTips = CAT_SHOTS[p.category] || CAT_SHOTS.autre;
+  const pick1 = a => a[Math.floor(Math.random()*a.length)];
+  const isTest = fmtKey === "test", isAsmr = fmtKey === "asmr";
+
+  const blocks = [
+    {tm:"0–3 s",   key:"hook",    title: lang==="fr" ? "Hook" : "Hook",
+     vo: hook,
+     screen: lang==="fr" ? "Hook en plein écran, mot-clé en couleur" : "Hook full-screen, keyword highlighted",
+     shots: B.hookShots.slice(0,2)},
+    {tm:"3–7 s",   key:"problem", title: lang==="fr" ? "Problème" : "Problem",
+     vo: fill(pick1(B.problemVO), ctx),
+     screen: fill(pick1(B.problemScreen), ctx),
+     shots: B.problemShots.slice()},
+    {tm:"7–15 s",  key:"demo",    title: lang==="fr" ? "Démonstration produit" : "Product demo",
+     vo: fill(pick1(B.demoVO), ctx),
+     screen: pick1(B.demoScreen),
+     shots: B.demoShotsBase.concat(catTips.slice(0,2))},
+    {tm:"15–22 s", key:"result",  title: lang==="fr" ? "Résultat" : "Result",
+     vo: isTest ? pick1(B.resultVO_test) : fill(pick1(B.resultVO), ctx),
+     screen: isTest ? pick1(B.resultScreen_test) : pick1(B.resultScreen),
+     shots: B.resultShots.slice()},
+    {tm:"22–30 s", key:"cta",     title:"CTA",
+     vo: pick1(B.ctaVO),
+     screen: fill(pick1(B.ctaScreen), ctx),
+     shots: B.ctaShots.slice()}
+  ];
+  if(isAsmr){
+    blocks.forEach(b => { b.vo = B.asmrVO; });
+    blocks[0].screen = hook;
+  }
+  const L = lang==="fr"
+    ? {vo:"VOIX-OFF", sc:"TEXTE À L'ÉCRAN", pl:"PLANS À FILMER", script:"SCRIPT", prod:"Produit", fmt:"Format", hook:"Hook"}
+    : {vo:"VOICE-OVER", sc:"ON-SCREEN TEXT", pl:"SHOTS TO FILM", script:"SCRIPT", prod:"Product", fmt:"Format", hook:"Hook"};
+  let full = "🎬 " + L.script + " — " + p.name + "\n" +
+             L.fmt + " : " + B.fmtNames[fmtKey] + "\n" +
+             L.hook + " : " + hook + "\n" +
+             (ui.pendIdea ? "💡 " + ui.pendIdea.t + " — " + ui.pendIdea.b + "\n" : "") + "\n";
+  blocks.forEach(b => {
+    full += "⏱ " + b.tm + " — " + b.title.toUpperCase() + "\n" +
+            "🎙 " + L.vo + " : " + b.vo + "\n" +
+            "📱 " + L.sc + " : " + b.screen + "\n" +
+            "🎥 " + L.pl + " :\n" + b.shots.map(s => "   • " + s).join("\n") + "\n\n";
+  });
+  if(isAsmr) full += "⚠️ " + B.asmrNote + "\n";
+  full += lang==="fr" ? "💡 Astuce : vise 15–25 s. Coupe toutes les 1,5–2 s, sous-titres dynamiques, son tendance à 10–20% du volume." :
+                        "💡 Tip: aim for 15–25 s. Cut every 1.5–2 s, dynamic captions, trending sound at 10–20% volume.";
+  return {blocks, full, note: isAsmr ? B.asmrNote : null, fmtName: B.fmtNames[fmtKey]};
+}
+
+/* ============================================================
+   V2 — BUSINESS CONTENT ENGINE (client packs, démo, vente)
+============================================================ */
+const BIZ = [
+ {k:"resto",  l:"Restaurant / food",   tag:"restaurant", prob:"trouver une vraie bonne adresse où manger sans se ruiner", shots:["Plan macro du plat signature","La vapeur qui s'échappe, au ralenti","Le dressage en cuisine, mains uniquement","La salle et l'ambiance du lieu"]},
+ {k:"barber", l:"Barbier / coiffeur",  tag:"barbier",    prob:"trouver un barbier précis et régulier, c'est la galère", shots:["Plan serré sur le dégradé (visage hors cadre)","Les outils alignés sur le plan de travail","Le fauteuil et l'ambiance du shop","Le résultat final filmé de dos"]},
+ {k:"beaute", l:"Salon de beauté",     tag:"beaute",     prob:"prendre un vrai moment pour soi, ça ne court pas les rues", shots:["Texture des produits en macro","Le soin en cours sur les mains","L'ambiance et la déco du salon","Résultat en plan serré (ongles, peau, cils)"]},
+ {k:"gym",    l:"Salle de sport",      tag:"fitness",    prob:"la motivation qui retombe toujours au bout de deux semaines", shots:["Plans d'ambiance : haltères et machines","Des mains qui chargent une barre","Chaussures en mouvement sur un exercice","L'espace de la salle en plan large"]},
+ {k:"auto",   l:"Concession auto",     tag:"auto",       prob:"acheter un véhicule fiable sans se prendre la tête", shots:["Carrosserie en macro, beaux reflets","Détails intérieurs : volant, sellerie","Les clés remises en main","Le véhicule qui quitte le parc"]},
+ {k:"immo",   l:"Agence immobilière",  tag:"immobilier", prob:"chercher le bien parfait épuise tout le monde", shots:["Photo de la façade en plein écran","Défilement des photos du bien, effet ken burns","Plan du quartier et de la rue","Prix et m² en texte animé par-dessus"]},
+ {k:"shop",   l:"Commerce local",      tag:"commercelocal", prob:"on oublie toujours les bonnes adresses de son quartier", shots:["La devanture, enseigne bien visible","Produits phares en rayon, plan serré","Le geste d'achat ou l'emballage","L'équipe en action, cadrée sur les mains"]},
+ {k:"ecom",   l:"E-commerce",          tag:"eshop",      prob:"on hésite toujours avant de commander en ligne", shots:["Unboxing du colis en vue plongée","Packshot du produit sur fond uni","Capture d'écran du site qui défile","Le produit utilisé en situation réelle"]},
+ {k:"autre",  l:"Autre activité",      tag:"business",   prob:"trouver un pro de confiance prend toujours du temps", shots:["Plan du lieu ou du produit en macro","Le détail qui donne envie","L'activité en action, cadrage mains","Plan d'ambiance large"]}
+];
+const bizByKey = k => BIZ.find(b => b.k === k) || BIZ[BIZ.length-1];
+
+const CTA_BANK = {
+  direct:  ["Lien en bio pour réserver.","Toutes les infos en bio."],
+  fun:     ["Vite, réserve ta place — lien en bio ! 🔥","Fonce, c'est dispo maintenant 👇"],
+  premium: ["Réservations et informations en bio.","L'expérience vous attend — lien en bio."],
+  local:   ["On t'attend — passe nous voir ! 📍","Lien en bio, ou directement sur place 😊"]
+};
+const PACKS = { "49":{label:"3 vidéos", price:49}, "79":{label:"5 vidéos", price:79}, "129":{label:"10 vidéos", price:129} };
+const packInfo = () => PACKS[settings.pack] || PACKS["49"];
+
+const PSTATUS = [
+ {k:"NEW",    l:"New",       c:"#a9a9d0"},
+ {k:"CONT",   l:"Contacté",  c:"#7ec8e3"},
+ {k:"REPL",   l:"Répondu",   c:"#ffd166"},
+ {k:"INT",    l:"Intéressé", c:"#ff9f5a"},
+ {k:"PAID",   l:"Payé 💰",   c:"#3ddc97"},
+ {k:"DELIV",  l:"Livré ✅",  c:"#25f4ee"},
+ {k:"FUP",    l:"Relance",   c:"#c792ea"},
+ {k:"CLOSED", l:"Clôturé",   c:"#6c6c84"}
+];
+const psByKey = k => PSTATUS.find(s => s.k === k) || PSTATUS[0];
+const pick1 = a => a[Math.floor(Math.random()*a.length)];
+
+function safeUrl(u){ u = (u||"").trim(); if(!u) return ""; return /^https?:\/\//i.test(u) ? u : "https://" + u; }
+function locTag(l){ return (l||"").trim().toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g,"").replace(/[^a-z0-9]+/g,""); }
+function asciiSlug(s){ return (s||"").toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g,"").replace(/[^a-z0-9]+/g,"-").replace(/^-+|-+$/g,""); }
+function clientById(id){ return clients.find(c => c.id === id); }
+
+function clientHooks(c){
+  const b = bizByKey(c.type), L = (c.location||"").trim();
+  const at   = L ? "À " + L + ", " : "";
+  const inLoc= L ? " à " + L : "";
+  const offer = c.offer || b.l;
+  const list = [
+    at + "tout le monde va bientôt parler de " + c.name + ".",
+    "POV : tu découvres " + c.name + " pour la première fois.",
+    "3 raisons de tester « " + offer + " » cette semaine.",
+    c.problem ? (c.problem.charAt(0).toUpperCase() + c.problem.slice(1).replace(/[.!?]+$/,"") + " ? " + c.name + " a la solution.") : null,
+    "Ce que tu rates si tu ne connais pas encore " + c.name + ".",
+    "On a regardé " + c.name + " de près : voici ce qu'on y a trouvé.",
+    L ? ("Ta nouvelle adresse " + b.l.toLowerCase() + inLoc + " ?") : ("Ta nouvelle adresse " + b.l.toLowerCase() + " ?"),
+    c.promo ? ("🎁 " + c.promo + " — c'est chez " + c.name + ".") : ("« " + offer + " » : c'est ça, " + c.name + "."),
+    at + "le spot " + b.l.toLowerCase() + " que tu cherchais existe déjà.",
+    "Arrête de chercher" + (L ? (" partout dans " + L) : "") + " : c'est ici que ça se passe."
+  ];
+  return list.filter(Boolean);
+}
+
+function genClientPack(c){
+  const b = bizByKey(c.type);
+  const hooks = shuffle(clientHooks(c));
+  const tone = CTA_BANK[c.tone] ? c.tone : "direct";
+  const ctas = CTA_BANK[tone];
+  const prob  = c.problem || b.prob;
+  const offer = c.offer || b.l;
+  const promoS = c.promo ? (" " + c.promo + ".") : "";
+  const L = (c.location||"").trim();
+  const locS = L ? ("à " + L) : "";
+  const lt = locTag(L);
+  const tags = ["#"+b.tag];
+  if(lt){ tags.push("#"+lt); tags.push("#"+b.tag+lt); }
+  tags.push("#fyp", "#pourtoi", "#business");
+  const assets = (c.assets && c.assets.length ? c.assets.join(", ").toLowerCase() : "photos et vidéos fournies par le client");
+  const assetsNote = "Produire avec : " + assets + " — aucune apparition à l'écran requise.";
+  const mkCaption = hook => hook + "\n\n" + c.name + " — " + offer + (promoS || ".") + (L ? (" 📍 " + L) : "") + "\n" + pick1(ctas) + "\n\n" + tags.join(" ");
+  const mk = (title, i, problemLine, vo, screen, shots, struct) => ({
+    title: title,
+    hook: hooks[i % hooks.length],
+    problem: problemLine,
+    solution: "La solution : " + c.name + " — " + offer + "." + (promoS ? promoS : ""),
+    structure: struct,
+    vo: vo,
+    screen: screen,
+    shots: [assetsNote].concat(shots),
+    cta: ctas[i % ctas.length],
+    caption: mkCaption(hooks[i % hooks.length])
+  });
+  const sh1 = b.shots.slice();
+  const sh2 = sample(b.shots, 4);
+  const sh3 = sample(b.shots, 3).concat(["Capture d'écran de l'offre ou du site, texte promo en surimpression"]);
+  const instr = (c.instr||"").trim();
+  const pack = [
+    mk("🎯 Vidéo 1 — Problème → Solution", 0,
+       "Le problème : " + prob + ".",
+       "Tu connais ce moment où " + prob + " ? Chez " + c.name + ", on règle ça simplement : " + offer + ". Regarde ce que ça donne en vrai." + (L ? (" On est " + locS + ".") : "") + " Toutes les infos sont en bio.",
+       [hooks[0], "Le problème 👆", offer, ctas[0]],
+       sh1,
+       "0–3 s : hook · 3–8 s : le problème · 8–18 s : la solution en images · 18–25 s : preuve / résultat · 25–30 s : CTA"),
+    mk("🎥 Vidéo 2 — Coulisses & preuve", 1,
+       "Ce que les gens veulent voir : du vrai, pas de la pub.",
+       "Bienvenue dans les coulisses de " + c.name + ". Ici pas de mise en scène : juste notre travail de tous les jours et " + offer + ". C'est ça qu'on te propose, sans filtre.",
+       ["Coulisses 🎬", "100 % réel, 0 filtre", offer, ctas[1 % ctas.length]],
+       sh2,
+       "0–3 s : hook · 3–16 s : coulisses / fabrication · 16–24 s : avant-après · 24–30 s : CTA"),
+    mk("🎁 Vidéo 3 — Offre du moment", 2,
+       c.promo ? ("Ton offre actuelle : " + c.promo + ".") : "Ton offre à pousser cette semaine.",
+       "Offre du moment chez " + c.name + " : " + offer + "." + (c.promo ? (" " + c.promo + ".") : "") + " Les places et le stock partent vite, donc si ça t'intéresse : tout est en bio" + (L ? (", ou passe directement " + locS) : "") + ".",
+       ["🎁 OFFRE", offer + (c.promo ? (" — " + c.promo) : ""), L || "Lien en bio", ctas[2 % ctas.length]],
+       sh3,
+       "0–3 s : hook · 3–12 s : présentation de l'offre · 12–22 s : détails / promo · 22–30 s : CTA + infos pratiques")
+  ];
+  if(instr) pack.forEach(v => v.shots.push("⚠️ Instruction client : " + instr));
+  return { concepts: pack, generatedAt: todayISO(), tone, offer: packInfo().label + " — " + packInfo().price + " €" };
+}
+
+function genDemoV2(name, type, offer){
+  const b = bizByKey(type);
+  const ctmp = {name:name, type:type, offer:offer, promo:"", location:"", problem:"", tone:"direct"};
+  const hook = pick1(clientHooks(ctmp));
+  const shots = sample(b.shots, 4);
+  const scenes = [
+    {t:"Hook (0–3 s)",  visual: shots[0] + " — texte du hook en plein écran", screen: hook},
+    {t:"Scène 1 (3–8 s)",  visual: shots[1], screen: "Le problème classique 👇"},
+    {t:"Scène 2 (8–16 s)", visual: shots[2], screen: offer},
+    {t:"Scène 3 (16–24 s)", visual: shots[3], screen: "Le résultat, en vrai"},
+    {t:"CTA (24–30 s)", visual: "Logo + plan d'ambiance du lieu", screen: pick1(CTA_BANK.direct)}
+  ];
+  const caption = hook + "\n\n" + name + " — " + offer + ".\n" + pick1(CTA_BANK.direct) + "\n\n#" + b.tag + " #fyp #pourtoi";
+  const vo = "Voici " + name + ". Tu cherches " + offer + " ? Regarde ça 20 secondes : on te montre le produit, l'ambiance et le résultat — sans filtre. Les infos sont en bio.";
+  return {id: uid(), name, type, offer, hook, scenes, cta: pick1(CTA_BANK.direct), caption, vo, date: todayISO()};
+}
+
+const SALES_HOOKS = [
+ "Votre entreprise a de super produits… mais aucune vidéo pour les montrer ?",
+ "Vos concurrents postent des Reels chaque semaine. Et vous ?",
+ "3 vidéos courtes prêtes à publier pour votre commerce : 49 €.",
+ "Pas de matériel, pas de visage à l'écran : je transforme vos photos en Reels.",
+ "Envoyez-moi 6 photos de votre activité, je vous montre ce que ça peut donner en vidéo.",
+ "Vos clients vous cherchent sur TikTok et Instagram. Qu'est-ce qu'ils y trouvent ?",
+ "Vous n'avez pas le temps de créer du contenu ? C'est exactement mon travail.",
+ "Un Reel de 20 secondes présente votre offre mieux qu'un flyer.",
+ "Votre prochain client est en train de scroller. Qu'est-ce qu'il voit chez vous ?",
+ "Gérer un commerce ET ses réseaux, c'est deux métiers. Je m'occupe du deuxième."
+];
+const SALES_CONCEPTS = [
+ {t:"Avant / Après d'un compte", b:"Écran partagé : à gauche un profil sans vidéo, à droite le même avec des Reels propres et réguliers. Capture d'écran + montage simple."},
+ {t:"Je crée une démo en direct", b:"Enregistrement d'écran en accéléré : tu tapes le nom d'un commerce, tu montres le brief démo généré. Fin : « Tu veux la tienne ? Envoie-moi un DM »."},
+ {t:"Ce que contient le pack à 49 €", b:"Défile à l'écran les 6 livrables : concepts, scripts, hooks, légendes, CTA, brief de production. Gros texte, rythme rapide."},
+ {t:"POV entrepreneur débordé", b:"Texte seul à l'écran : « toi qui gères tout… sauf tes réseaux ». Transition : « délègue tes 3 premières vidéos pour 49 € »."},
+ {t:"Les 3 erreurs des commerces sur TikTok", b:"Liste 3 erreurs classiques (pas de hook, vidéos trop longues, aucun CTA) et termine par ton offre qui les évite."}
+];
+const SALES_CAPTIONS = [
+ "Vos produits méritent d'être vus. Je crée 3 vidéos courtes prêtes à publier pour votre activité — 49 €, livrées en 24–48 h. Envoyez vos photos, je m'occupe du reste. 📩 DM « VIDÉO ».",
+ "Pas le temps pour TikTok ? Normal : vous avez un commerce à faire tourner. Je transforme vos photos et vos offres en Reels prêts à publier. 49 € les 3. Lien en bio.",
+ "Mon offre est simple : 3 vidéos courtes, scripts inclus, prêtes à poster. 49 €. Pas de viralité garantie — juste du contenu propre et professionnel. DM pour une démo offerte.",
+ "Une photo de votre plat ou produit peut devenir un Reel de 20 secondes. Je vous montre le rendu — démo offerte. Ensuite : 3 vidéos pour 49 € si ça vous plaît.",
+ "Restos, barbers, salons, salles de sport, agences : vos clients sont sur TikTok et Instagram. Je prépare vos 3 premières vidéos pour 49 €. Infos en DM."
+];
+const SALES_CTAS = [
+ "Commente « VIDÉO » et je t'envoie une démo offerte.",
+ "DM le nom de ton commerce : je te prépare un exemple.",
+ "Lien en bio pour commander ton pack 3 vidéos — 49 €.",
+ "Envoie-moi 3 photos, je te montre le rendu.",
+ "Partage ce Reel à un commerçant qui en a besoin 🙌"
+];
+function genSalesContent(){
+  return { hooks: sample(SALES_HOOKS, 10), concepts: sample(SALES_CONCEPTS, 5),
+           captions: sample(SALES_CAPTIONS, 5), ctas: sample(SALES_CTAS, 5), date: todayISO() };
+}
+
+/* pack → texte complet + document HTML exportable */
+function packPlainText(c, pack){
+  let t = "🎬 PACK CONTENU — " + c.name + "\n" +
+          (c.type ? "Activité : " + bizByKey(c.type).l + "\n" : "") +
+          (c.location ? "Lieu : " + c.location + "\n" : "") +
+          "Offre : " + (c.offer||"—") + (c.promo ? (" · " + c.promo) : "") + "\n" +
+          "Généré le " + pack.generatedAt + "\n\n";
+  pack.concepts.forEach(v => {
+    t += "━━━━━━━━━━━━━━━━━━━━\n" + v.title + "\n━━━━━━━━━━━━━━━━━━━━\n" +
+         "🪝 HOOK : " + v.hook + "\n" +
+         "❗ PROBLÈME : " + v.problem + "\n" +
+         "✅ SOLUTION : " + v.solution + "\n" +
+         "🎞 STRUCTURE : " + v.structure + "\n" +
+         "🎙 VOIX-OFF : " + v.vo + "\n" +
+         "📱 TEXTE À L'ÉCRAN :\n" + v.screen.map(s => "   • " + s).join("\n") + "\n" +
+         "🎥 PLANS / MATIÈRE :\n" + v.shots.map(s => "   • " + s).join("\n") + "\n" +
+         "📣 CTA : " + v.cta + "\n" +
+         "✍️ LÉGENDE :\n" + v.caption + "\n\n";
+  });
+  t += "— Généré avec TESTÉ & PROPRE · CONTENT OS —";
+  return t;
+}
+function packHTMLDoc(c, pack){
+  const e = esc;
+  const rows = pack.concepts.map(v => `
+    <div class="cv">
+      <h3>${e(v.title)}</h3>
+      <p><b>🪝 Hook :</b> ${e(v.hook)}</p>
+      <p><b>❗ Problème :</b> ${e(v.problem)}</p>
+      <p><b>✅ Solution :</b> ${e(v.solution)}</p>
+      <p><b>🎞 Structure :</b> ${e(v.structure)}</p>
+      <p><b>🎙 Voix-off :</b> ${e(v.vo)}</p>
+      <p><b>📱 Texte à l'écran :</b><br>${v.screen.map(s => "• " + e(s)).join("<br>")}</p>
+      <p><b>🎥 Plans / matière :</b><br>${v.shots.map(s => "• " + e(s)).join("<br>")}</p>
+      <p><b>📣 CTA :</b> ${e(v.cta)}</p>
+      <p><b>✍️ Légende :</b><br>${e(v.caption).replace(/\n/g,"<br>")}</p>
+    </div>`).join("");
+  return "<!DOCTYPE html><html lang='fr'><head><meta charset='utf-8'><title>Pack contenu — " + e(c.name) + "</title>" +
+    "<meta name='viewport' content='width=device-width,initial-scale=1'>" +
+    "<style>body{font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif;max-width:760px;margin:30px auto;padding:0 16px;color:#111;line-height:1.55}" +
+    "h1{font-size:24px;margin-bottom:4px}.mut{color:#666;font-size:13px}h3{color:#fe2c55;margin:26px 0 8px}" +
+    ".cv{border:1px solid #ddd;border-radius:14px;padding:16px 18px;margin-bottom:16px;page-break-inside:avoid}" +
+    "b{color:#000}footer{margin:30px 0;color:#999;font-size:11px;text-align:center}</style></head><body>" +
+    "<h1>🎬 Pack contenu — " + e(c.name) + "</h1>" +
+    "<p class='mut'>" + e(bizByKey(c.type).l) + (c.location ? (" · " + e(c.location)) : "") + " · Offre : " + e(c.offer||"—") + (c.promo ? (" · " + e(c.promo)) : "") + " · Généré le " + e(pack.generatedAt) + "</p>" +
+    rows +
+    "<footer>Généré avec TESTÉ &amp; PROPRE · CONTENT OS — contenu à publier sous la responsabilité du client.</footer>" +
+    "</body></html>";
+}
+
+/* ============================================================
+   RENDERING
+============================================================ */
+function renderAll(){
+  $("#lang-lbl").textContent = settings.lang.toUpperCase();
+  renderCatSelect();
+  renderV2Selects();
+  renderLab();
+  renderProducts();
+  renderBuilder();
+  renderTracker();
+  renderWinners();
+  renderPilotage();
+  renderClients();
+  renderProspects();
+  renderDemo();
+  renderVendre();
+}
+
+/* ---------- V2 : listes déroulantes ---------- */
+function renderV2Selects(){
+  const t = $("#c-type"); if(t && !t.options.length) t.innerHTML = BIZ.map(b=>`<option value="${b.k}">${esc(b.l)}</option>`).join("");
+  const d = $("#d-type"); if(d && !d.options.length) d.innerHTML = BIZ.map(b=>`<option value="${b.k}">${esc(b.l)}</option>`).join("");
+  const n = $("#pr-niche"); if(n && !n.options.length) n.innerHTML = BIZ.map(b=>`<option value="${b.k}">${esc(b.l)}</option>`).join("");
+  const s = $("#pr-status"); if(s && !s.options.length) s.innerHTML = PSTATUS.map(p=>`<option value="${p.k}">${esc(p.l)}</option>`).join("");
+}
+
+/* ---------- V2 : PILOTAGE ---------- */
+function renderPilotage(){
+  const pk = packInfo();
+  $("#dash-price").textContent = pk.price;
+  const contacted = prospects.filter(p => p.status !== "NEW").length;
+  const replied   = prospects.some(p => ["REPL","INT","PAID","DELIV"].includes(p.status));
+  const paid      = prospects.filter(p => ["PAID","DELIV"].includes(p.status)).length;
+  const delivered = prospects.filter(p => p.status === "DELIV").length;
+  const ca = paid * pk.price;
+
+  const chk = (done, label) => `<div class="chk"><span class="ic">${done ? "✅" : "⬜"}</span><span>${label}</span></div>`;
+  $("#dash-checklist").innerHTML =
+    chk(contacted >= 10, "10 prospects contactés <b>(" + Math.min(contacted,10) + "/10)</b>") +
+    `<div class="prog"><i style="width:${Math.min(contacted/10*100,100)}%"></i></div>` +
+    chk(replied, "1 réponse obtenue") +
+    chk(paid > 0, "1 commande encaissée 💰") +
+    chk(delivered > 0, "1 livraison effectuée 📦");
+
+  $("#dash-kpis").innerHTML = `
+    <div class="kpi cyan"><div class="v">${prospects.length}</div><div class="l">📞 Prospects</div></div>
+    <div class="kpi"><div class="v">${clients.length}</div><div class="l">🤝 Clients</div></div>
+    <div class="kpi green"><div class="v">${paid}</div><div class="l">💰 Commandes</div></div>
+    <div class="kpi gold"><div class="v">${fmtE(ca)}</div><div class="l">📈 Revenus estimés</div></div>`;
+
+  const steps = [
+    ["📞","Trouver un prospect","Repère un commerce sans contenu vidéo et ajoute-le à ta liste.","Prospects","prospects"],
+    ["🤝","Ajouter un client","Crée sa fiche brief (2 min) dès qu'il montre de l'intérêt.","Clients","clients"],
+    ["🎬","Générer une démo","Montre-lui à quoi ressemblerait SON Reel — argument massue.","Démo","demo"],
+    ["🚀","Envoyer l'offre","Copie le texte de l'offre et envoie-le en DM / WhatsApp.","Vendre","vendre"],
+    ["💰","Paiement","Envoie ton lien de paiement (" + pk.label + " — " + pk.price + " €).","pay"],
+    ["⚡","Générer le contenu","Le pack 3 vidéos : concepts, scripts, légendes, plans.","Clients","clients"],
+    ["📦","Livrer","Exporte le pack en document propre et envoie-le.","Clients","clients"],
+    ["📊","Suivre le résultat","Crée les 3 vidéos dans le Tracker et suis leurs stats.","Tracker","tracker"]
+  ];
+  $("#dash-steps").innerHTML = steps.map((s,i)=>`
+    <div class="step">
+      <span class="n">${i+1}</span>
+      <div class="si">
+        <b>${s[0]} ${s[1]}</b>
+        <p>${s[2]}</p>
+        ${s[3] === "pay"
+          ? `<button class="btn small primary" data-action="step-pay">💰 Copier mon lien de paiement</button>`
+          : `<button class="btn small" data-action="nav" data-tab="${s[4]}">Ouvrir ${s[3]} →</button>`}
+      </div>
+    </div>`).join("");
+}
+
+/* ---------- V2 : CLIENTS ---------- */
+function renderClients(){
+  const box = $("#client-list");
+  box.innerHTML = clients.length ? clients.map(c => {
+    const hasPack = packs[c.id];
+    return `<div class="prod">
+      <div class="pi">
+        <b>${esc(c.name)}</b>
+        <div class="sm">${esc(bizByKey(c.type).l)}${c.location ? (" · 📍 " + esc(c.location)) : ""} · ${esc(c.offer||"")}</div>
+        <div class="prodstats" style="margin-top:6px">
+          ${hasPack ? `<span style="color:var(--green)">✔ Pack généré le ${esc(hasPack.generatedAt)}</span>` : `<span>⚪ Pas encore de pack</span>`}
+        </div>
+      </div>
+      <div class="btnrow" style="margin:0">
+        <button class="btn small primary" data-action="client-gen" data-id="${c.id}">⚡ ${hasPack ? "Régénérer" : "Générer le contenu"}</button>
+        ${hasPack ? `<button class="btn small cyan" data-action="client-pack" data-id="${c.id}">📦 Voir / Livrer</button>` : ""}
+        <button class="btn small" data-action="client-edit" data-id="${c.id}">✏️</button>
+        <button class="btn small danger" data-action="client-del" data-id="${c.id}">✕</button>
+      </div>
+    </div>`;
+  }).join("") : `<div class="empty"><div class="big">🤝</div>Aucun client. Crée ta première fiche ci-dessus (2 minutes).</div>`;
+  renderPackView();
+}
+function renderPackView(){
+  const box = $("#pack-view");
+  const c = clientById(ui.packClientId);
+  const pack = c && packs[c.id];
+  if(!pack){ box.innerHTML = ""; return; }
+  box.innerHTML = `
+    <div class="card" style="border-color:var(--cyan);margin-top:14px">
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap">
+        <div><span class="tag">📦 Pack de livraison</span><h3 style="font-size:17px">🎬 ${esc(c.name)} — 3 vidéos prêtes à produire</h3>
+        <p class="sm mut">Généré le ${esc(pack.generatedAt)} · ${esc(bizByKey(c.type).l)}${c.location ? (" · " + esc(c.location)) : ""}</p></div>
+        <button class="btn small" data-action="pack-close">✕ Fermer</button>
+      </div>
+      ${pack.concepts.map(v => `
+        <div class="concept">
+          <h4>${esc(v.title)}</h4>
+          ${[["🪝 Hook", v.hook],["❗ Problème", v.problem],["✅ Solution", v.solution],["🎞 Structure", v.structure],["🎙 Voix-off", v.vo],["📣 CTA", v.cta]].map(p => `
+            <div class="cpart"><div class="lbl"><span>${p[0]}</span><button class="copybtn" data-action="copy" data-copy="${esc(p[1])}">📋</button></div>${esc(p[1])}</div>`).join("")}
+          <div class="cpart"><div class="lbl"><span>📱 Texte à l'écran</span></div>${v.screen.map(s => `<div>• ${esc(s)}</div>`).join("")}</div>
+          <div class="cpart"><div class="lbl"><span>🎥 Plans / matière</span></div>${v.shots.map(s => `<div>• ${esc(s)}</div>`).join("")}</div>
+          <div class="cpart"><div class="lbl"><span>✍️ Légende</span><button class="copybtn" data-action="copy" data-copy="${esc(v.caption)}">📋</button></div>${esc(v.caption).replace(/\n/g, "<br>")}</div>
+        </div>`).join("")}
+      <div class="btnrow">
+        <button class="btn primary" data-action="pack-copy" data-id="${c.id}">📋 Tout copier</button>
+        <button class="btn cyan" data-action="pack-export" data-id="${c.id}">⬇️ Exporter le pack (document)</button>
+        <button class="btn" data-action="pack-tracker" data-id="${c.id}">📊 → 3 vidéos dans le Tracker</button>
+      </div>
+      <p class="sm mut" style="margin-top:8px">💡 L'export télécharge un document propre : ouvre-le dans ton navigateur → Imprimer → « Enregistrer en PDF ».</p>
+    </div>`;
+}
+
+/* ---------- V2 : PROSPECTS ---------- */
+function renderProspects(){
+  const counts = {};
+  PSTATUS.forEach(s => counts[s.k] = 0);
+  prospects.forEach(p => { counts[p.status] = (counts[p.status]||0) + 1; });
+  $("#p-counters").innerHTML = [
+    `<div class="counter ${ui.pFilter==="all"?"on":""}" data-action="pfilter" data-st="all">
+       <div class="cv">${prospects.length}</div><div class="cl">Tous</div></div>`
+  ].concat(PSTATUS.map(s => `
+    <div class="counter ${ui.pFilter===s.k?"on":""}" data-action="pfilter" data-st="${s.k}">
+      <div class="cv" style="color:${s.c}">${counts[s.k]||0}</div><div class="cl">${s.l}</div>
+    </div>`)).join("");
+
+  const list = prospects.filter(p => ui.pFilter === "all" || p.status === ui.pFilter)
+    .sort((a,b) => String(b.date||"").localeCompare(String(a.date||"")));
+  const box = $("#prospect-list");
+  box.innerHTML = list.length ? list.map(p => {
+    const st = psByKey(p.status);
+    return `<div class="prod">
+      <div class="pi">
+        <b>${esc(p.business)}</b> <span class="stbadge" style="background:${st.c}22;color:${st.c}">${st.l}</span>
+        <div class="sm mut">${esc(p.contact||"")}${p.contact ? " · " : ""}${esc(p.platform||"")} · ${esc(bizByKey(p.niche).l)}</div>
+        <div class="sm">
+          ${p.url ? `<a href="${esc(safeUrl(p.url))}" target="_blank" rel="noopener" style="color:var(--cyan)">🔗 Profil / site</a> · ` : ""}
+          ${p.date ? ("📅 " + esc(p.date)) : ""}
+          ${p.notes ? `<span class="mut"> · 📝 ${esc(p.notes)}</span>` : ""}
+        </div>
+      </div>
+      <div class="btnrow" style="margin:0;align-items:center">
+        <select class="selsmall" data-change="pstatus" data-id="${p.id}">${PSTATUS.map(s => `<option value="${s.k}" ${p.status===s.k?"selected":""}>${s.l}</option>`).join("")}</select>
+        <button class="iconbtn" data-action="prospect-edit" data-id="${p.id}">✏️</button>
+        <button class="iconbtn" data-action="prospect-del" data-id="${p.id}">🗑</button>
+      </div>
+    </div>`;
+  }).join("") : `<div class="empty"><div class="big">📞</div>${prospects.length ? "Aucun prospect avec ce statut." : "Ajoute 10 commerces de ta ville ce soir : restaurants, barbers, salons, salles de sport…"}</div>`;
+  const bd = $("#btn-prosdemo"); if(bd) bd.style.display = prospects.length ? "none" : "";
+}
+
+/* ---------- V2 : DEMO ---------- */
+function demoHTML(d){
+  return `<div class="card" style="border-color:var(--gold)">
+    <span class="demomark">DEMO — EXEMPLE GÉNÉRÉ</span>
+    <h3 style="font-size:16px;margin-bottom:2px">🎬 ${esc(d.name)} — Reel de 15–30 s</h3>
+    <p class="sm mut" style="margin-bottom:12px">${esc(bizByKey(d.type).l)} · Offre : ${esc(d.offer)} · ${esc(d.date)}</p>
+    ${d.scenes.map(s => `
+      <div class="cpart">
+        <div class="lbl"><span>${esc(s.t)}</span></div>
+        <div><b>🎥 Visuel :</b> ${esc(s.visual)}</div>
+        <div><b>📱 Texte écran :</b> ${esc(s.screen)}</div>
+      </div>`).join("")}
+    <div class="cpart"><div class="lbl"><span>🎙 Voix-off (idée)</span><button class="copybtn" data-action="copy" data-copy="${esc(d.vo)}">📋</button></div>${esc(d.vo)}</div>
+    <div class="cpart"><div class="lbl"><span>✍️ Légende</span><button class="copybtn" data-action="copy" data-copy="${esc(d.caption)}">📋</button></div>${esc(d.caption).replace(/\n/g,"<br>")}</div>
+    <p class="sm mut" style="margin-top:10px">📩 Envoie cette démo au prospect : « Voici à quoi pourrait ressembler VOTRE premier Reel. »</p>
+  </div>`;
+}
+function renderDemo(){
+  const out = $("#demo-output");
+  out.innerHTML = ui.lastDemo ? demoHTML(ui.lastDemo) : "";
+  const box = $("#demo-list");
+  box.innerHTML = demos.length ? demos.slice(0,8).map(d => `
+    <div class="prod">
+      <div class="pi"><b>${esc(d.name)}</b><div class="sm">${esc(bizByKey(d.type).l)} · ${esc(d.offer)} · ${esc(d.date)}</div></div>
+      <div class="btnrow" style="margin:0">
+        <button class="btn small" data-action="demo-show" data-id="${d.id}">👁 Voir</button>
+        <button class="btn small danger" data-action="demo-del" data-id="${d.id}">✕</button>
+      </div>
+    </div>`).join("") : `<div class="empty"><div class="big">🎬</div>Tes démos générées apparaîtront ici.</div>`;
+}
+
+/* ---------- V2 : VENDRE ---------- */
+function offerText(){
+  const pk = packInfo();
+  const link = safeUrl(settings.paymentLink);
+  const n = pk.label.split(" ")[0];
+  return "🎬 " + pk.label.toUpperCase() + " COURTES PRÊTES À PUBLIER — " + pk.price + " €\n\n" +
+    "On transforme votre activité, vos produits ou vos offres en " + n + " contenus courts adaptés à TikTok, Instagram Reels et YouTube Shorts.\n\n" +
+    "CE QUE VOUS RECEVEZ :\n" +
+    "✅ " + n + " concepts de vidéos\n" +
+    "✅ " + n + " scripts complets (voix-off + texte à l'écran)\n" +
+    "✅ Les hooks qui retiennent l'attention\n" +
+    "✅ " + n + " légendes prêtes à publier + hashtags\n" +
+    "✅ Les CTA adaptés à votre activité\n" +
+    "✅ Le brief de production prêt à tourner (shot list)\n\n" +
+    "💰 " + pk.price + " € — Livraison 24–48 h\n" +
+    "📩 À m'envoyer : nom de l'activité, offre du moment, photos/vidéos, lien vers vos réseaux.\n" +
+    "⚠️ Sans promesse de viralité ou de ventes : du contenu propre, pro et prêt à publier.\n\n" +
+    "👉 Commander : " + (link || "(ton lien de paiement ici)");
+}
+function renderVendre(){
+  const pk = packInfo();
+  const sp = $("#set-pack"); if(sp && sp.value !== settings.pack) sp.value = settings.pack;
+  const pl = $("#set-paylink"); if(pl && document.activeElement !== pl) pl.value = settings.paymentLink || "";
+  const link = safeUrl(settings.paymentLink);
+  const n = pk.label.split(" ")[0];
+  $("#sales-page").innerHTML = `
+    <div class="landing">
+      <div class="kick">Contenu vidéo pour commerces</div>
+      <h2>${pk.label} courtes prêtes à publier — ${pk.price}&nbsp;€</h2>
+      <p class="sub">On transforme votre activité, vos produits ou vos offres en ${n} contenus courts adaptés à TikTok et Instagram.</p>
+      <ul>
+        <li>${n} concepts de vidéos calibrés pour votre activité</li>
+        <li>${n} scripts complets : voix-off + texte à l'écran</li>
+        <li>Des hooks qui retiennent l'attention dès la 1ʳᵉ seconde</li>
+        <li>${n} légendes prêtes à publier, hashtags inclus</li>
+        <li>Des CTA qui donnent envie de passer à l'action</li>
+        <li>Le brief de production prêt à tourner (shot list)</li>
+      </ul>
+      <div class="priceband">
+        <span class="pr">${pk.price}&nbsp;€</span>
+        <span class="pb-l">Pack ${pk.label}<br>🚚 Livraison : <b>24–48 h</b><br>📹 Sans matériel, sans montrer votre visage</span>
+      </div>
+      ${link
+        ? `<a class="order" href="${esc(link)}" target="_blank" rel="noopener">COMMANDER — ${pk.price} €</a>`
+        : `<button class="order" data-action="order-missing">COMMANDER — ${pk.price} €</button>`}
+      <p class="fine">Chaque vidéo est préparée à partir de vos photos, vidéos et informations. Pas de promesse de viralité, de vues ou de ventes garanties : nous livrons un contenu propre, professionnel et prêt à publier.</p>
+    </div>`;
+
+  const sc = $("#sales-content");
+  if(!salesGen){ sc.innerHTML = ""; return; }
+  const group = (title, items, joinTxt) => `
+    <details class="fold" style="margin-top:10px"><summary>${title}</summary><div class="foldin">
+      <button class="copybtn" style="margin-bottom:8px" data-action="copy" data-copy="${esc(joinTxt)}">📋 Tout copier</button>
+      ${items}
+    </div></details>`;
+  sc.innerHTML =
+    `<p class="sm mut" style="margin-top:10px">Généré le ${esc(salesGen.date)} — publie 1 à 2 de ces contenus par jour.</p>` +
+    group("🪝 10 hooks de prospection", salesGen.hooks.map((h,i)=>`<div class="hookrow"><span class="num">${i+1}</span><span class="txt">${esc(h)}</span><span class="acts"><button class="copybtn" data-action="copy" data-copy="${esc(h)}">📋</button></span></div>`).join(""), salesGen.hooks.join("\n")) +
+    group("💡 5 concepts de Reels/TikToks", salesGen.concepts.map((c,i)=>`<div class="idea"><h4>${i+1}. ${esc(c.t)}</h4><p>${esc(c.b)}</p></div>`).join(""), salesGen.concepts.map((c,i)=>(i+1)+". "+c.t+" — "+c.b).join("\n")) +
+    group("✍️ 5 légendes prêtes à publier", salesGen.captions.map((c,i)=>`<div class="hookrow"><span class="num">${i+1}</span><span class="txt">${esc(c)}</span><span class="acts"><button class="copybtn" data-action="copy" data-copy="${esc(c)}">📋</button></span></div>`).join(""), salesGen.captions.join("\n\n")) +
+    group("📣 5 variantes de CTA", salesGen.ctas.map((c,i)=>`<div class="hookrow"><span class="num">${i+1}</span><span class="txt">${esc(c)}</span><span class="acts"><button class="copybtn" data-action="copy" data-copy="${esc(c)}">📋</button></span></div>`).join(""), salesGen.ctas.join("\n"));
+}
+
+/* ============================================================
+   ACTIONS
+============================================================ */
+
+/* ---------- LAB ---------- */
+function renderCatSelect(){
+  const sel = $("#p-cat");
+  if(sel.options.length) return;
+  sel.innerHTML = CATS.map(c => `<option value="${c.k}">${esc(settings.lang==="fr" ? c.fr : c.en)}</option>`).join("");
+}
+function prodCardHTML(p){
+  const pv = videos.filter(v => v.product === p.name);
+  const sales = pv.reduce((s,v)=>s+num(v.sales),0);
+  const comm  = pv.reduce((s,v)=>s+num(v.commission),0);
+  const priceTxt = p.price && num(p.price)>0 ? `<span class="price">${fmtE(p.price)}</span> · ` : "";
+  return `<div class="prod">
+    <div class="pi">
+      <b>${esc(p.name)}</b>
+      <div class="sm">${priceTxt}${esc(catByKey(p.category).fr)} · ${esc(p.problem)}</div>
+      <div class="prodstats" style="margin-top:6px">
+        <span>🎬 <b>${pv.length}</b> vidéo${pv.length>1?"s":""}</span>
+        <span>🛒 <b>${fmtN(sales)}</b> ventes</span>
+        <span>💰 <b>${fmtE(comm)}</b></span>
+      </div>
+    </div>
+    <div class="btnrow" style="margin:0">
+      <button class="btn small primary" data-action="product-gen" data-id="${p.id}">⚡ Générer</button>
+      <button class="btn small" data-action="product-use" data-id="${p.id}">📝 Script</button>
+      <button class="btn small danger" data-action="product-del" data-id="${p.id}">✕</button>
+    </div>
+  </div>`;
+}
+function renderProducts(){
+  const list = $("#product-list");
+  $("#prod-count").textContent = products.length
+    ? products.length + " produit" + (products.length>1?"s":"") + " dans ton labo."
+    : "Aucun produit pour l'instant.";
+  list.innerHTML = products.length ? products.map(prodCardHTML).join("")
+    : `<div class="empty"><div class="big">🧪</div>Ajoute ton premier produit ci-dessus pour générer du contenu.</div>`;
+  const dl = $("#dl-products");
+  if(dl) dl.innerHTML = products.map(p => `<option value="${esc(p.name)}">`).join("");
+}
+function renderLabResults(p){
+  const g = gens[p.id];
+  const box = $("#lab-results");
+  if(!g){ box.innerHTML = ""; return; }
+  const hooks = g.hooks.map((h,i)=>`
+    <div class="hookrow">
+      <span class="num">${String(i+1).padStart(2,"0")}</span>
+      <span class="txt">${esc(h)}</span>
+      <span class="acts">
+        <button class="copybtn" data-action="copy" data-copy="${esc(h)}">📋 Copier</button>
+        <button class="copybtn" data-action="hook-use" data-id="${p.id}" data-idx="${i}">🎬 Utiliser</button>
+      </span>
+    </div>`).join("");
+  const ideas = g.ideas.map((i,x)=>`
+    <div class="idea">
+      <h4>${x+1}. ${esc(i.t)}</h4>
+      <p>${esc(i.b)}</p>
+      <div class="btnrow"><button class="btn small cyan" data-action="idea-build" data-id="${p.id}" data-idx="${x}">📝 Créer le script complet</button></div>
+    </div>`).join("");
+  const minis = g.minis.map(m=>`
+    <div class="script-mini">
+      <h4>${esc(m.t)}</h4>
+      ${m.beats.map(b=>`<div class="beat"><b>${esc(b[0])}</b>${esc(b[1])}</div>`).join("")}
+    </div>`).join("");
+  box.innerHTML = `
+    <div class="card" style="border-color:var(--pink)">
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:12px">
+        <div><span class="tag">⚡ Contenu généré</span><h3 style="font-size:16px">${esc(p.name)}</h3></div>
+        <button class="btn small" data-action="gen-regen" data-id="${p.id}">🔄 Régénérer</button>
+      </div>
+      <details class="fold" open><summary>🪝 10 hooks TikTok</summary><div class="foldin">${hooks}</div></details>
+      <details class="fold"><summary>💡 5 idées de vidéos</summary><div class="foldin">${ideas}</div></details>
+      <details class="fold"><summary>🎬 3 scripts faceless (aperçu)</summary><div class="foldin">${minis}</div></details>
+    </div>`;
+}
+function renderLab(){
+  const p = products.find(x => x.id === ui.labGenId) || products[products.length-1];
+  if(p && gens[p.id]){ ui.labGenId = p.id; renderLabResults(p); }
+  else $("#lab-results").innerHTML = "";
+}
+
+/* ---------- BUILDER ---------- */
+function renderBuilder(){
+  const empty = $("#builder-noprod"), main = $("#builder-main");
+  if(!products.length){
+    empty.innerHTML = `<div class="empty"><div class="big">🧪</div>
+      Tu dois d'abord ajouter un produit dans le Product Lab.<br>
+      <div class="btnrow" style="justify-content:center"><button class="btn primary" data-action="nav" data-tab="lab">→ Aller au Product Lab</button></div></div>`;
+    main.style.display = "none";
+    return;
+  }
+  empty.innerHTML = ""; main.style.display = "";
+
+  /* idea chip */
+  $("#b-idea-chip").innerHTML = ui.pendIdea
+    ? `<div class="chip">💡 Idée : <b>${esc(ui.pendIdea.t)}</b><button data-action="chip-clear">✕</button></div>` : "";
+
+  /* product select */
+  const selP = $("#b-product");
+  const prev = ui.builderPid || selP.value;
+  selP.innerHTML = products.map(p => `<option value="${p.id}">${esc(p.name)}</option>`).join("");
+  if(ui.pendProductId && products.some(p=>p.id===ui.pendProductId)){ selP.value = ui.pendProductId; ui.pendProductId = null; }
+  else if(prev && products.some(p=>p.id===prev)) selP.value = prev;
+  ui.builderPid = selP.value;
+
+  /* hook select */
+  const selH = $("#b-hook");
+  const g = gens[selP.value];
+  selH.innerHTML = (g && g.hooks.length)
+    ? g.hooks.map((h,i)=>`<option value="${i}">${esc(h)}</option>`).join("")
+    : `<option value="-1">— Aucun hook généré : utilise le champ personnalisé ci-dessous —</option>`;
+  if(ui.pendHook){
+    $("#b-hook-custom").value = ui.pendHook;
+    ui.pendHook = null;
+  }
+  renderSavedScripts();
+  renderScriptOutput();
+}
+function currentHook(){
+  const custom = $("#b-hook-custom").value.trim();
+  if(custom) return custom;
+  const selP = $("#b-product"), selH = $("#b-hook");
+  const g = gens[selP.value];
+  if(g && selH.value !== "-1" && g.hooks[+selH.value]) return g.hooks[+selH.value];
+  const p = products.find(x=>x.id===selP.value);
+  return "Découvre " + (p ? p.name : "ce produit") + " — tu vas comprendre pourquoi tout le monde en parle.";
+}
+function renderScriptOutput(){
+  const out = $("#script-output");
+  const s = ui.lastScript;
+  if(!s){ out.innerHTML = ""; return; }
+  const blockHTML = s.blocks.map(b=>`
+    <div class="block-tl">
+      <span class="tm">⏱ ${b.tm}</span>
+      <h4>${esc(b.title)}</h4>
+      <div class="bl-line"><div class="lbl"><span>🎙 Voix-off</span><button class="copybtn" data-action="copy" data-copy="${esc(b.vo)}">📋</button></div><div class="val">${esc(b.vo)}</div></div>
+      <div class="bl-line"><div class="lbl"><span>📱 Texte à l'écran</span><button class="copybtn" data-action="copy" data-copy="${esc(b.screen)}">📋</button></div><div class="val">${esc(b.screen)}</div></div>
+      <div class="bl-line"><div class="lbl"><span>🎥 Plans à filmer</span></div><ul class="shots">${b.shots.map(x=>`<li>${esc(x)}</li>`).join("")}</ul></div>
+    </div>`).join("");
+  out.innerHTML = `
+    <div class="card" style="border-color:var(--cyan)">
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:6px">
+        <div><span class="tag">${esc(s.fmtName)}</span><h3 style="font-size:16px">🎬 Script — ${esc(s.productName)}</h3></div>
+      </div>
+      ${s.note ? `<p class="sm mut" style="margin-bottom:12px">⚠️ ${esc(s.note)}</p>` : ""}
+      ${blockHTML}
+      <div class="btnrow">
+        <button class="btn primary" data-action="script-copyall">📋 Copier le script complet</button>
+        <button class="btn cyan" data-action="script-save">💾 Sauvegarder</button>
+        <button class="btn" data-action="script-regen">🔄 Variante</button>
+      </div>
+    </div>`;
+}
+function renderSavedScripts(){
+  const box = $("#script-saved");
+  box.innerHTML = scripts.length ? scripts.map(s=>`
+    <div class="prod">
+      <div class="pi"><b>${esc(s.productName)}</b>
+        <div class="sm">${esc(s.fmtName)} · ${esc(s.date)}${s.inTracker ? ' · <span style="color:var(--green)">✔ dans le tracker</span>' : ""}</div>
+        <div class="sm mut" style="font-style:italic">« ${esc(s.hook)} »</div>
+      </div>
+      <div class="btnrow" style="margin:0">
+        <button class="btn small" data-action="script-copy" data-id="${s.id}">📋 Copier</button>
+        <button class="btn small cyan" data-action="script-track" data-id="${s.id}">📊 → Tracker</button>
+        <button class="btn small danger" data-action="script-del" data-id="${s.id}">✕</button>
+      </div>
+    </div>`).join("")
+    : `<div class="empty"><div class="big">💾</div>Tes scripts sauvegardés apparaîtront ici.</div>`;
+}
+
+/* ---------- TRACKER ---------- */
+function videoEng(v){ return pct(num(v.likes)+num(v.comments)+num(v.shares), num(v.views)); }
+function filteredVideos(){
+  let list = videos.slice();
+  if(ui.statusFilter !== "all") list = list.filter(v => v.status === ui.statusFilter);
+  const s = ui.sort;
+  list.sort((a,b) => s==="views" ? num(b.views)-num(a.views)
+    : s==="commission" ? num(b.commission)-num(a.commission)
+    : s==="eng" ? videoEng(b)-videoEng(a)
+    : String(b.date).localeCompare(String(a.date)));
+  return list;
+}
+function renderTracker(){
+  const posted = videos.filter(v=>v.status==="Poste");
+  const tot = k => videos.reduce((s,v)=>s+num(v[k]),0);
+  $("#t-kpis").innerHTML = `
+    <div class="kpi cyan"><div class="v">${videos.length}</div><div class="l">Vidéos</div></div>
+    <div class="kpi"><div class="v">${posted.length}</div><div class="l">Postées</div></div>
+    <div class="kpi pink"><div class="v">${fmtN(tot("views"))}</div><div class="l">Vues totales</div></div>
+    <div class="kpi green"><div class="v">${fmtN(tot("sales"))}</div><div class="l">Ventes</div></div>
+    <div class="kpi gold"><div class="v">${fmtE(tot("commission"))}</div><div class="l">Commissions</div></div>`;
+
+  $("#status-pills").innerHTML = [`<button class="pill ${ui.statusFilter==="all"?"on":""}" data-action="filter" data-st="all">Tous</button>`]
+    .concat(STATUS.map(s=>`<button class="pill ${ui.statusFilter===s.k?"on":""}" data-action="filter" data-st="${s.k}">${s.fr}</button>`)).join("");
+  $("#sort-videos").value = ui.sort;
+
+  const list = filteredVideos();
+  const emptyBox = $("#tracker-empty");
+  if(!list.length){
+    $("#video-table").innerHTML = ""; $("#video-cards").innerHTML = "";
+    emptyBox.innerHTML = `<div class="empty"><div class="big">📊</div>
+      ${videos.length ? "Aucune vidéo avec ce filtre." : "Ajoute ta première vidéo pour commencer le suivi."}</div>`;
+  } else {
+    emptyBox.innerHTML = "";
+    $("#video-table").innerHTML = `<thead><tr>
+        <th>Vidéo</th><th>Statut</th><th>👁 Vues</th><th>❤️ Eng.</th><th>🔗 Clics</th><th>🛒 Ventes</th><th>💰 Comm.</th><th></th>
+      </tr></thead><tbody>${list.map(v=>`
+      <tr>
+        <td><b>${esc(v.product)}</b><br><span class="sm mut" style="font-style:italic">« ${esc(v.hook||"—")} »</span><br>
+            <span class="sm mut">${esc(v.platform||"")} · ${esc(v.date||"")}</span></td>
+        <td><select class="selsmall" data-change="status" data-id="${v.id}">${STATUS.map(s=>`<option value="${s.k}" ${v.status===s.k?"selected":""}>${s.fr}</option>`).join("")}</select></td>
+        <td><b>${fmtN(v.views)}</b></td>
+        <td>${videoEng(v).toFixed(1)} %</td>
+        <td>${fmtN(v.clicks)}</td>
+        <td>${fmtN(v.sales)}</td>
+        <td><b style="color:var(--gold)">${fmtE(v.commission)}</b></td>
+        <td style="white-space:nowrap">
+          <button class="iconbtn" data-action="video-edit" data-id="${v.id}">✏️</button>
+          <button class="iconbtn" data-action="video-del" data-id="${v.id}">🗑</button>
+        </td>
+      </tr>`).join("")}</tbody>`;
+    $("#video-cards").innerHTML = list.map(v=>{
+      const st = stByKey(v.status);
+      return `<div class="videocard">
+        <div style="display:flex;justify-content:space-between;gap:8px;align-items:flex-start">
+          <div><h4>${esc(v.product)}</h4><div class="hk">« ${esc(v.hook||"—")} »</div>
+            <span class="sm mut">${esc(v.platform||"")} · ${esc(v.date||"")}</span></div>
+          <span class="st ${st.cls}">${st.fr}</span>
+        </div>
+        <div class="mgrid">
+          <div class="m"><b>${fmtN(v.views)}</b><span>vues</span></div>
+          <div class="m"><b>${fmtN(v.likes)}</b><span>likes</span></div>
+          <div class="m"><b>${fmtN(v.shares)}</b><span>partages</span></div>
+          <div class="m"><b>${fmtN(v.clicks)}</b><span>clics</span></div>
+        </div>
+        <div class="vc-foot">
+          <span class="sm mut">🛒 ${fmtN(v.sales)} ventes</span>
+          <span class="gold">${fmtE(v.commission)}</span>
+          <span>
+            <button class="iconbtn" data-action="video-edit" data-id="${v.id}">✏️ Modifier</button>
+            <button class="iconbtn" data-action="video-del" data-id="${v.id}">🗑</button>
+          </span>
+        </div>
+      </div>`;
+    }).join("");
+  }
+  const b = $("#btn-demo"); if(b) b.style.display = videos.length ? "none" : "";
+}
+
+/* ---------- WINNERS ---------- */
+function metricOf(v){
+  return ui.metric==="views" ? num(v.views)
+       : ui.metric==="eng" ? videoEng(v)
+       : num(v.commission);
+}
+function metricLabel(){
+  return ui.metric==="views" ? "vues" : ui.metric==="eng" ? "% engagement" : "commission";
+}
+function metricFmt(v){
+  return ui.metric==="views" ? fmtN(v.views) : ui.metric==="eng" ? videoEng(v).toFixed(1)+" %" : fmtE(v.commission);
+}
+function renderWinners(){
+  const root = $("#winners-root");
+  const posted = videos.filter(v => v.status==="Poste");
+  if(!videos.length){
+    root.innerHTML = `<div class="empty"><div class="big">🏆</div>
+      Poste des vidéos et renseigne leurs stats dans le Tracker,<br>tes winners apparaîtront ici automatiquement.
+      <div class="btnrow" style="justify-content:center"><button class="btn ghost" data-action="demo-seed">✨ Voir avec des données d'exemple</button></div></div>`;
+    return;
+  }
+  const tot = k => videos.reduce((s,v)=>s+num(v[k]),0);
+  const engs = posted.filter(v=>num(v.views)>0).map(videoEng);
+  const avgEng = engs.length ? engs.reduce((a,b)=>a+b,0)/engs.length : 0;
+  const winnersCount = posted.filter(v=>num(v.sales)>0).length;
+  const winRate = pct(winnersCount, posted.length);
+
+  const ranked = posted.filter(v=>num(v.views)>0 || num(v.commission)>0)
+    .sort((a,b)=>metricOf(b)-metricOf(a));
+  const top3 = ranked.slice(0,3);
+
+  const podiums = [
+    {v: top3[1], medal:"🥈", cls:""}, {v: top3[0], medal:"🥇", cls:"p1"}, {v: top3[2], medal:"🥉", cls:""}
+  ].map(p => p.v ? `
+    <div class="pod ${p.cls}">
+      <div class="medal">${p.medal}</div>
+      <div class="nm">${esc(p.v.product)}</div>
+      <div class="hk">« ${esc(p.v.hook||"")} »</div>
+      <div class="vv">${metricFmt(p.v)}</div>
+      <div class="vl">${metricLabel()}</div>
+    </div>` : `
+    <div class="pod ${p.cls}" style="opacity:.35"><div class="medal">${p.medal}</div><div class="nm">—</div><div class="hk"></div><div class="vv">—</div><div class="vl"></div></div>`
+  ).join("");
+
+  const byViews = posted.filter(v=>num(v.views)>0).sort((a,b)=>num(b.views)-num(a.views)).slice(0,8);
+  const maxV = byViews.length ? num(byViews[0].views) : 1;
+  const bars = byViews.map(v=>`
+    <div class="bar-row">
+      <div class="bl"><b>${esc(v.product)} <span class="mut">· ${esc(v.platform||"")}</span></b><span class="bv">${fmtN(v.views)}</span></div>
+      <div class="bar"><i style="width:${Math.max(2, num(v.views)/maxV*100)}%"></i></div>
+    </div>`).join("");
+
+  const agg = {};
+  videos.forEach(v => {
+    const k = v.product || "—";
+    if(!agg[k]) agg[k] = {name:k, videos:0, views:0, sales:0, commission:0};
+    agg[k].videos++; agg[k].views += num(v.views); agg[k].sales += num(v.sales); agg[k].commission += num(v.commission);
+  });
+  const prods = Object.values(agg).sort((a,b)=>b.commission-a.commission).slice(0,5);
+  const prodRows = prods.map((p,i)=>`
+    <div class="winprod">
+      <span class="rk">${["🥇","🥈","🥉","4","5"][i]}</span>
+      <span class="wp"><b>${esc(p.name)}</b><br><span class="sm mut">${p.videos} vidéo${p.videos>1?"s":""} · ${fmtN(p.views)} vues · ${fmtN(p.sales)} ventes</span></span>
+      <span class="nums"><b>${fmtE(p.commission)}</b><br>commission</span>
+    </div>`).join("");
+
+  root.innerHTML = `
+    <div class="kpis" style="grid-template-columns:repeat(2,1fr)">
+      <div class="kpi gold"><div class="v">${fmtE(tot("commission"))}</div><div class="l">💰 Commissions totales</div></div>
+      <div class="kpi green"><div class="v">${fmtN(tot("sales"))}</div><div class="l">🛒 Ventes totales</div></div>
+      <div class="kpi pink"><div class="v">${avgEng.toFixed(1)} %</div><div class="l">❤️ Engagement moyen</div></div>
+      <div class="kpi cyan"><div class="v">${posted.length ? winRate.toFixed(0)+" %" : "—"}</div><div class="l">🎯 Win rate (vidéos qui vendent)</div></div>
+    </div>
+
+    <div class="card">
+      <span class="tag">🏆 Top 3 vidéos</span>
+      <div class="metric-tabs">
+        <button class="pill ${ui.metric==="commission"?"on":""}" data-action="metric" data-m="commission">💰 Commissions</button>
+        <button class="pill ${ui.metric==="views"?"on":""}" data-action="metric" data-m="views">👁 Vues</button>
+        <button class="pill ${ui.metric==="eng"?"on":""}" data-action="metric" data-m="eng">❤️ Engagement</button>
+      </div>
+      <div class="podium">${podiums}</div>
+    </div>
+
+    <div class="card">
+      <span class="tag">📈 Vues par vidéo (top 8)</span>
+      ${bars || '<p class="mut sm">Pas encore de vues enregistrées.</p>'}
+    </div>
+
+    <div class="card">
+      <span class="tag">💎 Produits winners (par commission)</span>
+      ${prodRows || '<p class="mut sm">Aucune donnée.</p>'}
+    </div>`;
+}
+
+/* ============================================================
+   ACTIONS
+============================================================ */
+function goTab(tab){
+  ui.tab = tab;
+  $$("section.tab").forEach(s => s.classList.toggle("on", s.id === "sec-"+tab));
+  $$("[data-action='nav']").forEach(b => b.classList.toggle("on", b.dataset.tab === tab));
+  if(tab === "builder") renderBuilder();
+  if(tab === "winners") renderWinners();
+  if(tab === "pilotage") renderPilotage();
+  if(tab === "clients") renderClients();
+  if(tab === "prospects") renderProspects();
+  if(tab === "demo") renderDemo();
+  if(tab === "vendre") renderVendre();
+  window.scrollTo({top:0});
+}
+function openModal(){ $("#modal-back").classList.add("open"); }
+function closeModal(){ $("#modal-back").classList.remove("open"); }
+
+function clearVideoForm(){
+  $("#v-id").value = ""; $("#v-product").value = ""; $("#v-hook").value = "";
+  $("#v-platform").value = "TikTok"; $("#v-date").value = todayISO();
+  $("#v-status").value = "Idee";
+  ["v-views","v-likes","v-comments","v-shares","v-clicks","v-sales","v-commission"].forEach(id => $("#"+id).value = "");
+}
+
+const ACTIONS = {
+  nav(el){ goTab(el.dataset.tab); },
+  lang(){
+    settings.lang = settings.lang === "fr" ? "en" : "fr";
+    store.set("settings", settings);
+    gens = {}; store.set("gens", gens); /* regenerate in new language on demand */
+    renderAll(); toast(settings.lang === "fr" ? "🇫🇷 Contenu généré en français" : "🇬🇧 Content will be generated in English");
+  },
+  copy(el){ copyText(el.dataset.copy || ""); },
+
+  /* ----- lab ----- */
+  "gen-regen"(el){
+    const p = products.find(x=>x.id===el.dataset.id); if(!p) return;
+    generateAll(p); ui.labGenId = p.id; renderLab(); toast("🔄 Nouveau contenu généré");
+  },
+  "product-gen"(el){
+    const p = products.find(x=>x.id===el.dataset.id); if(!p) return;
+    ui.labGenId = p.id; generateAll(p); renderLab();
+    $("#lab-results").scrollIntoView({behavior:"smooth"});
+    toast("⚡ Contenu généré pour " + p.name);
+  },
+  "product-use"(el){
+    ui.pendProductId = el.dataset.id; ui.pendIdea = null; goTab("builder");
+  },
+  "product-del"(el){
+    const p = products.find(x=>x.id===el.dataset.id); if(!p) return;
+    if(!confirm("Supprimer le produit « " + p.name + " » ? (Les vidéos du tracker sont conservées)")) return;
+    products = products.filter(x=>x.id!==p.id);
+    delete gens[p.id]; store.set("products", products); store.set("gens", gens);
+    renderAll(); toast("🗑 Produit supprimé");
+  },
+  "hook-use"(el){
+    const g = gens[el.dataset.id];
+    ui.pendProductId = el.dataset.id;
+    ui.pendHook = g && g.hooks[+el.dataset.idx] ? g.hooks[+el.dataset.idx] : null;
+    ui.pendIdea = null;
+    goTab("builder");
+  },
+  "idea-build"(el){
+    const g = gens[el.dataset.id];
+    ui.pendProductId = el.dataset.id;
+    ui.pendIdea = g && g.ideas[+el.dataset.idx] ? g.ideas[+el.dataset.idx] : null;
+    ui.pendHook = null;
+    goTab("builder");
+  },
+  "chip-clear"(){ ui.pendIdea = null; renderBuilder(); },
+
+  /* ----- builder ----- */
+  fmt(el){ ui.fmt = el.dataset.fmt; $$("#b-fmts .fmt").forEach(f => f.classList.toggle("on", f.dataset.fmt === ui.fmt)); },
+  "builder-gen"(){
+    const p = products.find(x=>x.id===$("#b-product").value);
+    if(!p){ toast("⚠️ Choisis un produit"); return; }
+    ui.builderPid = p.id;
+    const hook = currentHook();
+    const s = genFullScript(p, hook, ui.fmt);
+    ui.lastScript = Object.assign({productId:p.id, productName:p.name, hook, fmt: ui.fmt, fmtName: s.fmtName}, s);
+    renderScriptOutput();
+    $("#script-output").scrollIntoView({behavior:"smooth"});
+  },
+  "script-copyall"(){ if(ui.lastScript) copyText(ui.lastScript.full); },
+  "script-regen"(){
+    const s = ui.lastScript; if(!s) return;
+    const p = products.find(x=>x.id===s.productId); if(!p) return;
+    const ns = genFullScript(p, s.hook, s.fmt);
+    ui.lastScript = Object.assign({productId:p.id, productName:p.name, hook:s.hook, fmt:s.fmt, fmtName:ns.fmtName}, ns);
+    renderScriptOutput(); toast("🔄 Nouvelle variante");
+  },
+  "script-save"(){
+    const s = ui.lastScript; if(!s) return;
+    scripts.unshift({id: uid(), date: todayISO(), productId: s.productId, productName: s.productName,
+      hook: s.hook, fmt: s.fmt, fmtName: s.fmtName, full: s.full, blocks: s.blocks, inTracker:false});
+    store.set("scripts", scripts); renderSavedScripts(); toast("💾 Script sauvegardé");
+  },
+  "script-copy"(el){ const s = scripts.find(x=>x.id===el.dataset.id); if(s) copyText(s.full); },
+  "script-del"(el){
+    if(!confirm("Supprimer ce script ?")) return;
+    scripts = scripts.filter(x=>x.id!==el.dataset.id); store.set("scripts", scripts);
+    renderSavedScripts(); toast("🗑 Script supprimé");
+  },
+  "script-track"(el){
+    const s = scripts.find(x=>x.id===el.dataset.id); if(!s) return;
+    clearVideoForm();
+    $("#v-product").value = s.productName; $("#v-hook").value = s.hook; $("#v-status").value = "Scripte";
+    $("#modal-title").textContent = "➕ Ajouter au tracker";
+    openModal();
+    ui.trackScriptId = s.id;
+  },
+
+  /* ----- tracker ----- */
+  "video-new"(){ clearVideoForm(); $("#modal-title").textContent = "➕ Ajouter une vidéo"; ui.trackScriptId = null; openModal(); },
+  "video-edit"(el){
+    const v = videos.find(x=>x.id===el.dataset.id); if(!v) return;
+    $("#modal-title").textContent = "✏️ Modifier la vidéo";
+    $("#v-id").value = v.id; $("#v-product").value = v.product; $("#v-hook").value = v.hook||"";
+    $("#v-platform").value = v.platform||"TikTok"; $("#v-date").value = v.date||todayISO();
+    $("#v-status").value = v.status||"Idee";
+    $("#v-views").value = v.views||""; $("#v-likes").value = v.likes||"";
+    $("#v-comments").value = v.comments||""; $("#v-shares").value = v.shares||"";
+    $("#v-clicks").value = v.clicks||""; $("#v-sales").value = v.sales||"";
+    $("#v-commission").value = v.commission||"";
+    openModal();
+  },
+  "video-del"(el){
+    if(!confirm("Supprimer cette vidéo ?")) return;
+    videos = videos.filter(x=>x.id!==el.dataset.id); store.set("videos", videos);
+    renderTracker(); renderWinners(); renderProducts(); toast("🗑 Vidéo supprimée");
+  },
+  filter(el){ ui.statusFilter = el.dataset.st; renderTracker(); },
+  metric(el){ ui.metric = el.dataset.m; renderWinners(); },
+
+  /* ----- data ----- */
+  "demo-seed"(){
+    if(videos.length && !confirm("Ajouter les données d'exemple à tes données existantes ?")) return;
+    const demo = DEMO_DATA();
+    if(!products.length){ products = demo.products; store.set("products", products); }
+    demo.videos.forEach(v => videos.push(v));
+    store.set("videos", videos);
+    renderAll(); goTab("winners"); toast("✨ Données d'exemple chargées — explore !");
+  },
+  export(){
+    const data = {app:"teste-et-propre-content-os", version:2, exportedAt: new Date().toISOString(),
+      products, videos, scripts, gens, settings, clients, packs, prospects, demos, sales: salesGen};
+    const blob = new Blob([JSON.stringify(data, null, 2)], {type:"application/json"});
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = "teste-et-propre-backup-" + todayISO() + ".json";
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    setTimeout(()=>URL.revokeObjectURL(a.href), 2000);
+    toast("⬇️ Sauvegarde téléchargée");
+  },
+  "import-click"(){ $("#import-file").click(); },
+  reset(){
+    if(!confirm("⚠️ Tout effacer ? Produits, vidéos et scripts seront définitivement supprimés.")) return;
+    if(!confirm("Vraiment sûr ? Pense à exporter tes données d'abord.")) return;
+    products = []; videos = []; scripts = []; gens = {};
+    clients = []; packs = {}; prospects = []; demos = []; salesGen = null;
+    ["products","videos","scripts","gens","clients","packs","prospects","demos","sales"].forEach(k => store.del(k));
+    ui.lastScript = null; ui.lastDemo = null; ui.packClientId = null;
+    renderAll(); toast("🗑 Tout a été effacé");
+  },
+  "modal-close"(){ closeModal(); },
+
+  /* ----- V2 : réglages / paiement ----- */
+  "settings-save"(){
+    settings.pack = $("#set-pack").value;
+    settings.paymentLink = $("#set-paylink").value.trim();
+    store.set("settings", settings);
+    renderPilotage(); renderVendre();
+    toast("💾 Offre enregistrée : " + packInfo().label + " — " + packInfo().price + " €");
+  },
+  "pay-copy"(){
+    const link = safeUrl(settings.paymentLink);
+    if(!link){ toast("⚠️ Colle d'abord ton lien de paiement dans « Vendre » → Réglages"); goTab("vendre"); return; }
+    copyText(link);
+  },
+  "step-pay"(){
+    const link = safeUrl(settings.paymentLink);
+    if(!link){ toast("⚠️ Aucun lien de paiement configuré — je t'emmène le créer"); goTab("vendre"); return; }
+    copyText("Voici mon lien pour commander le pack " + packInfo().label + " (" + packInfo().price + " €) : " + link);
+  },
+  "order-missing"(){ toast("⚙️ Configure ton lien de paiement juste au-dessus (Réglages de l'offre)"); window.scrollTo({top:0}); },
+  "offer-copy"(){ copyText(offerText()); },
+
+  /* ----- V2 : clients ----- */
+  "client-gen"(el){
+    const c = clientById(el.dataset.id); if(!c) return;
+    packs[c.id] = genClientPack(c); store.set("packs", packs);
+    ui.packClientId = c.id; renderClients();
+    setTimeout(() => { const pv = $("#pack-view"); if(pv) pv.scrollIntoView({behavior:"smooth"}); }, 50);
+    toast("⚡ Pack 3 vidéos généré pour " + c.name);
+  },
+  "client-pack"(el){ ui.packClientId = el.dataset.id; renderClients();
+    setTimeout(() => { const pv = $("#pack-view"); if(pv) pv.scrollIntoView({behavior:"smooth"}); }, 50); },
+  "pack-close"(){ ui.packClientId = null; renderClients(); },
+  "client-edit"(el){
+    const c = clientById(el.dataset.id); if(!c) return;
+    $("#c-id").value = c.id; $("#c-name").value = c.name; $("#c-type").value = c.type;
+    $("#c-location").value = c.location||""; $("#c-audience").value = c.audience||"";
+    $("#c-offer").value = c.offer||""; $("#c-promo").value = c.promo||"";
+    $("#c-problem").value = c.problem||""; $("#c-social").value = c.social||"";
+    $("#c-website").value = c.website||""; $("#c-tone").value = c.tone||"direct";
+    const a = c.assets||[];
+    $("#c-a-photos").checked = a.includes("Photos"); $("#c-a-videos").checked = a.includes("Vidéos");
+    $("#c-a-product").checked = a.includes("Visuels produits"); $("#c-a-screen").checked = a.includes("Captures d'écran");
+    $("#c-instr").value = c.instr||"";
+    $("#client-fold").open = true;
+    $("#c-name").scrollIntoView({behavior:"smooth"});
+    toast("✏️ Modification de « " + c.name + " »");
+  },
+  "client-del"(el){
+    const c = clientById(el.dataset.id); if(!c) return;
+    if(!confirm("Supprimer le client « " + c.name + " » et son pack ?")) return;
+    clients = clients.filter(x => x.id !== c.id);
+    delete packs[c.id]; if(ui.packClientId === c.id) ui.packClientId = null;
+    store.set("clients", clients); store.set("packs", packs);
+    renderClients(); renderPilotage(); toast("🗑 Client supprimé");
+  },
+  "pack-copy"(el){
+    const c = clientById(el.dataset.id); if(!c || !packs[c.id]) return;
+    copyText(packPlainText(c, packs[c.id]));
+  },
+  "pack-export"(el){
+    const c = clientById(el.dataset.id); if(!c || !packs[c.id]) return;
+    const blob = new Blob([packHTMLDoc(c, packs[c.id])], {type:"text/html"});
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = "pack-" + asciiSlug(c.name) + ".html";
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    setTimeout(() => URL.revokeObjectURL(a.href), 2000);
+    toast("⬇️ Document téléchargé — ouvre-le puis Imprimer → PDF");
+  },
+  "pack-tracker"(el){
+    const c = clientById(el.dataset.id); const pack = c && packs[c.id]; if(!pack) return;
+    pack.concepts.forEach((v,i) => {
+      videos.unshift({id: uid(), product: c.name + " — vidéo " + (i+1), hook: v.hook,
+        platform:"TikTok", date: todayISO(), status:"Scripte",
+        views:0, likes:0, comments:0, shares:0, clicks:0, sales:0, commission:0, createdAt: todayISO()});
+    });
+    store.set("videos", videos);
+    renderTracker(); renderWinners(); renderProducts();
+    toast("📊 3 vidéos ajoutées au Tracker (statut « Scripté »)");
+  },
+
+  /* ----- V2 : prospects ----- */
+  "prospect-new"(){
+    $("#pr-id").value = ""; $("#pr-business").value = ""; $("#pr-contact").value = "";
+    $("#pr-platform").value = "Instagram"; $("#pr-url").value = "";
+    $("#pr-niche").value = "resto"; $("#pr-date").value = todayISO();
+    $("#pr-status").value = "NEW"; $("#pr-notes").value = "";
+    $("#modal2-title").textContent = "➕ Ajouter un prospect";
+    $("#modal2-back").classList.add("open");
+  },
+  "prospect-edit"(el){
+    const p = prospects.find(x => x.id === el.dataset.id); if(!p) return;
+    $("#modal2-title").textContent = "✏️ Modifier le prospect";
+    $("#pr-id").value = p.id; $("#pr-business").value = p.business;
+    $("#pr-contact").value = p.contact||""; $("#pr-platform").value = p.platform||"Instagram";
+    $("#pr-url").value = p.url||""; $("#pr-niche").value = p.niche||"resto";
+    $("#pr-date").value = p.date||todayISO(); $("#pr-status").value = p.status||"NEW";
+    $("#pr-notes").value = p.notes||"";
+    $("#modal2-back").classList.add("open");
+  },
+  "prospect-del"(el){
+    if(!confirm("Supprimer ce prospect ?")) return;
+    prospects = prospects.filter(x => x.id !== el.dataset.id);
+    store.set("prospects", prospects);
+    renderProspects(); renderPilotage(); toast("🗑 Prospect supprimé");
+  },
+  "prospect-seed"(){
+    const mk = (business, contact, platform, url, niche, days, status, notes) => ({
+      id: uid()+Math.random().toString(36).slice(2,5), business, contact, platform, url, niche,
+      date: new Date(Date.now()-days*864e5).toISOString().slice(0,10), status, notes
+    });
+    [
+      mk("Pizzeria Da Luigi","Marco (gérant)","Instagram","instagram.com/daluigi.pizza","resto",2,"REPL","A répondu : « envoyez un exemple »"),
+      mk("Barber Shop Le Panier","@lepanier_barber","TikTok","","barber",1,"CONT","DM envoyé hier soir"),
+      mk("Salon Éclat & Beauté","Sarah 06 12 34 56 78","Téléphone","","beaute",0,"NEW","Vu sur Google Maps, pas de compte TikTok")
+    ].forEach(p => prospects.push(p));
+    store.set("prospects", prospects);
+    renderProspects(); renderPilotage(); toast("✨ 3 prospects d'exemple ajoutés");
+  },
+  "pfilter"(el){ ui.pFilter = el.dataset.st; renderProspects(); },
+  "modal2-close"(){ $("#modal2-back").classList.remove("open"); },
+
+  /* ----- V2 : démo ----- */
+  "demo-show"(el){ const d = demos.find(x => x.id === el.dataset.id); if(d){ ui.lastDemo = d; renderDemo();
+    setTimeout(() => { const o = $("#demo-output"); if(o) o.scrollIntoView({behavior:"smooth"}); }, 50); } },
+  "demo-del"(el){
+    if(!confirm("Supprimer cette démo ?")) return;
+    demos = demos.filter(x => x.id !== el.dataset.id);
+    if(ui.lastDemo && ui.lastDemo.id === el.dataset.id) ui.lastDemo = null;
+    store.set("demos", demos); renderDemo(); toast("🗑 Démo supprimée");
+  },
+
+  /* ----- V2 : contenu de vente ----- */
+  "sales-gen"(){
+    salesGen = genSalesContent(); store.set("sales", salesGen);
+    renderVendre(); toast("📣 Contenus de prospection générés");
+  }
+};
+
+/* ============================================================
+   EVENTS
+============================================================ */
+document.addEventListener("click", e => {
+  const el = e.target.closest("[data-action]");
+  if(!el) return;
+  const fn = ACTIONS[el.dataset.action];
+  if(fn){ e.preventDefault(); fn(el, e); }
+});
+document.addEventListener("change", e => {
+  if(e.target && e.target.id === "b-product"){ ui.builderPid = e.target.value; renderBuilder(); return; }
+  const el = e.target.closest("[data-change]");
+  if(!el) return;
+  if(el.dataset.change === "sort"){ ui.sort = el.value; renderTracker(); }
+  if(el.dataset.change === "status"){
+    const v = videos.find(x=>x.id===el.dataset.id);
+    if(v){ v.status = el.value; store.set("videos", videos); renderTracker(); renderWinners(); toast("Statut mis à jour"); }
+  }
+  if(el.dataset.change === "pstatus"){
+    const p = prospects.find(x=>x.id===el.dataset.id);
+    if(p){ p.status = el.value; store.set("prospects", prospects); renderProspects(); renderPilotage(); toast("Statut prospect mis à jour"); }
+  }
+});
+$("#modal2-back").addEventListener("click", e => { if(e.target.id === "modal2-back") $("#modal2-back").classList.remove("open"); });
+$("#modal-back").addEventListener("click", e => { if(e.target.id === "modal-back") closeModal(); });
+$("#import-file").addEventListener("change", e => {
+  const f = e.target.files[0]; if(!f) return;
+  const r = new FileReader();
+  r.onload = () => {
+    try{
+      const d = JSON.parse(r.result);
+      if(!Array.isArray(d.products) || !Array.isArray(d.videos)) throw new Error("bad");
+      products = d.products; videos = d.videos;
+      scripts = Array.isArray(d.scripts) ? d.scripts : [];
+      gens = d.gens && typeof d.gens === "object" ? d.gens : {};
+      settings = Object.assign({lang:"fr", paymentLink:"", pack:"49"}, d.settings && typeof d.settings === "object" ? d.settings : {});
+      clients   = Array.isArray(d.clients)   ? d.clients   : [];
+      packs     = d.packs && typeof d.packs === "object" ? d.packs : {};
+      prospects = Array.isArray(d.prospects) ? d.prospects : [];
+      demos     = Array.isArray(d.demos)     ? d.demos     : [];
+      salesGen  = d.sales && typeof d.sales === "object" ? d.sales : null;
+      store.set("products", products); store.set("videos", videos);
+      store.set("scripts", scripts); store.set("gens", gens); store.set("settings", settings);
+      store.set("clients", clients); store.set("packs", packs);
+      store.set("prospects", prospects); store.set("demos", demos); store.set("sales", salesGen);
+      renderAll(); toast("⬆️ Données importées !");
+    }catch(err){ toast("⚠️ Fichier invalide"); }
+  };
+  r.readAsText(f); e.target.value = "";
+});
+
+/* ----- forms ----- */
+$("#product-form").addEventListener("submit", e => {
+  e.preventDefault();
+  const name = $("#p-name").value.trim();
+  const problem = $("#p-problem").value.trim();
+  if(!name){ toast("⚠️ Le nom du produit est requis"); return; }
+  if(!problem){ toast("⚠️ Décris le problème résolu"); return; }
+  const p = { id: uid(), name, price: $("#p-price").value.trim(), category: $("#p-cat").value, problem, createdAt: todayISO() };
+  products.push(p); store.set("products", products);
+  generateAll(p); ui.labGenId = p.id;
+  $("#p-name").value = ""; $("#p-price").value = ""; $("#p-problem").value = "";
+  renderProducts(); renderLab();
+  $("#lab-results").scrollIntoView({behavior:"smooth"});
+  toast("⚡ Contenu généré pour " + name);
+});
+$("#video-form").addEventListener("submit", e => {
+  e.preventDefault();
+  const id = $("#v-id").value;
+  const data = {
+    product: $("#v-product").value.trim(),
+    hook: $("#v-hook").value.trim(),
+    platform: $("#v-platform").value,
+    date: $("#v-date").value || todayISO(),
+    status: $("#v-status").value,
+    views: int($("#v-views").value), likes: int($("#v-likes").value),
+    comments: int($("#v-comments").value), shares: int($("#v-shares").value),
+    clicks: int($("#v-clicks").value), sales: int($("#v-sales").value),
+    commission: num($("#v-commission").value)
+  };
+  if(!data.product){ toast("⚠️ Le produit est requis"); return; }
+  if(id){
+    const v = videos.find(x=>x.id===id);
+    if(v) Object.assign(v, data);
+    toast("✅ Vidéo mise à jour");
+  } else {
+    videos.unshift(Object.assign({id: uid(), createdAt: todayISO()}, data));
+    if(ui.trackScriptId){
+      const s = scripts.find(x=>x.id===ui.trackScriptId);
+      if(s){ s.inTracker = true; store.set("scripts", scripts); }
+      ui.trackScriptId = null;
+    }
+    toast("✅ Vidéo ajoutée");
+  }
+  store.set("videos", videos);
+  closeModal(); renderTracker(); renderWinners(); renderProducts();
+});
+
+/* ----- V2 forms ----- */
+$("#client-form").addEventListener("submit", e => {
+  e.preventDefault();
+  const assets = [];
+  if($("#c-a-photos").checked) assets.push("Photos");
+  if($("#c-a-videos").checked) assets.push("Vidéos");
+  if($("#c-a-product").checked) assets.push("Visuels produits");
+  if($("#c-a-screen").checked) assets.push("Captures d'écran");
+  const data = {
+    name: $("#c-name").value.trim(), type: $("#c-type").value,
+    location: $("#c-location").value.trim(), audience: $("#c-audience").value.trim(),
+    offer: $("#c-offer").value.trim(), promo: $("#c-promo").value.trim(),
+    problem: $("#c-problem").value.trim(), social: $("#c-social").value.trim(),
+    website: $("#c-website").value.trim(), tone: $("#c-tone").value,
+    assets, instr: $("#c-instr").value.trim()
+  };
+  if(!data.name){ toast("⚠️ Le nom de l'entreprise est requis"); return; }
+  if(!data.offer){ toast("⚠️ L'offre principale est requise"); return; }
+  const id = $("#c-id").value;
+  if(id){
+    const c = clientById(id);
+    if(c) Object.assign(c, data);
+    toast("✅ Client mis à jour");
+  } else {
+    clients.unshift(Object.assign({id: uid(), createdAt: todayISO()}, data));
+    toast("✅ Client « " + data.name + " » créé — clique sur ⚡ Générer le contenu");
+  }
+  store.set("clients", clients);
+  $("#client-form").reset(); $("#c-id").value = ""; $("#client-fold").open = false;
+  renderClients(); renderPilotage();
+});
+$("#prospect-form").addEventListener("submit", e => {
+  e.preventDefault();
+  const data = {
+    business: $("#pr-business").value.trim(), contact: $("#pr-contact").value.trim(),
+    platform: $("#pr-platform").value, url: $("#pr-url").value.trim(),
+    niche: $("#pr-niche").value, date: $("#pr-date").value || todayISO(),
+    status: $("#pr-status").value, notes: $("#pr-notes").value.trim()
+  };
+  if(!data.business){ toast("⚠️ L'entreprise est requise"); return; }
+  const id = $("#pr-id").value;
+  if(id){
+    const p = prospects.find(x => x.id === id);
+    if(p) Object.assign(p, data);
+    toast("✅ Prospect mis à jour");
+  } else {
+    prospects.unshift(Object.assign({id: uid(), createdAt: todayISO()}, data));
+    toast("✅ Prospect ajouté — objectif : 10 !");
+  }
+  store.set("prospects", prospects);
+  $("#modal2-back").classList.remove("open");
+  renderProspects(); renderPilotage();
+});
+$("#demo-form").addEventListener("submit", e => {
+  e.preventDefault();
+  const name = $("#d-name").value.trim(), offer = $("#d-offer").value.trim();
+  if(!name || !offer){ toast("⚠️ Nom et offre requis"); return; }
+  const d = genDemoV2(name, $("#d-type").value, offer);
+  demos.unshift(d); if(demos.length > 12) demos.pop();
+  store.set("demos", demos);
+  ui.lastDemo = d; renderDemo();
+  setTimeout(() => { const o = $("#demo-output"); if(o) o.scrollIntoView({behavior:"smooth"}); }, 50);
+  toast("🎬 Démo générée — envoie-la au prospect !");
+});
+
+/* ============================================================
+   DEMO DATA
+============================================================ */
+function DEMO_DATA(){
+  const p1 = {id: uid()+"a", name:"Brosse nettoyante électrique SpinClean", price:"19.99", category:"maison", problem:"les traces et la saleté incrustée dans les joints de carrelage", createdAt: todayISO()};
+  const p2 = {id: uid()+"b", name:"Organiseur de tiroir extensible FlexiDrawer", price:"14.50", category:"organisation", problem:"les tiroirs en désordre où on ne retrouve rien", createdAt: todayISO()};
+  const mk = (product, hook, platform, daysAgo, status, views, likes, comments, shares, clicks, sales, commission) => ({
+    id: uid()+Math.random().toString(36).slice(2,5), product, hook, platform,
+    date: new Date(Date.now()-daysAgo*864e5).toISOString().slice(0,10),
+    status, views, likes, comments, shares, clicks, sales, commission, createdAt: todayISO()
+  });
+  const vids = [
+    mk(p1.name,"Si tes joints de carrelage te pourrissent la vie, regarde ça.","TikTok",12,"Poste",184300,12400,210,980,2430,97,436.50),
+    mk(p1.name,"J'ai testé cette brosse pendant 7 jours. Voici le résultat.","Reels",9,"Poste",96400,7300,145,610,1580,61,274.50),
+    mk(p1.name,"Personne ne t'a dit ça sur le nettoyage des joints…","TikTok",6,"Poste",31200,2100,88,240,610,23,103.50),
+    mk(p2.name,"Avant / après : 7 jours avec cet organiseur.","Shorts",4,"Poste",47800,3400,65,180,520,19,68.40),
+    mk(p2.name,"Le test le plus honnête que tu verras aujourd'hui.","TikTok",2,"Filme",0,0,0,0,0,0,0),
+    mk(p2.name,"3 raisons pour lesquelles cet organiseur cartonne.","Reels",0,"Scripte",0,0,0,0,0,0,0)
+  ];
+  return {products:[p1,p2], videos:vids};
+}
+
+/* ============================================================
+   INIT
+============================================================ */
+ui.labGenId = null;
+if(products.length && gens[products[products.length-1].id]) ui.labGenId = products[products.length-1].id;
+renderAll();
+</script>
+</body>
+</html>

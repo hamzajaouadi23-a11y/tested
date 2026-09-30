@@ -1,0 +1,45 @@
+CONTINUE-PROMPT — TESTÉ & PROPRE · CONTENT OS (V2)
+===================================================
+
+Tu es un agent de coding. Tu reprends un projet existant. NE RECONSTRUIS PAS ZÉRO.
+L'utilisateur N'A AUCUNE compétence technique : jamais de terminal/npm/édition manuelle de sa part.
+Tu fais tout toi-même (build → test → serveur live → livrables), puis tu donnes un lien + un résumé très court.
+
+CONTEXTE
+--------
+- Fichier produit : /home/user/teste-et-propre/index.html  (app mono-fichier : HTML+CSS+JS inline, aucune dépendance, localStorage préfixe "tnp_")
+- Backup V1 intact : /home/user/teste-et-propre/V1-index-backup.html
+- Documentation complète : /home/user/teste-et-propre/PROJECT_HANDOFF.md  ← LIS-LA EN PRIORITÉ
+- Backup zip : /home/user/TESTE-PROPRE-CONTENT-OS-V2-BACKUP.zip
+
+L'APP FAIT DÉJÀ (ne pas casser) :
+V1 : Product Lab (hooks/idées/scripts FR-EN), Script Builder (timeline 0–30 s, VO/texte écran/plans),
+     Content Tracker (CRUD vidéos, statuts, KPI), Winners (podiums, win rate, engagement), import/export/reset.
+V2 : Accueil (workflow 8 étapes + checklist 1er client), Clients (brief → pack 3 vidéos → export HTML print→PDF),
+     Prospects (8 statuts + compteurs), Démo (Reel 15–30 s marqué DEMO), Vendre (page de vente 49/79/129 €,
+     réglage lien de paiement, contenus de prospection honnêtes).
+
+RÈGLES
+------
+1. Garder le mono-fichier fonctionnel hors ligne. Pas de CDN critiques (le preview fichier est sandboxé sans réseau).
+2. Persistance localStorage uniquement ; préfixe "tnp_". Étendre export/import/reset à toute nouvelle clé.
+3. Événements : délégation [data-action] → map ACTIONS ; jamais d'onclick inline. Échapper les données avec esc().
+4. Honnêteté : aucune promesse de viralité/vues/ventes, aucun faux témoignage.
+5. Textes générés en français par défaut (clientèle française) ; V1 supporte FR/EN via settings.lang.
+6. Après CHAQUE modif : node --check sur le script extrait + relancer le harnais de tests (voir ci-dessous).
+7. Servir via : cd /home/user/teste-et-propre && python3 -m http.server 8080 --bind 0.0.0.0
+   (Sandbox Arena : process tués entre les messages → redémarrer le serveur à chaque fin de session et donner le lien.)
+
+HARNASIS DE TESTS (recréer /tmp/harness.js si /tmp a été vidé)
+------------------------------------------------------------
+Le harnais : lire /home/user/teste-et-propre/index.html, extraire le <script>, stubber localStorage/document/
+navigator/window/confirm/URL/Blob/FileReader (Proxy d'éléments factices), exécuter le script avec vm.runInThisContext,
+puis évaluer des assertions dans le même scope (generateAll, genFullScript, genClientPack, genDemoV2, genSalesContent,
+packPlainText, packHTMLDoc, filteredVideos, metricOf, videoEng, safeUrl, locTag, persistence store…).
+Référence de résultat V2 : "TESTS: 42 | PASS: 42 | FAIL: 0" (relancer 3× : certains tirages sont aléatoires).
+Ajouter des tests pour toute nouvelle fonctionnalité. Vérifier aussi : ids référencés existants,
+couverture data-action ↔ ACTIONS, tabs ↔ sections.
+
+TA DEMANDE DE SESSION
+---------------------
+[À REMPLIR PAR L'UTILISATEUR : décris ici ce que tu veux ajouter/améliorer/corriger]

@@ -1,0 +1,36 @@
+# Secrets — JAMAIS commiter
+.env
+.env.*
+!.env.example
+secrets.json
+*.pem
+*.key
+*token*.json
+credentials*.json
+
+# Données d'exécution (base SQLite, médias générés en masse)
+data/db/*.sqlite
+data/db/*.sqlite-journal
+data/media/drafts/
+data/media/tmp/
+data/research/raw/
+
+# Fichiers lourds générés (les livrables finaux SONT commités via exceptions)
+# (ready_to_post est suivi — livrables de production)
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+
+# Node
+node_modules/
+
+# OS / éditeurs
+.DS_Store
+Thumbs.db
+*.log
+
+# Scratch de récupération
+_recovery/
+/tools/
