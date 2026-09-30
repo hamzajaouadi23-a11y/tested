@@ -18,6 +18,22 @@ from server import config, db, providers, ffmpegw, secrets_scan  # noqa: E402
 from server.services import assets as assets_svc  # noqa: E402
 from server.services import composition, honesty, learning, pipeline, qa, research, scripts, selection, voice  # noqa: E402
 
+# === HERMÉTICITÉ TOTALE DES CHEMINS TRACKÉS EN GIT ==============================
+# Les tests ne doivent JAMAIS lire/écrire les dossiers de production trackés
+# (inbox voix recherchée par script_<id>.mp3, inbox recherche, processed…) : un sid
+# qui coincide avec les ids de production (1/2/3) détruirait les vrais fichiers.
+# On rebascule ces chemins vers un dossier temporaire, restauré/supprimé en fin de run.
+_TEST_TMP = tempfile.mkdtemp(prefix="tnp_tests_")
+_vox_in = os.path.join(_TEST_TMP, "voice_inbox")
+_res_in = os.path.join(_TEST_TMP, "research_inbox")
+_res_root = os.path.join(_TEST_TMP, "research")
+os.makedirs(_vox_in, exist_ok=True)
+os.makedirs(_res_in, exist_ok=True)
+config.VOICE_INBOX = _vox_in
+config.RESEARCH_INBOX = _res_in
+config.RESEARCH = _res_root
+
+
 PASS, FAIL, FAILS = 0, 0, []
 
 
@@ -142,20 +158,9 @@ T("21 provenances enregistrées (aucune 'mock')", lambda: all(
     a["provenance"] != "mock" for a in assets_svc.list_assets(sid)))
 
 # ============ 6. VOIX — comportement honnête sans TTS ============
-# Hermétique : l'inbox voix de production (commit) ne doit pas faire « réussir » le test —
-# on pointe VOICE_INBOX vers un dossier temporaire VIDE, puis on restaure.
-def _voice_blocked():
-    real_inbox = config.VOICE_INBOX
-    config.VOICE_INBOX = tempfile.mkdtemp(prefix="tnp_voice_inbox_empty_")
-    try:
-        return voice.synthesize_for_script(sid)
-    finally:
-        config.VOICE_INBOX = real_inbox
-
-
-r22 = _voice_blocked()
-T("22 voix sans provider ni inbox → BLOCKED honnête (jamais de silence fake)",
-  lambda: (not r22["ok"]) and r22.get("blocked"))
+# (l'inbox pointe désormais vers un dossier temporaire vide — voir HERMÉTICITÉ en tête de fichier)
+T("22 voix sans provider ni inbox → BLOCKED honnête (jamais de silence fake)", lambda: (
+    lambda r: (not r["ok"]) and r.get("blocked"))(voice.synthesize_for_script(sid)))
 
 # ============ 7. FFMPEG ============
 T("23 ffmpeg présent et fonctionnel", lambda: "ffmpeg" in ffmpegw.version())
@@ -268,4 +273,5 @@ if FAILS:
     for f in FAILS:
         print("  - " + f)
 cleanup()
+shutil.rmtree(_TEST_TMP, ignore_errors=True)   # dossier temporaire hermétique
 sys.exit(1 if FAIL else 0)
