@@ -59,3 +59,5 @@ WORK → TEST (precheck) → SECRET SCAN → COMMIT → PUSH → VERIFY SHA (ls-
 
 ## Vérifié en local avant ce commit (PHASE 6)
 app 200 · /app 200 · /health 200 · API 200 · médias 200 · 3 vidéos + 3 voix présentes · 42/42 · 40/40 · secrets clean · (build Docker validé statiquement — pas de daemon dans le sandbox).
+
+<!-- deploy trigger 2026-09-30T18:58:27Z : cette ligne force un commit pour déclencher le build Railway si la branche source a été rectifiée (arena/01a0efa9-tested). -->
