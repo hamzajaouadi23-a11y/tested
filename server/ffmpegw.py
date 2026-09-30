@@ -3,6 +3,7 @@ import json
 import os
 import re
 import subprocess
+import sys
 
 _EXE = None
 
@@ -15,9 +16,10 @@ def ffmpeg_exe():
         "/home/user/venv-tnp/lib/python3.11/site-packages/imageio_ffmpeg/binaries/ffmpeg-linux-x86_64-v7.0.2",
         "/usr/bin/ffmpeg", "/usr/local/bin/ffmpeg",
     ]
-    # découverte dynamique via le venv
+    # découverte dynamique : (1) python COURANT (solution universelle — venv, conteneur, local),
+    # (2) compat ancien chemin venv-tnp hardcodé (déjà couvert par la liste ci-dessus)
     try:
-        out = subprocess.run(["/home/user/venv-tnp/bin/python", "-c",
+        out = subprocess.run([sys.executable, "-c",
                               "import imageio_ffmpeg; print(imageio_ffmpeg.get_ffmpeg_exe())"],
                              capture_output=True, text=True, timeout=30)
         if out.returncode == 0 and out.stdout.strip():

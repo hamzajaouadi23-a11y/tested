@@ -24,7 +24,8 @@ from .services import selection as selection_svc
 from .services import voice as voice_svc
 
 HOST = os.environ.get("TNP_HOST", "0.0.0.0")
-PORT = int(os.environ.get("TNP_PORT", "8090"))  # surcharge env pour tests/sandboxes parallèles
+# Chaîne de port (hébergements cloud) : TNP_PORT (override implicite) → PORT (Railway/Render…) → 8090 local
+PORT = int(os.environ.get("TNP_PORT") or os.environ.get("PORT") or "8090")
 ROOT = config.ROOT
 STARTED = time.time()
 
@@ -111,6 +112,10 @@ class Handler(BaseHTTPRequestHandler):
                 return self._file(os.path.join(ROOT, "teste-et-propre", "index.html"))
             if path.startswith("/media/"):
                 return self._file(_safe_path(config.MEDIA, path[7:]))
+            if path == "/health":
+                # Healthcheck plateforme (Railway/Render/uptime) : léger, sans toucher la DB —
+                # un 200 prouve que le processus sert du HTTP.
+                return self._json({"ok": True, "service": "tnp-contentos", "uptime_s": int(time.time() - STARTED)})
             if path == "/api/status":
                 return self.get_status()
             if path == "/api/providers":

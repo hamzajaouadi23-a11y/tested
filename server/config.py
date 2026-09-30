@@ -8,7 +8,13 @@ Règles :
 import os
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-DATA = os.path.join(ROOT, "data")
+# Persistance : par défaut, comportement historique INCHANGÉ (data/ dans le repo).
+# En hébergement (Railway/Render), TNP_DATA_DIR pointe vers le VOLUME monté (p. ex. /data)
+# pour survivre aux redeploys. Au premier démarrage, les contenus de production livrés
+# dans le repo (dossiers SEED ci-dessous) sont COPIÉS dans le volume vide — jamais
+# écrasés ensuite (copie uniquement des fichiers ABSENTS).
+_DEFAULT_DATA = os.path.join(ROOT, "data")
+DATA = os.environ.get("TNP_DATA_DIR") or _DEFAULT_DATA
 DB_DIR = os.path.join(DATA, "db")
 DB_PATH = os.path.join(DB_DIR, "contentos.sqlite")
 MEDIA = os.path.join(DATA, "media")
@@ -26,6 +32,36 @@ VENV_PY = "/home/user/venv-tnp/bin/python"
 
 for d in (DATA, DB_DIR, MEDIA, ASSETS, READY, DRAFTS, TMP, RESEARCH, RESEARCH_INBOX, MEDIA_INBOX, VOICE_INBOX):
     os.makedirs(d, exist_ok=True)
+
+
+_SEED_SUBDIRS = ("media/ready_to_post", "media/inbox", "voice/inbox", "research", "accounts")
+
+
+def seed_data_if_needed():
+    """Copie les contenus de production du repo vers TNP_DATA_DIR si le volume est frais.
+
+    Jamais destructif : n'écrase AUCUN fichier existant ; copie seulement les absents.
+    Idempotent : appelé à chaque démarrage, ne fait rien si tout est déjà présent.
+    """
+    if os.path.abspath(DATA) == os.path.abspath(_DEFAULT_DATA):
+        return {"seeded": 0, "note": "data locale par défaut — pas de seed"}
+    import shutil
+    seeded = 0
+    for sub in _SEED_SUBDIRS:
+        src = os.path.join(_DEFAULT_DATA, sub)
+        dst = os.path.join(DATA, sub)
+        if not os.path.isdir(src):
+            continue
+        for dirpath, _dirs, files in os.walk(src):
+            for name in files:
+                sp = os.path.join(dirpath, name)
+                rel = os.path.relpath(sp, src)
+                dp = os.path.join(dst, rel)
+                if not os.path.exists(dp):
+                    os.makedirs(os.path.dirname(dp), exist_ok=True)
+                    shutil.copy2(sp, dp)
+                    seeded += 1
+    return {"seeded": seeded}
 
 
 def load_env():
@@ -113,3 +149,6 @@ def secret_configured(key):
 
 LANG = "fr-FR"
 NICHE = "household"  # niche stratégique : produits/problèmes maison
+
+# Seed final (APRÈS load_env pour que TNP_DATA_DIR puisse aussi venir de .env)
+_seed_report = seed_data_if_needed()

@@ -1,0 +1,19 @@
+# Ne JAMAIS embarquer de secrets / runtime dans l'image
+.env
+.env.*
+!.env.example
+.git
+.github
+backups/
+*.zip
+*.log
+__pycache__/
+*.pyc
+node_modules/
+_recovery/
+# runtime regénérable uniquement (les SEEDS restent dans l'image)
+data/db/
+data/media/tmp/
+data/media/drafts/
+data/media/assets/
+.sandbox-id
