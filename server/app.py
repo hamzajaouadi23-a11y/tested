@@ -6,6 +6,7 @@ Lancement : cd <repo> && /home/user/venv-tnp/bin/python -m server.app
 """
 import json
 import os
+import signal
 import threading
 import time
 import urllib.parse
@@ -22,7 +23,8 @@ from .services import scripts as scripts_svc
 from .services import selection as selection_svc
 from .services import voice as voice_svc
 
-HOST, PORT = "0.0.0.0", 8090
+HOST = os.environ.get("TNP_HOST", "0.0.0.0")
+PORT = int(os.environ.get("TNP_PORT", "8090"))  # surcharge env pour tests/sandboxes parallèles
 ROOT = config.ROOT
 STARTED = time.time()
 
@@ -271,6 +273,13 @@ def main():
     httpd = ThreadingHTTPServer((HOST, PORT), Handler)
     print("TESTÉ & PROPRE — Content OS · pipeline prêt sur http://%s:%d" % (HOST, PORT))
     print("  Studio UI : /     App de vente V2 : /app     API : /api/status")
+
+    def _sigterm(_s=None, _f=None):
+        # SIGTERM (arrêt sandbox Arena/e2b) → shutdown() propre depuis un thread
+        # (le handler ne doit pas bloquer le thread principal).
+        threading.Thread(target=httpd.shutdown, daemon=True).start()
+
+    signal.signal(signal.SIGTERM, _sigterm)
     try:
         httpd.serve_forever()
     except KeyboardInterrupt:

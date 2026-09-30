@@ -142,8 +142,20 @@ T("21 provenances enregistrées (aucune 'mock')", lambda: all(
     a["provenance"] != "mock" for a in assets_svc.list_assets(sid)))
 
 # ============ 6. VOIX — comportement honnête sans TTS ============
-T("22 voix sans provider ni inbox → BLOCKED honnête (jamais de silence fake)", lambda: (
-    lambda r: (not r["ok"]) and r.get("blocked"))(voice.synthesize_for_script(sid)))
+# Hermétique : l'inbox voix de production (commit) ne doit pas faire « réussir » le test —
+# on pointe VOICE_INBOX vers un dossier temporaire VIDE, puis on restaure.
+def _voice_blocked():
+    real_inbox = config.VOICE_INBOX
+    config.VOICE_INBOX = tempfile.mkdtemp(prefix="tnp_voice_inbox_empty_")
+    try:
+        return voice.synthesize_for_script(sid)
+    finally:
+        config.VOICE_INBOX = real_inbox
+
+
+r22 = _voice_blocked()
+T("22 voix sans provider ni inbox → BLOCKED honnête (jamais de silence fake)",
+  lambda: (not r22["ok"]) and r22.get("blocked"))
 
 # ============ 7. FFMPEG ============
 T("23 ffmpeg présent et fonctionnel", lambda: "ffmpeg" in ffmpegw.version())
