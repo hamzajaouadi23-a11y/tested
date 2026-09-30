@@ -24,14 +24,14 @@ class GeminiGroundingResearch(Provider):
     costly = False
 
     def test(self):
-        """Appel RÉEL borné : gemini-2.5-flash avec grounding Google Search activé."""
+        """Appel RÉEL borné : modèle flash GA avec grounding Google Search activé."""
         base = super().test()
         if not base["ok"] or "manquante" in base.get("detail", ""):
             return base
         from .text_providers import GeminiProvider
         r = GeminiProvider().generate(
             "Quelle est la capitale de la France ? Réponds en un mot.",
-            model=GeminiProvider.MODEL_FLASH, grounding=True, temperature=0)
+            model=GeminiProvider._model("flash"), grounding=True, temperature=0)
         return {"ok": r["ok"] and bool(r.get("text", "").strip()),
                 "detail": "grounding Google Search opérationnel" if r["ok"]
                           else "échec grounding: " + r.get("detail", "")[:160],
@@ -68,13 +68,17 @@ class GeminiImageProvider(Provider):
     requires = ["GEMINI_API_KEY"]
     costly = False
 
+    MODEL = "gemini-3.1-flash-image"   # Nano Banana 2 (GA) — 2.5-flash-image retiré au 02/10/2026
+
     def generate(self, prompt, out_path, w=1080, h=1920):
         from .. import config
         key = config.get_secret("GEMINI_API_KEY")
         if not key:
             return {"ok": False, "detail": "GEMINI_API_KEY manquante"}
-        model = "gemini-2.5-flash-image"
-        body = {"contents": [{"parts": [{"text": "Generate a vertical 9:16 image: " + prompt}]}]}
+        model = os.environ.get("GEMINI_MODEL_IMAGE") or self.MODEL
+        body = {"contents": [{"parts": [{"text": "Photorealistic image: " + prompt}]}],
+                "generationConfig": {"responseModalities": ["TEXT", "IMAGE"],
+                                     "imageConfig": {"aspectRatio": "9:16"}}}  # 1080x1920 natif
         url = "https://generativelanguage.googleapis.com/v1beta/models/%s:generateContent?key=%s" % (model, key)
         r = self.safe_http(url, payload=body, timeout=90, retries=2)
         if not r["ok"]:
@@ -229,7 +233,12 @@ class ElevenLabsVoice(Provider):
             with open(out_path, "wb") as f:
                 f.write(r["raw"])
             return {"ok": True, "path": out_path}
-        return {"ok": False, "detail": r.get("detail", "synthèse échouée")}
+        detail = (r.get("detail") or "")[:300]
+        if "paid_plan_required" in detail or "payment_required" in detail:
+            detail = ("Plan gratuit : les voix de la bibliothèque sont bloquées via l'API. "
+                      "Créez une voix perso (dashboard ElevenLabs) puis posez ELEVENLABS_VOICE_ID — "
+                      "ou passez au plan payant. Brut: " + detail[:160])
+        return {"ok": False, "detail": detail}
 
     def test(self):
         """Appel RÉEL borné : synthèse de 5 caractères, fichier supprimé après mesure.

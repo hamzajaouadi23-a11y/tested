@@ -9,22 +9,31 @@ from .base import Provider
 
 class GeminiProvider(Provider):
     id = "gemini"
-    label = "Google Gemini (2.5 Flash / Flash-Lite)"
+    label = "Google Gemini (3.6 Flash / 3.5 Flash-Lite)"
     kind = "TEXT"
     implemented = True
     mock = False
     requires = ["GEMINI_API_KEY"]
     costly = False
 
-    MODEL_FLASH = "gemini-2.5-flash"
-    MODEL_LITE = "gemini-2.5-flash-lite"
+    # Modèles GA sept. 2026 (2.5-* retirés pour les nouveaux projets). Surchargables sans
+    # toucher au code : GEMINI_MODEL_FLASH / GEMINI_MODEL_LITE (variables Railway).
+    MODEL_FLASH = "gemini-3.6-flash"
+    MODEL_LITE = "gemini-3.5-flash-lite"
+
+    @staticmethod
+    def _model(name):
+        import os
+        if name == "lite":
+            return os.environ.get("GEMINI_MODEL_LITE") or GeminiProvider.MODEL_LITE
+        return os.environ.get("GEMINI_MODEL_FLASH") or GeminiProvider.MODEL_FLASH
 
     def generate(self, prompt, model=None, grounding=False, temperature=0.7):
         from .. import config
         key = config.get_secret("GEMINI_API_KEY")
         if not key:
             return {"ok": False, "detail": "GEMINI_API_KEY manquante"}
-        model = model or self.MODEL_FLASH
+        model = model or self._model("flash")
         body = {"contents": [{"parts": [{"text": prompt}]}],
                 "generationConfig": {"temperature": temperature, "maxOutputTokens": 4096}}
         if grounding:
@@ -50,8 +59,9 @@ class GeminiProvider(Provider):
         base = super().test()
         if not base["ok"]:
             return base
-        r = self.generate("Réponds uniquement : OK", model=self.MODEL_LITE, temperature=0)
-        return {"ok": r["ok"], "detail": "gemini-2.5-flash-lite répond" if r["ok"] else r.get("detail", "échec"),
+        lite = self._model("lite")
+        r = self.generate("Réponds uniquement : OK", model=lite, temperature=0)
+        return {"ok": r["ok"], "detail": ("%s répond" % lite) if r["ok"] else r.get("detail", "échec"),
                 "latency_ms": r.get("latency_ms", 0)}
 
 
@@ -225,7 +235,7 @@ def generate_text(prompt, purpose="script", lite=False):
             continue
         kw = {}
         if isinstance(p, GeminiProvider):
-            kw = {"model": GeminiProvider.MODEL_LITE if lite else GeminiProvider.MODEL_FLASH,
+            kw = {"model": GeminiProvider._model("lite" if lite else "flash"),
                   "grounding": purpose == "research"}
         r = p.generate(prompt, **kw)
         if r["ok"]:
