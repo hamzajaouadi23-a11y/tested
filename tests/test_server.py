@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """Tests backend — TESTÉ & PROPRE Content OS v5 (pipeline).
-Usage : /home/user/.venv-tnp/bin/python tests/test_server.py
+Usage : /home/user/venv-tnp/bin/python tests/test_server.py
 Couvre : registre providers, chaîne texte honnête, recherche sourcée, sélection, scripts,
 composition/graphique, FFmpeg, QA (négatifs honnêts), flags, secrets scan, e2e si fixture.
 """
@@ -196,7 +196,9 @@ T("36 .env.example existe et NE contient aucune vraie clé", lambda: (
     os.path.exists(config.ENV_EXAMPLE) and "VOTRE_CLE" in open(config.ENV_EXAMPLE).read()))
 
 # ============ 10. E2E OPTIONNELLE (fixture voix réelle) ============
+_e2e_tmp = tempfile.mkdtemp(prefix="tnp_e2e_")
 if os.path.exists(FIX_VOICE):
+    os.environ["TNP_READY_DIR"] = _e2e_tmp   # ne jamais polluer ready_to_post de prod
     shutil.copy2(FIX_VOICE, os.path.join(config.VOICE_INBOX, "script_%d.mp3" % sid))
     v_res = voice.synthesize_for_script(sid)
     T("37 e2e voix importée : durée mesurée", lambda: v_res["ok"] and v_res["duration_s"] > 1)
@@ -210,11 +212,23 @@ if os.path.exists(FIX_VOICE):
           json.dumps(qres.get("blockers"), ensure_ascii=False) if not qres["pass"] else "")
         fin = qa.finalize_for_post(r_res["video_id"]) if qres["pass"] else {"ok": False}
         T("40 e2e finalize ready_to_post + caption + metadata", lambda: fin["ok"])
+        # nettoyage e2e : lignes + fichiers
+        db.run("DELETE FROM videos WHERE id=?", (r_res["video_id"],))
+        db.run("DELETE FROM voices WHERE script_id=?", (sid,))
+        db.run("DELETE FROM assets WHERE script_id=?", (sid,))
+        for pat in (os.path.join(config.VOICE_INBOX, "script_%d.mp3" % sid),
+                    os.path.join(config.ASSETS, "script_%d_*" % sid),
+                    os.path.join(config.ASSETS, "voice_script_%d.mp3" % sid)):
+            for f in __import__("glob").glob(pat):
+                os.remove(f)
+        shutil.rmtree(os.path.join(config.TMP, "render_%d" % sid), ignore_errors=True)
     else:
         T("39 e2e QA passe", False, "render échoué")
         T("40 e2e finalize", False, "render échoué")
+    os.environ.pop("TNP_READY_DIR", None)
 else:
     print("SKIP  37–40 e2e (fixture voix absente : %s)" % FIX_VOICE)
+shutil.rmtree(_e2e_tmp, ignore_errors=True)
 
 # ============ nettoyage des artefacts de test ============
 def cleanup():

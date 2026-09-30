@@ -51,6 +51,9 @@ def import_inbox_for_script(script_id):
         base = os.path.basename(f)
         prov, realness, info = _provenance_for(base, manifest)
         dest = os.path.join(config.ASSETS, base)
+        existing = db.q("SELECT id FROM assets WHERE script_id=? AND path=?", (script_id, dest), one=True)
+        if existing:
+            continue  # idempotent : ne pas dupliquer un asset déjà importé
         shutil.copy2(f, dest)
         aid = db.run("INSERT INTO assets(script_id,path,kind,provenance,license,realness,note,created_at) VALUES(?,?,?,?,?,?,?,?)",
                      (script_id, dest, "video" if base.endswith(".mp4") else "image", prov,
@@ -73,7 +76,8 @@ def generate_missing(script, present_count):
     img_provider = providers.get("image_gemini")
     comp = providers.get("composition")
     for i, shot in enumerate(shots, start=1):
-        existing = db.q("SELECT id FROM assets WHERE script_id=? AND path LIKE ?", (sid, "%%shot_%d." % i), one=True)
+        existing = db.q("SELECT id FROM assets WHERE script_id=? AND path LIKE ?",
+                        (sid, "%%shot_%d.%%" % i), one=True)
         if existing:
             continue
         prompt = "Photorealistic vertical photo, household context: " + shot["visual"]

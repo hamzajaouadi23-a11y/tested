@@ -60,13 +60,17 @@ def _overlay_tag(script, idx):
 
 
 def _encode_image_segment(frame_png, dur, out_mp4, fade_out=True):
+    # zoompan d=1 : 1 frame de sortie par frame d'entrée (loop) — 'on' compte les frames de sortie,
+    # le zoom progresse image par image (Ken Burns). -t borne la durée exacte.
     vf = ("scale=2160:3840:force_original_aspect_ratio=increase,crop=2160:3840,"
-          "zoompan=z='min(1.001+on*0.0012,1.12)':d=%d:x='iw/2-(iw/zoom/2)':y='ih/2-(ih/zoom/2)':s=%dx%d:fps=%d,"
+          "zoompan=z='min(1.0+on*0.0006,1.10)':d=1:x='iw/2-(iw/zoom/2)':y='ih/2-(ih/zoom/2)':s=%dx%d:fps=%d,"
           "format=yuv420p,fade=t=in:st=0:d=0.25%s"
-          % (int(dur * FPS) + FPS, W, H, FPS, ",fade=t=out:st=%.2f:d=0.25" % max(0, dur - 0.25) if fade_out else ""))
-    proc = ffmpegw.run_cmd(["-y", "-v", "error", "-loop", "1", "-t", "%.2f" % dur, "-i", frame_png,
-                            "-vf", vf, "-c:v", "libx264", "-preset", "medium", "-crf", "22", out_mp4],
-                           timeout=240)
+          % (W, H, FPS, ",fade=t=out:st=%.2f:d=0.25" % max(0, dur - 0.25) if fade_out else ""))
+    proc = ffmpegw.run_cmd(["-y", "-v", "error", "-framerate", str(FPS), "-loop", "1",
+                            "-t", "%.2f" % dur, "-i", frame_png,
+                            "-vf", vf, "-t", "%.2f" % dur,
+                            "-c:v", "libx264", "-preset", "veryfast", "-crf", "21", out_mp4],
+                           timeout=300)
     return proc.returncode == 0 and os.path.exists(out_mp4)
 
 
@@ -76,8 +80,8 @@ def _encode_video_segment(clip_path, overlay_png, dur, out_mp4):
           % (W, H, W, H, FPS))
     proc = ffmpegw.run_cmd(["-y", "-v", "error", "-stream_loop", "-1", "-t", "%.2f" % dur, "-i", clip_path,
                             "-i", overlay_png, "-filter_complex", vf, "-map", "[v]",
-                            "-c:v", "libx264", "-preset", "medium", "-crf", "22", out_mp4],
-                           timeout=240)
+                            "-c:v", "libx264", "-preset", "veryfast", "-crf", "21", out_mp4],
+                           timeout=300)
     return proc.returncode == 0 and os.path.exists(out_mp4)
 
 

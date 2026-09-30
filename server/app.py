@@ -2,7 +2,7 @@
 Écoute 0.0.0.0:8090. Sert : Studio UI (/), app de vente V2 (/app), API JSON (/api/*), médias (/media/*).
 
 Aucun secret n'est jamais renvoyé : /api/secrets ne renvoie que {nom, configured}.
-Lancement : cd <repo> && /home/user/.venv-tnp/bin/python -m server.app
+Lancement : cd <repo> && /home/user/venv-tnp/bin/python -m server.app
 """
 import json
 import os

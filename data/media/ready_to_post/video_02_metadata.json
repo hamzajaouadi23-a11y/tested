@@ -1,0 +1,204 @@
+{
+  "file": "video_02.mp4",
+  "title": "Ton canapé est plein de poils malgré l'aspirateur ? Regarde la fin.",
+  "style": "B",
+  "style_label": "Avant → Après",
+  "duration_s": 35.2,
+  "resolution": "1080x1920",
+  "fps": 30.0,
+  "cta": "Enregistre pour le prochain passage sur le canapé 🐾",
+  "hashtags": "#maison #animaux #poils #cleantok #astuce #pourtoi #fyp",
+  "claims": [
+    {
+      "claim": "Le rouleau capture les poils dans une chambre interne vidable, sans ruban adhésif jetable.",
+      "source_url": "https://www.yahoo.com/lifestyle/articles/pet-hair-everywhere-tiktok-famous-234000504.html",
+      "source_title": "This TikTok-Famous Roller Is Only $14 at Walmart — Yahoo Lifestyle"
+    },
+    {
+      "claim": "Prix constaté entre 14 $ (promo Walmart) et ~25 $ (prix habituel).",
+      "source_url": "https://www.yahoo.com/lifestyle/articles/pet-hair-everywhere-tiktok-famous-234000504.html",
+      "source_title": "This TikTok-Famous Roller Is Only $14 at Walmart — Yahoo Lifestyle"
+    },
+    {
+      "claim": "Mental Floss rapporte plus de 98 000 évaluations avec une moyenne de 4,6/5 sur Amazon pour ce produit.",
+      "source_url": "https://www.mentalfloss.com/smart-shopping/chomchom-pet-hair-remover",
+      "source_title": "ChomChom pet hair remover — Mental Floss"
+    }
+  ],
+  "ai_disclosure": {
+    "ai_assets": true,
+    "disclosure_required": true,
+    "disclosure_shown_on_video": true
+  },
+  "voice_provider": "voice_import",
+  "qa": {
+    "pass": true,
+    "checks": [
+      {
+        "id": "FILE_EXISTS",
+        "label": "Le fichier existe",
+        "ok": true,
+        "detail": "/home/user/tested/data/media/drafts/script_2.mp4",
+        "severity": "blocker"
+      },
+      {
+        "id": "DECODABLE",
+        "label": "Fichier décodable",
+        "ok": true,
+        "detail": "",
+        "severity": "blocker"
+      },
+      {
+        "id": "RESOLUTION",
+        "label": "1080x1920",
+        "ok": true,
+        "detail": "1080x1920",
+        "severity": "blocker"
+      },
+      {
+        "id": "ASPECT",
+        "label": "Ratio 9:16",
+        "ok": true,
+        "detail": "0.562",
+        "severity": "blocker"
+      },
+      {
+        "id": "DURATION",
+        "label": "Durée valide (12–60 s)",
+        "ok": true,
+        "detail": "35.2 s",
+        "severity": "blocker"
+      },
+      {
+        "id": "FPS",
+        "label": "24–30 fps",
+        "ok": true,
+        "detail": "30.0",
+        "severity": "blocker"
+      },
+      {
+        "id": "AUDIO_PRESENT",
+        "label": "Piste audio présente",
+        "ok": true,
+        "detail": "",
+        "severity": "blocker"
+      },
+      {
+        "id": "AUDIO_NOT_SILENT",
+        "label": "Audio non silencieux",
+        "ok": true,
+        "detail": "mean -14.9 dB",
+        "severity": "blocker"
+      },
+      {
+        "id": "NO_EMPTY_FRAMES",
+        "label": "Aucune frame vide",
+        "ok": true,
+        "detail": "3 frames sondées OK",
+        "severity": "blocker"
+      },
+      {
+        "id": "NO_BROKEN_ASSETS",
+        "label": "Aucun asset cassé",
+        "ok": true,
+        "detail": "5 assets vérifiés",
+        "severity": "blocker"
+      },
+      {
+        "id": "REAL_ASSETS_CHECK",
+        "label": "Assets réels/licenciés/originaux/IA (aucun mock/démo)",
+        "ok": true,
+        "detail": "provenances: ai, composition",
+        "severity": "blocker"
+      },
+      {
+        "id": "NO_TEXT_OVERFLOW",
+        "label": "Aucun débordement de texte",
+        "ok": true,
+        "detail": "5 overlays mesurés",
+        "severity": "blocker"
+      },
+      {
+        "id": "SAFE_ZONES",
+        "label": "Safe zones respectées",
+        "ok": true,
+        "detail": "",
+        "severity": "blocker"
+      },
+      {
+        "id": "READABLE_TEXT",
+        "label": "Texte lisible (police ≥ 42 px)",
+        "ok": true,
+        "detail": "police 64 px",
+        "severity": "blocker"
+      },
+      {
+        "id": "CONTRAST",
+        "label": "Contraste des légendes (bandeau sombre garanti)",
+        "ok": true,
+        "detail": "bandeau rgba(2,6,23,216)",
+        "severity": "blocker"
+      },
+      {
+        "id": "SPELLING",
+        "label": "Orthographe FR",
+        "ok": true,
+        "detail": "taux de mots reconnus 40%",
+        "severity": "blocker"
+      },
+      {
+        "id": "CAPTION_PRESENT",
+        "label": "Caption présente",
+        "ok": true,
+        "detail": "",
+        "severity": "blocker"
+      },
+      {
+        "id": "CTA_PRESENT",
+        "label": "CTA présent",
+        "ok": true,
+        "detail": "",
+        "severity": "blocker"
+      },
+      {
+        "id": "SOURCED_STATS",
+        "label": "Aucune statistique/spec non sourcée",
+        "ok": true,
+        "detail": "3 claims sourcés",
+        "severity": "blocker"
+      },
+      {
+        "id": "NO_FAKE_CLAIMS",
+        "label": "Pas de faux témoignage / test / garantie / viralité",
+        "ok": true,
+        "detail": "lint propre",
+        "severity": "blocker"
+      },
+      {
+        "id": "NO_TOFU_GLYPHS",
+        "label": "Aucun glyphe non affichable dans le texte brûlé (emoji SMP)",
+        "ok": true,
+        "detail": "emoji détectés (sanitisés au rendu)",
+        "severity": "blocker"
+      },
+      {
+        "id": "ONSCREEN_CLEAN",
+        "label": "Textes écran honnêtes",
+        "ok": true,
+        "detail": "",
+        "severity": "blocker"
+      },
+      {
+        "id": "AI_DISCLOSURE_CHECK",
+        "label": "Disclosure IA visible si assets IA",
+        "ok": true,
+        "detail": "assets IA → mention affichée dans la vidéo + metadata",
+        "severity": "blocker"
+      }
+    ],
+    "blockers": [],
+    "warnings": []
+  },
+  "status": "WAITING_APPROVAL — publication manuelle uniquement",
+  "created_at": "2026-09-30 11:18:27"
+}

@@ -12,12 +12,12 @@ def ffmpeg_exe():
     if _EXE and os.path.exists(_EXE):
         return _EXE
     candidates = [
-        "/home/user/.venv-tnp/lib/python3.11/site-packages/imageio_ffmpeg/binaries/ffmpeg-linux-x86_64-v7.0.2",
+        "/home/user/venv-tnp/lib/python3.11/site-packages/imageio_ffmpeg/binaries/ffmpeg-linux-x86_64-v7.0.2",
         "/usr/bin/ffmpeg", "/usr/local/bin/ffmpeg",
     ]
     # découverte dynamique via le venv
     try:
-        out = subprocess.run(["/home/user/.venv-tnp/bin/python", "-c",
+        out = subprocess.run(["/home/user/venv-tnp/bin/python", "-c",
                               "import imageio_ffmpeg; print(imageio_ffmpeg.get_ffmpeg_exe())"],
                              capture_output=True, text=True, timeout=30)
         if out.returncode == 0 and out.stdout.strip():

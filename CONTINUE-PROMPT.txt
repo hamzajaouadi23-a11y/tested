@@ -1,0 +1,19 @@
+REPRISE RAPIDE (2026-09-30, fin de session production)
+
+ÉTAT : 3 vidéos finales dans data/media/ready_to_post/ (video_01/02/03.mp4 + caption + metadata), QA PASS, état pipeline WAITING_APPROVAL . Rien n'a été publié (AUTO_PUBLISH=OFF).
+
+POUR UNE NOUVELLE SESSION :
+1. `git checkout arena/01a0efa9-tested && git pull` — vérité = GitHub , tags : v5.2-real-media, v5.3-production-pipeline
+2. `./tools/setup_env.sh` puis `bash tools/precheck.sh` (doit sortir ✓ 4/4 : 42 app + 40 backend)
+3. Serveurs : `./tools/run_server.sh` (app 8080 + studio 8090)
+4. Poster manuellement via POSTING_GUIDE.md ; jamais d'auto-publication ; aucun secret n'apparaît dans le repo.
+5. Nouvelle prod : `./.venv-tnp/bin/python tools/nightshift_rebuild.py` (recherche→scripts→assets→voix) puis `tools/nightshift_produce.py <ids>`.
+
+PIÈGES CONNUS (déjà corrigés, ne pas réintroduire) :
+- .gitignore : ne JAMAIS ignorer tools/, data/research/processed/, data/voice/inbox/ ; backups/ et *.zip ignorés.
+- zoompan : d=1 + -framerate 30 (sinon explosion de frames / durée fausse)
+- texte brûlé : passe par composition.sanitize_text (emoji SMP interdits → ✓/✗)
+- captions : pas de note chiffrée «4,6/5» (QA NO_FAKE_CLAIMS) — les claims chiffrés vivent dans claims_json avec source_url.
+- produce idempotent : assets/voix réutilisés si déjà présents ; tester avec tests/test_server.py.
+
+VOIX : voice-00 (vote utilisateur, FR narration). Fallback hors-ligne : piper si jamais indisponible.

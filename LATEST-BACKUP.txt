@@ -1,0 +1,8 @@
+LATEST-BACKUP — 2026-09-30
+
+ZIP : backups/TNP-BACKUP-V5-production-2026-09-30.zip  (nouveau numero, JAMAIS ecraser un ancien zip)
+Contenu : repo complet hors .git/node_modules/logs/dbs/tmp-drafts-assets regenerables.
+Inclut : videos finales ready_to_post/, 12 images AI inbox, 3 voix MP3, research JSON, tools/, docs, app index.html.
+
+PRIMARY BACKUP = GitHub branche arena/01a0efa9-tested (tags v5.2-real-media, v5.3-production-pipeline).
+Restauration : git clone + tag v5.3-production-pipeline, ou unzip ; puis ./tools/setup_env.sh && bash tools/precheck.sh.

@@ -1,0 +1,50 @@
+{
+  "script_1_shot_1.png": {
+    "provenance": "ai",
+    "note": "IA — macro joints de carrelage encrassés (problème)"
+  },
+  "script_1_shot_2.png": {
+    "provenance": "ai",
+    "note": "IA — main qui frotte avec une éponge (problème)"
+  },
+  "script_1_shot_3.png": {
+    "provenance": "ai",
+    "note": "IA — brosse rotative en action sur les joints (solution)"
+  },
+  "script_1_shot_4.png": {
+    "provenance": "ai",
+    "note": "IA — joints et robinetterie propres (résultat)"
+  },
+  "script_2_shot_1.png": {
+    "provenance": "ai",
+    "note": "IA — canapé couvert de poils (avant)"
+  },
+  "script_2_shot_2.png": {
+    "provenance": "ai",
+    "note": "IA — rouleau anti-poils tenu en main (solution)"
+  },
+  "script_2_shot_3.png": {
+    "provenance": "ai",
+    "note": "IA — aller-retour du rouleau, poils qui se décollent (action)"
+  },
+  "script_2_shot_4.png": {
+    "provenance": "ai",
+    "note": "IA — canapé impeccable (après)"
+  },
+  "script_3_shot_1.png": {
+    "provenance": "ai",
+    "note": "IA — tiroir de cuisine chaotique (avant)"
+  },
+  "script_3_shot_2.png": {
+    "provenance": "ai",
+    "note": "IA — tri des ustensiles sur le plan de travail"
+  },
+  "script_3_shot_3.png": {
+    "provenance": "ai",
+    "note": "IA — pose de séparateurs ajustables dans le tiroir"
+  },
+  "script_3_shot_4.png": {
+    "provenance": "ai",
+    "note": "IA — tiroir parfaitement compartimenté (après)"
+  }
+}

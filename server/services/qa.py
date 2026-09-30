@@ -140,6 +140,10 @@ def run(video_id):
                                          json.dumps(script.get("onscreen", []), ensure_ascii=False))
     add("NO_FAKE_CLAIMS", "Pas de faux témoignage / test / garantie / viralité", not violations,
         ", ".join(sorted({x["match"] for x in violations})[:4]) if violations else "lint propre")
+    smp_glyphs = [ch for ch in json.dumps(script.get("onscreen", []), ensure_ascii=False) if ord(ch) > 0xFFFF]
+    add("NO_TOFU_GLYPHS", "Aucun glyphe non affichable dans le texte brûlé (emoji SMP)",
+        not smp_glyphs or bool(overlays),   # les overlays passent par sanitize_text au rendu
+        "" if not smp_glyphs else "emoji détectés (sanitisés au rendu)", severity="blocker")
     onscreen_join = json.dumps(script.get("onscreen", []), ensure_ascii=False)
     add("ONSCREEN_CLEAN", "Textes écran honnêtes", not honesty.find_violations(onscreen_join))
 
@@ -167,12 +171,14 @@ def finalize_for_post(video_id):
     v = db.q("SELECT * FROM videos WHERE id=?", (video_id,), one=True)
     if not v or v["status"] != "qa_passed":
         return {"ok": False, "detail": "QA non passée"}
+    ready_dir = os.environ.get("TNP_READY_DIR", config.READY)
+    os.makedirs(ready_dir, exist_ok=True)
     script = scripts.get_script(v["script_id"])
-    existing = sorted([f for f in os.listdir(config.READY) if re.match(r"video_\d+\.mp4$", f)])
+    existing = sorted([f for f in os.listdir(ready_dir) if re.match(r"video_\d+\.mp4$", f)])
     nums = [int(re.match(r"video_(\d+)\.mp4$", f).group(1)) for f in existing]
     n = (max(nums) + 1) if nums else 1
     name = "video_%02d" % n
-    dest = os.path.join(config.READY, name + ".mp4")
+    dest = os.path.join(ready_dir, name + ".mp4")
     import shutil
     shutil.move(v["path"], dest)
 
@@ -181,8 +187,9 @@ def finalize_for_post(video_id):
     caption = script["caption"]
     if disc.get("disclosure_required"):
         caption += "\n\n" + honesty.DISCLOSURE_LINE
-    with open(os.path.join(config.READY, name + "_caption.txt"), "w", encoding="utf-8") as f:
+    with open(os.path.join(ready_dir, name + "_caption.txt"), "w", encoding="utf-8") as f:
         f.write(caption + "\n")
+    vp = db.q("SELECT provider FROM voices WHERE script_id=? ORDER BY id DESC", (script["id"],), one=True)
     metadata = {
         "file": name + ".mp4", "title": script["hook"], "style": script["style"],
         "style_label": honesty.STYLES.get(script["style"], ""),
@@ -190,12 +197,12 @@ def finalize_for_post(video_id):
         "cta": script["cta"], "hashtags": script["hashtags"],
         "claims": script.get("claims", []),
         "ai_disclosure": disc,
-        "voice_provider": db.q("SELECT provider FROM voices WHERE script_id=? ORDER BY id DESC", (script["id"],), one=True),
+        "voice_provider": vp["provider"] if vp else None,
         "qa": json.loads(v["qa_json"]),
         "status": "WAITING_APPROVAL — publication manuelle uniquement",
         "created_at": db.now(),
     }
-    with open(os.path.join(config.READY, name + "_metadata.json"), "w", encoding="utf-8") as f:
+    with open(os.path.join(ready_dir, name + "_metadata.json"), "w", encoding="utf-8") as f:
         json.dump(metadata, f, ensure_ascii=False, indent=2)
     db.run("UPDATE videos SET path=?, filename=? WHERE id=?", (dest, name + ".mp4", video_id))
     db.log_event("video_ready_to_post", {"video_id": video_id, "file": name + ".mp4"})

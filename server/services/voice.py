@@ -28,6 +28,10 @@ def synthesize_for_script(script_id):
     script = scripts.get_script(script_id)
     if not script:
         return {"ok": False, "detail": "script introuvable"}
+    existing = get_voice(script_id)
+    if existing and os.path.exists(existing["path"]):
+        return {"ok": True, "voice_id": existing["id"], "provider": existing["provider"],
+                "duration_s": existing["duration_s"], "path": existing["path"], "reused": True}
     text = script["vo_text"]
     tmp = os.path.join(config.TMP, "voice_%d.mp3" % script_id)
     tried = []

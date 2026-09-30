@@ -8,34 +8,23 @@ secrets.json
 *token*.json
 credentials*.json
 
-# Données d'exécution (base SQLite, médias générés en masse)
+# Base d'exécution (reconstructible via la pipeline)
 data/db/*.sqlite
 data/db/*.sqlite-journal
+data/db/*.sqlite-shm
+data/db/*.sqlite-wal
+
+# Médias volumineux RÉGÉNÉRABLES (les livrables finaux restent commités)
 data/media/drafts/
 data/media/tmp/
+data/media/assets/
 data/research/raw/
-
-# Fichiers lourds générés (les livrables finaux SONT commités via exceptions)
-# (ready_to_post est suivi — livrables de production)
-
-# Python
 __pycache__/
 *.pyc
-.venv/
-
-# Node
 node_modules/
-
-# OS / éditeurs
 .DS_Store
 Thumbs.db
 *.log
-
-# Scratch de récupération
 _recovery/
-/tools/
-data/db/*.sqlite-shm
-data/db/*.sqlite-wal
-data/research/processed/
-data/media/assets/
-data/voice/inbox/
+backups/
+*.zip

@@ -22,7 +22,7 @@ MEDIA_INBOX = os.path.join(MEDIA, "inbox")
 VOICE_INBOX = os.path.join(DATA, "voice", "inbox")
 ENV_PATH = os.path.join(ROOT, ".env")
 ENV_EXAMPLE = os.path.join(ROOT, ".env.example")
-VENV_PY = "/home/user/.venv-tnp/bin/python"
+VENV_PY = "/home/user/venv-tnp/bin/python"
 
 for d in (DATA, DB_DIR, MEDIA, ASSETS, READY, DRAFTS, TMP, RESEARCH, RESEARCH_INBOX, MEDIA_INBOX, VOICE_INBOX):
     os.makedirs(d, exist_ok=True)

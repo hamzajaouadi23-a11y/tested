@@ -19,6 +19,24 @@ PALETTES = [
 ]
 
 
+_EMOJI_MAP = {"✅": "✓", "❌": "✗", "👉": "→", "📌": "•"}
+
+
+def sanitize_text(s):
+    """Le moteur de texte brûlé (DejaVu) ne supporte pas les emoji SMP → mappés ou retirés."""
+    if not s:
+        return s
+    out = []
+    for ch in s:
+        if ch in _EMOJI_MAP:
+            out.append(_EMOJI_MAP[ch])
+        elif ord(ch) > 0xFFFF:          # plan supplémentaire (emoji) → saute
+            continue
+        else:
+            out.append(ch)
+    return "".join(out).replace("  ", " ").strip()
+
+
 def _font(size, bold=True):
     from PIL import ImageFont
     return ImageFont.truetype(FONT_BOLD if bold else FONT_REG, size)
@@ -107,6 +125,8 @@ def caption_overlay(out_path, text, tag=None, disclosure=False, w=W, h=H):
     from PIL import Image, ImageDraw
     img = Image.new("RGBA", (w, h), (0, 0, 0, 0))
     d = ImageDraw.Draw(img)
+    text = sanitize_text(text)
+    tag = sanitize_text(tag) if tag else tag
     f = _font(64)
     lines = wrap_text(d, text, f, w - 2 * SAFE - 80)
     lines = lines[:4]
@@ -139,6 +159,7 @@ def measure_overlay(text, tag=None):
     from PIL import Image, ImageDraw
     img = Image.new("RGB", (W, H))
     d = ImageDraw.Draw(img)
+    text = sanitize_text(text)
     f = _font(64)
     lines = wrap_text(d, text, f, W - 2 * SAFE - 80)
     maxw = max((d.textlength(ln, font=f) for ln in lines), default=0)
