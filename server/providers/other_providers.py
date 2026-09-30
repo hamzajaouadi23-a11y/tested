@@ -125,13 +125,16 @@ class AzureVoice(Provider):
     requires = ["AZURE_SPEECH_KEY", "AZURE_SPEECH_REGION"]
     costly = False
 
-    def synthesize(self, text, out_path, voicename="fr-FR-DeniseNeural", rate="+8%"):
+    def synthesize(self, text, out_path, voicename=None, rate=None):
+        import os, html
         from .. import config
         key = config.get_secret("AZURE_SPEECH_KEY")
         region = config.get_secret("AZURE_SPEECH_REGION")
         if not key or not region:
-            return {"ok": False, "detail": "Azure Speech non configuré"}
-        import html
+            return {"ok": False, "detail": "Azure Speech non configuré (AZURE_SPEECH_KEY + AZURE_SPEECH_REGION requis)"}
+        # voix/débit configurables par variables Railway (azurerate: +0% lent+ ... +8% naturel)
+        voicename = voicename or os.environ.get("AZURE_SPEECH_VOICE") or "fr-FR-DeniseNeural"
+        rate = rate or os.environ.get("AZURE_SPEECH_RATE") or "+8%"
         ssml = ("<speak version='1.0' xml:lang='fr-FR'><voice xml:lang='fr-FR' name='%s'>"
                 "<prosody rate='%s'>%s</prosody></voice></speak>") % (voicename, rate, html.escape(text))
         url = "https://%s.tts.speech.microsoft.com/cognitiveservices/v1" % region
@@ -156,12 +159,16 @@ class ElevenLabsVoice(Provider):
     requires = ["ELEVENLABS_API_KEY"]
     costly = False
 
-    def synthesize(self, text, out_path, voice_id="21m00Tcm4TlvDq8ikWAM"):
+    def synthesize(self, text, out_path, voice_id=None, model_id=None):
+        import os
         from .. import config
         key = config.get_secret("ELEVENLABS_API_KEY")
         if not key:
             return {"ok": False, "detail": "ELEVENLABS_API_KEY manquante"}
-        body = {"text": text, "model_id": "eleven_multilingual_v2",
+        # sélection de voix/modèle configurable SANS toucher au code (variables Railway)
+        voice_id = voice_id or os.environ.get("ELEVENLABS_VOICE_ID") or "21m00Tcm4TlvDq8ikWAM"  # Rachel (défaut)
+        model_id = model_id or os.environ.get("ELEVENLABS_MODEL_ID") or "eleven_multilingual_v2"
+        body = {"text": text, "model_id": model_id,
                 "voice_settings": {"stability": 0.5, "similarity_boost": 0.7, "speed": 1.06}}
         r = self.safe_http("https://api.elevenlabs.io/v1/text-to-speech/" + voice_id, payload=body,
                            raw=True, timeout=90, headers={"xi-api-key": key, "Accept": "audio/mpeg"})

@@ -30,7 +30,13 @@ Objectif : **URL publique stable**, indépendante du sandbox Arena/E2B. Architec
    | Variable | Valeur | Pourquoi |
    |---|---|---|
    | `TNP_DATA_DIR` | `/data` | persistance (déjà dans l'image, le var le rend explicite) |
-   | *(optionnel)* `GEMINI_API_KEY` etc. | *tes clés* | providers réels — **jamais** dans Git |
+   | `GEMINI_API_KEY` | *ta clé* | TEXT/RESEARCH/IMAGE cloud (optionnels mais recommandés) |
+   | `GROQ_API_KEY` | *ta clé* | TEXT alternatif (fallback chaîne Gemini→Groq→Mistral) |
+   | `MISTRAL_API_KEY` | *ta clé* | TEXT alternatif |
+   | `OPENROUTER_API_KEY` | *ta clé* | TEXT alternatif (dernier recours cloud) |
+   | `AZURE_SPEECH_KEY` + `AZURE_SPEECH_REGION` | *clé + francecentral* | VOIX chaîne 1 (option .voix AZURE_SPEECH_VOICE/RATE) |
+   | `ELEVENLABS_API_KEY` | *ta clé* | VOIX chaîne 2 (option ELEVENLABS_VOICE_ID/MODEL_ID) |
+   > Statuts honnêtes garantis : tant qu'une variable manque, Studio → Providers affiche **NOT CONFIGURED** (aucun READY sans appel réel — le bouton *Tester* tire un vrai appel nanocout ~0,0001 €). Aucune variable CI/CD ne recevra JAMAIS de clé ; Railway Variables chiffrées seulement.
    > **Ne jamais** mettre `PORT` ni `TNP_PORT` — Railway injecte `PORT` automatiquement.
 5. **Deploy** → attendre le build (~3-5 min).
 6. **Settings → Networking → Generate Domain** → URL `https://xxxx.up.railway.app` = production stable.
