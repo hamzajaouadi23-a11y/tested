@@ -28,10 +28,29 @@ enregistre partage abonne toi suis commente envoie lien bio démo vidéo partie 
 vrai vraiment réel juste simple rapide efficace visible incroyable satisfaisant utile
 gratuit prix euros achat magasin lien offre code promo réduction livraison
 insuffle insuffle pas miracle promesse honnête honnêteté transparent sources commentaire
+vapeur nettoyeur portable embout hotte graisse cuit cuite degre degrés autonomie réservoir
+litre litres millilitre millilitres cent cinq mille cinquante soixante quinze vingt
+histoire instantané instantanée instantanément interminable dégoûtante fondre double
+comparatif contenu créé aucun aucune autre bout change changer chauffe chimique
+tendance tendances hashtag cleantok pourtoi fyp février janvier mars avril mai juin
+juillet août septembre octobre novembre décembre noovo meilleurs avis évaluations
+rapporte rapporté publié officiel officielle mesuré recherche études guide 2026
+mode modèle modèles marque vendeur fr boutique client clients
 """.split())
 
 TYPO_LIST = ["sa marche à tout les coups", "calcaires blancsss", "nettoyéé", "vraiement", "vraimant",
              "organisasion", "éfficace"]
+
+
+def _spell_known(w):
+    """Un mot est reconnu si lui-même OU une de ses parties (trans-aphères d'/l'/jusqu'à...) l'est."""
+    if len(w) <= 3:
+        return True
+    for part in w.split("'"):
+        part = part.strip("'")
+        if part and (len(part) <= 3 or part in FR_COMMON):
+            return True
+    return False
 
 
 def _spelling_check(text):
@@ -41,9 +60,11 @@ def _spelling_check(text):
     for t in TYPO_LIST:
         if t in text.lower():
             return False, "faute détectée : « %s »" % t
-    known = sum(1 for w in words if w.strip("'") in FR_COMMON or len(w) <= 3 or any(ch.isdigit() for ch in w))
+    known = sum(1 for w in words if _spell_known(w))
     ratio = known / len(words)
-    return ratio >= 0.35, "taux de mots reconnus %.0f%%" % (ratio * 100)
+    unknown = sorted({w for w in words if not _spell_known(w)})[:8]
+    return ratio >= 0.35, "taux de mots reconnus %.0f%%" % (ratio * 100) + (
+        " — ignorés : " + ", ".join(unknown) if unknown else "")
 
 
 def _frame_stats(path):

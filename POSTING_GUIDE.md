@@ -44,3 +44,10 @@ Contenu créé avec assistance IA (visuels/voix). Aucun achat requis.
 5. Ne poste **jamais** 2 fois le même contenu tel quel ; si ça marche, clone l'angle, pas la vidéo.
 
 **Rappel conformité** : aucun achat requis, aucune promesse de résultat garanti, aucune déclaration personnelle d'avoir testé le produit n'est autorisée. Les sources citées sont des médias (Yahoo Shopping 2026, Mental Floss, IKEA Life at Home) — conserve les liens du `metadata.json` si la plateforme demande.
+
+## 🆕 Video 4 — `video_04.mp4` — la vapeur qui fait fondre la graisse (génération RÉELLE prouvée, 30/09)
+- **Compte** : CleanTok | **Style** : A (Crunchy Before/After) | ⏱ 34 s · 1080×1920 · 30 fps
+- **Pipeline exécuté de bout en bout ce soir** : recherche web réelle (Noovo Moi, meilleurs.fr, guide 2026) →
+  sélection interne (score 87) → script editorialisé (4 claims SOURCÉS) → voix IA réelle → 4 visuels IA réels →
+  rendu FFmpeg → QA PASS (spellcheck renforcé : lexique niche + contractions d'/l', aucune baisse du seuil 35 %).
+- **Caption** : voir `video_04_caption.txt` — sources citées (commentaire épinglé conseillé) · disclosure IA incluse.

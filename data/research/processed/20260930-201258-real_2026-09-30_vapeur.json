@@ -1,0 +1,30 @@
+{
+  "topic": "Nettoyeur vapeur portable — tendance CleanTok (produit maison, dégraissage sans produits chimiques)",
+  "sources": [
+    {"url": "https://www.noovomoi.ca/style-et-maison/maison/nettoyeur-vapeur-portable-test.html", "title": "Ménage du printemps : j'ai testé ce nettoyeur à vapeur portable — Noovo Moi (févr. 2026)"},
+    {"url": "https://www.meilleurs.fr/nettoyeur-vapeur-a-main/", "title": "Comparatif nettoyeur vapeur à main — les 16 meilleurs en 2026"},
+    {"url": "https://meilleur-nettoyeur-vapeur.fr/comment-choisir-nettoyeur-vapeur/", "title": "Comment choisir son nettoyeur vapeur en 2026 — guide complet"}
+  ],
+  "facts": [
+    {"fact": "Le modèle testé par Noovo Moi génère de la vapeur à 105 °C prête en 15 secondes (2500 W).",
+     "analysis": "Le temps de chauffe est le critère de confort n°1 d'après les guides d'achat — une chauffe quasi immédiate supprime la friction quotidienne.",
+     "angle": "Anti-attente : 'prête avant que tu aies le temps de régler ton téléphone' — hook visuel chrono.",
+     "source_url": "https://www.noovomoi.ca/style-et-maison/maison/nettoyeur-vapeur-portable-test.html"},
+    {"fact": "Noovo Moi rapporte ~30 minutes d'autonomie avec un réservoir de 1100 ml, et la possibilité de changer de brosse selon la tâche.",
+     "analysis": "Réservoir et brosses variées déterminent si l'appareil sert au quotidien ou finit au placard.",
+     "angle": "Un seul appareil pour hotte, joints, robinetterie — séquence multi-plans satisfaisante.",
+     "source_url": "https://www.noovomoi.ca/style-et-maison/maison/nettoyeur-vapeur-portable-test.html"},
+    {"fact": "Le test Noovo Moi montre un décrassage efficace 'même sans produits chimiques', relevé comme un point écologique positif.",
+     "analysis": "L'argument éco + santé (pas de vapeurs chimiques) est un moteur CleanTok fort pour un public FR.",
+     "angle": "Dégraissage à l'eau seule — contraste avec le nuage de spray classique.",
+     "source_url": "https://www.noovomoi.ca/style-et-maison/maison/nettoyeur-vapeur-portable-test.html"},
+    {"fact": "Selon le comparatif meilleurs.fr (2026), les petits réservoirs de ~350 ml offrent environ 15 minutes d'autonomie, contre 30 à 45 minutes pour ~1250 ml.",
+     "analysis": "La capacité du réservoir conditionne l'autonomie réelle — critère vérifiable avant achat.",
+     "angle": "'Comment choisir' honnête : vérifie la contenance — renforce la transparence.",
+     "source_url": "https://www.meilleurs.fr/nettoyeur-vapeur-a-main/"},
+    {"fact": "Le guide 2026 de meilleur-nettoyeur-vapeur.fr situe les portables à 5-10 minutes d'autonomie (réservoirs 200-350 ml) et recommande un détartrage tous les 1-2 mois.",
+     "analysis": "Donner la limite évite la déception à l'achat — l'honnêteté augmente la confiance (et le watch-time 2e partie).",
+     "angle": "CTA pédagogique '3 points à vérifier avant d'acheter' au lieu d'une promesse gonflée.",
+     "source_url": "https://meilleur-nettoyeur-vapeur.fr/comment-choisir-nettoyeur-vapeur/"}
+  ]
+}
