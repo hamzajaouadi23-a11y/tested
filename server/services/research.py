@@ -99,6 +99,9 @@ def run_gemini_research():
         "avec 6 à 10 faits VÉRIFIABLES et sourcés, aucune statistique sans source.")
     r = providers.generate_text(prompt, purpose="research")
     if not r["ok"]:
+        db.log_event("research_gemini", {"ok": False, "stage": "generate",
+                                         "detail": r.get("detail", "")[:200],
+                                         "tried": r.get("tried", []), "skipped": r.get("skipped", [])})
         return {"ok": False, "detail": "échec génération: " + r.get("detail", "")[:200], "tried": r.get("tried", [])}
     try:
         txt = r["text"].strip().strip("`").removeprefix("json").strip()
@@ -109,8 +112,13 @@ def run_gemini_research():
             json.dump(data, f, ensure_ascii=False, indent=2)
         out = import_inbox()
         out["provider"] = r["provider"]
+        db.log_event("research_gemini", {"ok": True, "provider_used": out["provider"],
+                                         "provider_fallback": bool(r.get("fallback")),
+                                         "facts_imported": sum(x.get("facts", 0) for x in out.get("runs", [])),
+                                         "model": r.get("model")})
         return out
     except Exception as e:
+        db.log_event("research_gemini", {"ok": False, "stage": "parse", "detail": str(e)[:150]})
         return {"ok": False, "detail": "JSON Gemini non parsable: %s" % str(e)[:150]}
 
 

@@ -132,7 +132,10 @@ class Handler(BaseHTTPRequestHandler):
                 # Déclencheur opérateur GET (autant autorisé que le POST) : import inbox
                 # puis recherche Gemini grounding si configurée. Traité en tâche de fond.
                 def jobr():
-                    research_svc.run()
+                    try:
+                        research_svc.run()
+                    except Exception as e:
+                        db.log_event("job_error", {"route": "run/research", "error": str(e)[:250]})
                 threading.Thread(target=jobr, daemon=True).start()
                 db.log_event("run_trigger", {"route": "GET /api/run/research"})
                 return self._json({"ok": True, "started": True, "note": "résultats via /api/research/runs & /api/events"})
@@ -153,13 +156,48 @@ class Handler(BaseHTTPRequestHandler):
                 if not cid:
                     return self._json({"ok": False, "detail": "candidate_id requis"}, 400)
                 def jobg():
-                    pipeline_svc.run_candidate(cid, styles=styles)
+                    try:
+                        pipeline_svc.run_candidate(cid, styles=styles)
+                    except Exception as e:
+                        db.log_event("job_error", {"route": "pipeline/run", "error": str(e)[:250]})
                 threading.Thread(target=jobg, daemon=True).start()
                 db.log_event("run_trigger", {"route": "GET /api/pipeline/run", "candidate_id": cid,
                                              "styles": styles or "A,B,C"})
                 return self._json({"ok": True, "started": True, "candidate_id": cid,
                                    "styles": styles or ["A", "B", "C"],
                                    "note": "suivi via /api/pipeline/board, /api/events, /api/videos"})
+            if path == "/api/run/script":
+                # Étape SCRIPT seule (chaîne TEXT réelle — cloud si configuré, local sinon,
+                # provider_used/fallback tracés). Borné : 1 appel cloud par style demandé.
+                cid = int(qs.get("candidate_id", ["0"])[0] or 0)
+                styles =([s.strip() for s in qs.get("styles", [""])[0].split(",") if s.strip()]
+                         or ["A"])[:2]  # max 2 styles par déclenchement (coût borné)
+                if not cid:
+                    return self._json({"ok": False, "detail": "candidate_id requis"}, 400)
+                def jobs():
+                    try:
+                        scripts_svc.generate_for_candidate(cid, styles=styles)
+                    except Exception as e:
+                        db.log_event("job_error", {"route": "run/script", "error": str(e)[:250]})
+                threading.Thread(target=jobs, daemon=True).start()
+                db.log_event("run_trigger", {"route": "GET /api/run/script", "candidate_id": cid, "styles": styles})
+                return self._json({"ok": True, "started": True, "candidate_id": cid, "styles": styles,
+                                   "note": "suivi via /api/scripts?candidate_id= et /api/events"})
+            if path == "/api/run/assets":
+                # Étape ASSETS seule (image cloud 9:16 si configurée, sinon composition locale,
+                # provider/fallback journalisé). Borné : 1 appel image par shot manquant.
+                sid = int(qs.get("script_id", ["0"])[0] or 0)
+                if not sid:
+                    return self._json({"ok": False, "detail": "script_id requis"}, 400)
+                def joba():
+                    try:
+                        assets_svc.acquire_for_script(sid)
+                    except Exception as e:
+                        db.log_event("job_error", {"route": "run/assets", "error": str(e)[:250]})
+                threading.Thread(target=joba, daemon=True).start()
+                db.log_event("run_trigger", {"route": "GET /api/run/assets", "script_id": sid})
+                return self._json({"ok": True, "started": True, "script_id": sid,
+                                   "note": "suivi via /api/events (assets_ready)"})
             if path == "/api/flags":
                 return self._json({"ok": True, "flags": {
                     "AUTO_RESEARCH": config.AUTO_RESEARCH, "AUTO_GENERATION": config.AUTO_GENERATION,
@@ -243,12 +281,18 @@ class Handler(BaseHTTPRequestHandler):
                 cid = int(body.get("candidate_id", 0))
                 styles = body.get("styles")
                 def job():
-                    pipeline_svc.run_candidate(cid, styles=styles)
+                    try:
+                        pipeline_svc.run_candidate(cid, styles=styles)
+                    except Exception as e:
+                        db.log_event("job_error", {"route": "POST pipeline/run", "error": str(e)[:250]})
                 threading.Thread(target=job, daemon=True).start()
                 return self._json({"ok": True, "started": True, "candidate_id": cid})
             if path == "/api/pipeline/research":
                 def job2():
-                    pipeline_svc.run_research()
+                    try:
+                        pipeline_svc.run_research()
+                    except Exception as e:
+                        db.log_event("job_error", {"route": "POST pipeline/research", "error": str(e)[:250]})
                 threading.Thread(target=job2, daemon=True).start()
                 return self._json({"ok": True, "started": True})
             if path == "/api/videos/approve":
